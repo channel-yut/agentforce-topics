@@ -13,7 +13,7 @@
             <header class="slds-media slds-media_center slds-has-flexi-truncate">
                 <div class="slds-media__figure">
                     <div class={headerIconClass}>
-                        <lightning-icon icon-name="utility:sparkles" size="small" inverse-color="true"></lightning-icon>
+                        <lightning-icon icon-name="standard:bot" size="small"></lightning-icon>
                     </div>
                 </div>
                 <div class="slds-media__body">
@@ -22,22 +22,25 @@
                     </h2>
                     <p class="slds-text-body_small slds-text-color_weak">{headerSubtitle}</p>
                 </div>
+                <div class="slds-media__figure slds-m-left_x-small">
+                    <lightning-button-icon icon-name={collapseIconName} variant="bare" alternative-text="折りたたみ/展開" title="折りたたみ/展開" onclick={handleToggleCollapse}></lightning-button-icon>
+                </div>
             </header>
             <div class="slds-no-flex">
                 <template if:true={showLatestView}>
-                    <lightning-button label={labels.btnShowHistory} icon-name="utility:history" onclick={handleShowHistory}></lightning-button>
+                    <lightning-button label={labels.btnShowHistory} icon-name="utility:history" variant="neutral" onclick={handleShowHistory}></lightning-button>
                 </template>
                 <template if:true={showHistoryList}>
-                    <lightning-button label={labels.btnBackToLatest} icon-name="utility:back" onclick={handleShowLatest}></lightning-button>
+                    <lightning-button label={labels.btnBackToLatest} icon-name="utility:back" variant="neutral" onclick={handleShowLatest}></lightning-button>
                 </template>
                 <template if:true={showHistoryDetail}>
-                    <lightning-button label={labels.btnBackToList} icon-name="utility:list" onclick={handleShowHistoryList}></lightning-button>
+                    <lightning-button label={labels.btnBackToList} icon-name="utility:list" variant="neutral" onclick={handleShowHistoryList}></lightning-button>
                 </template>
             </div>
         </div>
 
         <!-- Card Body -->
-        <div class="slds-card__body slds-card__body_inner">
+        <div class="slds-card__body slds-card__body_inner" if:false={isCollapsed}>
             <!-- Loading State -->
             <template if:true={isLoading}>
                 <div class="slds-align_absolute-center slds-p-around_large">
@@ -105,7 +108,7 @@
                 <!-- No Data State -->
                 <template if:false={currentTopic}>
                     <div class="slds-align_absolute-center slds-p-around_large">
-                        <lightning-icon icon-name="utility:info" size="large" alternative-text={labels.noData}></lightning-icon>
+                        <lightning-icon icon-name="utility:info" size="small" alternative-text={labels.noData}></lightning-icon>
                         <p class="slds-m-top_small slds-text-body_regular">{labels.noDataMsg}</p>
                     </div>
                 </template>
@@ -160,7 +163,7 @@
                 <!-- No History State -->
                 <template if:false={hasHistory}>
                     <div class="slds-align_absolute-center slds-p-around_large">
-                        <lightning-icon icon-name="utility:info" size="large" alternative-text={labels.noHistory}></lightning-icon>
+                        <lightning-icon icon-name="utility:info" size="small" alternative-text={labels.noHistory}></lightning-icon>
                         <p class="slds-m-top_small slds-text-body_regular">{labels.noHistoryMsg}</p>
                     </div>
                 </template>

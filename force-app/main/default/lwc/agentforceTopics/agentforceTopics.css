@@ -1,6 +1,6 @@
-/* AI Header Icon with gradient */
+/* AI Header Icon - Agentforce Style */
 .ai-header-icon {
-    background: linear-gradient(135deg, #5a5ae1, #00a1e0);
+    background: #e8f4ff;
     border-radius: 0.25rem;
     width: 2rem;
     height: 2rem;
@@ -10,7 +10,7 @@
 }
 
 .ai-header-icon.history-mode {
-    background: #747474;
+    background: #f3f3f2;
 }
 
 /* Insight Container with left border accent */

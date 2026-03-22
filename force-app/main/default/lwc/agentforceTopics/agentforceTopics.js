@@ -49,6 +49,7 @@ export default class AgentforceTopics extends LightningElement {
     @track selectedTopicId;
     @track isLoading = false;
     @track error;
+    @track isCollapsed = false;
 
     wiredLatestResult;
     wiredHistoryResult;
@@ -269,6 +270,15 @@ export default class AgentforceTopics extends LightningElement {
             this.showToast(LABEL_ERROR, LABEL_COPY_ERROR, 'error');
             console.error('Copy error:', err);
         });
+    }
+
+    // Toggle collapse
+    handleToggleCollapse() {
+        this.isCollapsed = !this.isCollapsed;
+    }
+
+    get collapseIconName() {
+        return this.isCollapsed ? 'utility:chevrondown' : 'utility:chevronup';
     }
 
     // Utility: Show toast
