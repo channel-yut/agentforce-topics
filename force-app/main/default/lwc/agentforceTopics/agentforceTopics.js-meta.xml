@@ -12,6 +12,7 @@
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
             <property name="recordId" type="String" />
+            <property name="defaultCollapsed" type="Boolean" default="false" label="Default Collapsed" description="Initially collapse the component when there is data" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
