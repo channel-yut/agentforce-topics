@@ -22,18 +22,20 @@
                     </h2>
                     <p class="slds-text-body_small slds-text-color_weak">{headerSubtitle}</p>
                 </div>
+                <div class="slds-media__figure slds-m-left_x-small">
+                    <lightning-button-icon icon-name={collapseIconName} variant="border-filled" alternative-text="折りたたみ/展開" title="折りたたみ/展開" onclick={handleToggleCollapse}></lightning-button-icon>
+                </div>
             </header>
             <div class="slds-no-flex">
                 <template if:true={showLatestView}>
-                    <lightning-button label={labels.btnShowHistory} icon-name="utility:history" variant="neutral" onclick={handleShowHistory}></lightning-button>
+                    <lightning-button label={labels.btnShowHistory} variant="neutral" onclick={handleShowHistory}></lightning-button>
                 </template>
                 <template if:true={showHistoryList}>
-                    <lightning-button label={labels.btnBackToLatest} icon-name="utility:back" variant="neutral" onclick={handleShowLatest}></lightning-button>
+                    <lightning-button label={labels.btnBackToLatest} variant="neutral" onclick={handleShowLatest}></lightning-button>
                 </template>
                 <template if:true={showHistoryDetail}>
-                    <lightning-button label={labels.btnBackToList} icon-name="utility:list" variant="neutral" onclick={handleShowHistoryList}></lightning-button>
+                    <lightning-button label={labels.btnBackToList} variant="neutral" onclick={handleShowHistoryList}></lightning-button>
                 </template>
-                <lightning-button-icon icon-name={collapseIconName} variant="border-inverse" alternative-text="折りたたみ/展開" title="折りたたみ/展開" class="slds-m-left_x-small" onclick={handleToggleCollapse}></lightning-button-icon>
             </div>
         </div>
 
@@ -105,9 +107,9 @@
 
                 <!-- No Data State -->
                 <template if:false={currentTopic}>
-                    <div class="slds-align_absolute-center slds-p-around_large">
+                    <div class="no-data-container slds-p-around_large">
                         <lightning-icon icon-name="utility:info" size="small" alternative-text={labels.noData}></lightning-icon>
-                        <p class="slds-m-top_small slds-text-body_regular">{labels.noDataMsg}</p>
+                        <p class="slds-text-body_regular">{labels.noDataMsg}</p>
                     </div>
                 </template>
             </template>
@@ -160,9 +162,9 @@
 
                 <!-- No History State -->
                 <template if:false={hasHistory}>
-                    <div class="slds-align_absolute-center slds-p-around_large">
+                    <div class="no-data-container slds-p-around_large">
                         <lightning-icon icon-name="utility:info" size="small" alternative-text={labels.noHistory}></lightning-icon>
-                        <p class="slds-m-top_small slds-text-body_regular">{labels.noHistoryMsg}</p>
+                        <p class="slds-text-body_regular">{labels.noHistoryMsg}</p>
                     </div>
                 </template>
             </template>

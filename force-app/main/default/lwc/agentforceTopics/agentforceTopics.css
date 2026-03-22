@@ -1,6 +1,6 @@
 /* AI Header Icon - Agentforce Style */
 .ai-header-icon {
-    background: #e8f4ff;
+    background: transparent;
     border-radius: 0.25rem;
     width: 2rem;
     height: 2rem;
@@ -11,7 +11,7 @@
 }
 
 .ai-header-icon.history-mode {
-    background: #f3f3f2;
+    background: transparent;
 }
 
 .icon-image {
@@ -51,6 +51,14 @@
 .slds-table tbody tr:hover {
     background-color: var(--slds-g-color-neutral-base-95, #f3f3f2);
     cursor: pointer;
+}
+
+/* No data container with horizontal alignment */
+.no-data-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 /* Responsive design for mobile */
