@@ -1,0 +1,167 @@
+<template>
+    <article class="slds-card">
+        <!-- History Banner (visible only in history detail mode) -->
+        <template if:true={isHistoryDetail}>
+            <div class="slds-box slds-theme_shade history-banner">
+                <lightning-icon icon-name="utility:history" size="xx-small" class="slds-m-right_x-small"></lightning-icon>
+                履歴のアーカイブを表示中
+            </div>
+        </template>
+
+        <!-- Card Header -->
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <div class={headerIconClass}>
+                        <lightning-icon icon-name="utility:sparkles" size="small" inverse-color="true"></lightning-icon>
+                    </div>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-text-heading_small">{headerTitle}</span>
+                    </h2>
+                    <p class="slds-text-body_small slds-text-color_weak">{headerSubtitle}</p>
+                </div>
+            </header>
+            <div class="slds-no-flex">
+                <template if:true={showLatestView}>
+                    <lightning-button label="履歴を表示" icon-name="utility:history" onclick={handleShowHistory}></lightning-button>
+                </template>
+                <template if:true={showHistoryList}>
+                    <lightning-button label="最新に戻る" icon-name="utility:back" onclick={handleShowLatest}></lightning-button>
+                </template>
+                <template if:true={showHistoryDetail}>
+                    <lightning-button label="一覧へ戻る" icon-name="utility:list" onclick={handleShowHistoryList}></lightning-button>
+                </template>
+            </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="slds-align_absolute-center slds-p-around_large">
+                    <lightning-spinner alternative-text="読み込み中..."></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Error State -->
+            <template if:true={error}>
+                <div class="slds-p-around_medium">
+                    <c-error-panel errors={error}></c-error-panel>
+                </div>
+            </template>
+
+            <!-- Latest/Detail View -->
+            <template if:true={showInsightView}>
+                <template if:true={currentTopic}>
+                    <!-- Meta Info (only in latest mode) -->
+                    <template if:false={isHistoryDetail}>
+                        <div class="slds-grid slds-grid_align-spread slds-m-bottom_medium">
+                            <div class="slds-col">
+                                <span class="slds-text-body_small slds-text-color_weak">
+                                    <lightning-icon icon-name="utility:clock" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                    {formattedDate}
+                                </span>
+                                <template if:true={currentTopic.Trigger_Type__c}>
+                                    <lightning-badge label={currentTopic.Trigger_Type__c} class="slds-m-left_small"></lightning-badge>
+                                </template>
+                            </div>
+                            <div class="slds-col slds-no-flex">
+                                <span class="slds-text-body_small slds-text-color_weak slds-m-right_small">役に立ちましたか？</span>
+                                <lightning-button-icon icon-name="utility:like" variant="border-filled"
+                                    alternative-text="役立った" title="役立った" onclick={handleThumbsUp}
+                                    class={thumbsUpClass}></lightning-button-icon>
+                                <lightning-button-icon icon-name="utility:dislike" variant="border-filled"
+                                    alternative-text="役立たなかった" title="役立たなかった" onclick={handleThumbsDown}
+                                    class={thumbsDownClass}></lightning-button-icon>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Rich Text Content -->
+                    <div class="insight-container slds-box slds-theme_default">
+                        <lightning-formatted-rich-text value={currentTopic.Content__c}></lightning-formatted-rich-text>
+                    </div>
+
+                    <!-- Footer Actions -->
+                    <div class="slds-m-top_medium slds-border_top slds-p-top_medium">
+                        <div class="slds-grid slds-grid_align-end slds-gutters_small">
+                            <div class="slds-col">
+                                <lightning-button label="Slackで共有" variant="base"
+                                    icon-name="utility:share" onclick={handleShareSlack}></lightning-button>
+                            </div>
+                            <div class="slds-col">
+                                <lightning-button label="クリップボードにコピー" variant="base"
+                                    icon-name="utility:copy" onclick={handleCopyToClipboard}></lightning-button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- No Data State -->
+                <template if:false={currentTopic}>
+                    <div class="slds-align_absolute-center slds-p-around_large">
+                        <lightning-icon icon-name="utility:info" size="large" alternative-text="情報なし"></lightning-icon>
+                        <p class="slds-m-top_small slds-text-body_regular">このレコードに関連するAgentforce Topicsはまだありません。</p>
+                    </div>
+                </template>
+            </template>
+
+            <!-- History List View -->
+            <template if:true={showHistoryList}>
+                <template if:true={hasHistory}>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col">
+                                    <div class="slds-truncate" title="日付">日付</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="トリガー">トリガー</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="概要">概要</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="アクション">アクション</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={historyTopics} for:item="topic">
+                                <tr key={topic.Id} class="slds-hint-parent">
+                                    <td data-label="日付">
+                                        <lightning-formatted-date-time value={topic.Generated_Date__c}
+                                            year="numeric" month="2-digit" day="2-digit"
+                                            hour="2-digit" minute="2-digit"></lightning-formatted-date-time>
+                                    </td>
+                                    <td data-label="トリガー">
+                                        <template if:true={topic.Trigger_Type__c}>
+                                            <lightning-badge label={topic.Trigger_Type__c}></lightning-badge>
+                                        </template>
+                                    </td>
+                                    <td data-label="概要">
+                                        <div class="slds-truncate" title={topic.Summary__c}>{topic.Summary__c}</div>
+                                    </td>
+                                    <td data-label="アクション">
+                                        <lightning-button label="表示" variant="base" data-id={topic.Id}
+                                            onclick={handleViewDetail}></lightning-button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+
+                <!-- No History State -->
+                <template if:false={hasHistory}>
+                    <div class="slds-align_absolute-center slds-p-around_large">
+                        <lightning-icon icon-name="utility:info" size="large" alternative-text="履歴なし"></lightning-icon>
+                        <p class="slds-m-top_small slds-text-body_regular">履歴がありません。</p>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </article>
+</template>

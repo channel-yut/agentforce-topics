@@ -1,0 +1,58 @@
+/* AI Header Icon with gradient */
+.ai-header-icon {
+    background: linear-gradient(135deg, #5a5ae1, #00a1e0);
+    border-radius: 0.25rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-header-icon.history-mode {
+    background: #747474;
+}
+
+/* Insight Container with left border accent */
+.insight-container {
+    border-left: 4px solid #5a5ae1;
+    padding: 1rem;
+    background-color: var(--slds-g-color-neutral-base-100, #ffffff);
+}
+
+/* History Banner */
+.history-banner {
+    background-color: #747474;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+}
+
+/* Feedback buttons active state */
+.feedback-active {
+    background-color: var(--slds-g-color-brand-base-60, #0176d3);
+}
+
+.feedback-active lightning-primitive-icon {
+    fill: white;
+}
+
+/* Table hover effect enhancement */
+.slds-table tbody tr:hover {
+    background-color: var(--slds-g-color-neutral-base-95, #f3f3f2);
+    cursor: pointer;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+    .slds-grid.slds-grid_align-spread {
+        display: block;
+    }
+
+    .slds-grid.slds-grid_align-spread .slds-col {
+        margin-bottom: 0.5rem;
+    }
+}
