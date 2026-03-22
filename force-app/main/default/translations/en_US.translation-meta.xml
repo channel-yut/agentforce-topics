@@ -57,6 +57,22 @@
                 <translation>Not Helpful</translation>
             </picklistValues>
         </fields>
+        <fields>
+            <name>Helpful_Count__c</name>
+            <label>Helpful Count</label>
+        </fields>
+        <fields>
+            <name>Not_Helpful_Count__c</name>
+            <label>Not Helpful Count</label>
+        </fields>
+        <fields>
+            <name>Total_Feedback_Count__c</name>
+            <label>Total Feedback Count</label>
+        </fields>
+        <fields>
+            <name>Feedback_Rate__c</name>
+            <label>Feedback Rate</label>
+        </fields>
     </customObjectTranslations>
 
     <!-- Picklist Translations for Trigger_Type__c -->

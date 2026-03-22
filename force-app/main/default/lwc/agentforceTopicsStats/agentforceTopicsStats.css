@@ -1,0 +1,44 @@
+/* Statistics Tile Styling */
+.stat-tile {
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid var(--slds-g-color-border-base-1, #c9c7c5);
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--slds-g-color-neutral-base-50, #706e6b);
+    text-transform: uppercase;
+    letter-spacing: 0.0625rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--slds-g-color-neutral-base-10, #181818);
+}
+
+.stat-value-success {
+    color: var(--slds-g-color-success-base-50, #2e844a);
+}
+
+/* Progress Bar Custom Colors */
+.progress-success {
+    background-color: var(--slds-g-color-success-base-50, #2e844a);
+}
+
+.progress-warning {
+    background-color: var(--slds-g-color-warning-base-50, #fe9339);
+}
+
+.progress-error {
+    background-color: var(--slds-g-color-error-base-50, #ea001e);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stat-value {
+        font-size: 1.5rem;
+    }
+}

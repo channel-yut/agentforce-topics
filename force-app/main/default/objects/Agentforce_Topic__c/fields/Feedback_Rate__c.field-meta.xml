@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Feedback_Rate__c</fullName>
+    <label>Feedback Rate</label>
+    <description>Percentage of helpful feedback (Helpful / Total Feedback)</description>
+    <type>Percent</type>
+    <precision>5</precision>
+    <scale>2</scale>
+    <required>false</required>
+    <formula>IF(Total_Feedback_Count__c &gt; 0, Helpful_Count__c / Total_Feedback_Count__c, 0)</formula>
+</CustomField>

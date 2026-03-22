@@ -89,4 +89,64 @@ public with sharing class AgentforceTopicsController {
             throw new AuraHandledException('Error creating topic: ' + e.getMessage());
         }
     }
+
+    /**
+     * @description Retrieves aggregated feedback statistics for a given record
+     * @param recordId The ID of the related record
+     * @return FeedbackStatistics wrapper with aggregated data
+     */
+    @AuraEnabled(cacheable=true)
+    public static FeedbackStatistics getFeedbackStatistics(String recordId) {
+        try {
+            FeedbackStatistics stats = new FeedbackStatistics();
+
+            // Get the latest topic with aggregated counts
+            List<Agentforce_Topic__c> topics = [
+                SELECT Id, Helpful_Count__c, Not_Helpful_Count__c,
+                       Total_Feedback_Count__c, Feedback_Rate__c
+                FROM Agentforce_Topic__c
+                WHERE Related_Record_Id__c = :recordId
+                ORDER BY Generated_Date__c DESC NULLS LAST, CreatedDate DESC
+                LIMIT 1
+            ];
+
+            if (!topics.isEmpty()) {
+                Agentforce_Topic__c topic = topics[0];
+                stats.helpfulCount = (Integer)(topic.Helpful_Count__c != null ? topic.Helpful_Count__c : 0);
+                stats.notHelpfulCount = (Integer)(topic.Not_Helpful_Count__c != null ? topic.Not_Helpful_Count__c : 0);
+                stats.totalFeedbackCount = (Integer)(topic.Total_Feedback_Count__c != null ? topic.Total_Feedback_Count__c : 0);
+                stats.feedbackRate = topic.Feedback_Rate__c != null ? topic.Feedback_Rate__c : 0;
+            }
+
+            // Get total topics count
+            stats.totalTopicsCount = [
+                SELECT COUNT()
+                FROM Agentforce_Topic__c
+                WHERE Related_Record_Id__c = :recordId
+            ];
+
+            return stats;
+        } catch (Exception e) {
+            throw new AuraHandledException('Error retrieving feedback statistics: ' + e.getMessage());
+        }
+    }
+
+    /**
+     * @description Wrapper class for feedback statistics
+     */
+    public class FeedbackStatistics {
+        @AuraEnabled public Integer helpfulCount { get; set; }
+        @AuraEnabled public Integer notHelpfulCount { get; set; }
+        @AuraEnabled public Integer totalFeedbackCount { get; set; }
+        @AuraEnabled public Decimal feedbackRate { get; set; }
+        @AuraEnabled public Integer totalTopicsCount { get; set; }
+
+        public FeedbackStatistics() {
+            this.helpfulCount = 0;
+            this.notHelpfulCount = 0;
+            this.totalFeedbackCount = 0;
+            this.feedbackRate = 0;
+            this.totalTopicsCount = 0;
+        }
+    }
 }

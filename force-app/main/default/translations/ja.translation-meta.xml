@@ -57,6 +57,22 @@
                 <translation>役立たなかった</translation>
             </picklistValues>
         </fields>
+        <fields>
+            <name>Helpful_Count__c</name>
+            <label>役立った数</label>
+        </fields>
+        <fields>
+            <name>Not_Helpful_Count__c</name>
+            <label>役立たなかった数</label>
+        </fields>
+        <fields>
+            <name>Total_Feedback_Count__c</name>
+            <label>総フィードバック数</label>
+        </fields>
+        <fields>
+            <name>Feedback_Rate__c</name>
+            <label>満足度</label>
+        </fields>
     </customObjectTranslations>
 
     <!-- Custom Labels - Japanese -->
@@ -195,6 +211,34 @@
     <customLabels>
         <name>AgentforceTopics_Error</name>
         <label>エラー</label>
+    </customLabels>
+    <customLabels>
+        <name>AgentforceTopics_StatsTitle</name>
+        <label>フィードバック統計</label>
+    </customLabels>
+    <customLabels>
+        <name>AgentforceTopics_StatsHelpful</name>
+        <label>役立った</label>
+    </customLabels>
+    <customLabels>
+        <name>AgentforceTopics_StatsNotHelpful</name>
+        <label>役立たなかった</label>
+    </customLabels>
+    <customLabels>
+        <name>AgentforceTopics_StatsTotalFeedback</name>
+        <label>総フィードバック数</label>
+    </customLabels>
+    <customLabels>
+        <name>AgentforceTopics_StatsFeedbackRate</name>
+        <label>満足度</label>
+    </customLabels>
+    <customLabels>
+        <name>AgentforceTopics_StatsTotalTopics</name>
+        <label>総トピック数</label>
+    </customLabels>
+    <customLabels>
+        <name>AgentforceTopics_StatsNoData</name>
+        <label>フィードバック統計はまだありません。</label>
     </customLabels>
 
     <!-- Picklist Values - Trigger_Type__c -->

@@ -253,4 +253,55 @@
         <shortDescription>Error Title</shortDescription>
         <value>Error</value>
     </labels>
+
+    <!-- Statistics Component Labels -->
+    <labels>
+        <fullName>AgentforceTopics_StatsTitle</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Statistics Component Title</shortDescription>
+        <value>Feedback Statistics</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_StatsHelpful</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Helpful Label</shortDescription>
+        <value>Helpful</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_StatsNotHelpful</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Not Helpful Label</shortDescription>
+        <value>Not Helpful</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_StatsTotalFeedback</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Total Feedback Label</shortDescription>
+        <value>Total Feedback</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_StatsFeedbackRate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Feedback Rate Label</shortDescription>
+        <value>Helpful Rate</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_StatsTotalTopics</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Total Topics Label</shortDescription>
+        <value>Total Topics</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_StatsNoData</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Statistics Data</shortDescription>
+        <value>No feedback statistics available yet.</value>
+    </labels>
 </CustomLabels>
