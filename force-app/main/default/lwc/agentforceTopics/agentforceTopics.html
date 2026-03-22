@@ -4,7 +4,7 @@
         <template if:true={isHistoryDetail}>
             <div class="slds-box slds-theme_shade history-banner">
                 <lightning-icon icon-name="utility:history" size="xx-small" class="slds-m-right_x-small"></lightning-icon>
-                履歴のアーカイブを表示中
+                {labels.historyBanner}
             </div>
         </template>
 
@@ -25,13 +25,13 @@
             </header>
             <div class="slds-no-flex">
                 <template if:true={showLatestView}>
-                    <lightning-button label="履歴を表示" icon-name="utility:history" onclick={handleShowHistory}></lightning-button>
+                    <lightning-button label={labels.btnShowHistory} icon-name="utility:history" onclick={handleShowHistory}></lightning-button>
                 </template>
                 <template if:true={showHistoryList}>
-                    <lightning-button label="最新に戻る" icon-name="utility:back" onclick={handleShowLatest}></lightning-button>
+                    <lightning-button label={labels.btnBackToLatest} icon-name="utility:back" onclick={handleShowLatest}></lightning-button>
                 </template>
                 <template if:true={showHistoryDetail}>
-                    <lightning-button label="一覧へ戻る" icon-name="utility:list" onclick={handleShowHistoryList}></lightning-button>
+                    <lightning-button label={labels.btnBackToList} icon-name="utility:list" onclick={handleShowHistoryList}></lightning-button>
                 </template>
             </div>
         </div>
@@ -41,7 +41,7 @@
             <!-- Loading State -->
             <template if:true={isLoading}>
                 <div class="slds-align_absolute-center slds-p-around_large">
-                    <lightning-spinner alternative-text="読み込み中..."></lightning-spinner>
+                    <lightning-spinner alternative-text={labels.loading}></lightning-spinner>
                 </div>
             </template>
 
@@ -68,12 +68,12 @@
                                 </template>
                             </div>
                             <div class="slds-col slds-no-flex">
-                                <span class="slds-text-body_small slds-text-color_weak slds-m-right_small">役に立ちましたか？</span>
+                                <span class="slds-text-body_small slds-text-color_weak slds-m-right_small">{labels.feedbackQuestion}</span>
                                 <lightning-button-icon icon-name="utility:like" variant="border-filled"
-                                    alternative-text="役立った" title="役立った" onclick={handleThumbsUp}
+                                    alternative-text={labels.feedbackHelpful} title={labels.feedbackHelpful} onclick={handleThumbsUp}
                                     class={thumbsUpClass}></lightning-button-icon>
                                 <lightning-button-icon icon-name="utility:dislike" variant="border-filled"
-                                    alternative-text="役立たなかった" title="役立たなかった" onclick={handleThumbsDown}
+                                    alternative-text={labels.feedbackNotHelpful} title={labels.feedbackNotHelpful} onclick={handleThumbsDown}
                                     class={thumbsDownClass}></lightning-button-icon>
                             </div>
                         </div>
@@ -88,11 +88,11 @@
                     <div class="slds-m-top_medium slds-border_top slds-p-top_medium">
                         <div class="slds-grid slds-grid_align-end slds-gutters_small">
                             <div class="slds-col">
-                                <lightning-button label="Slackで共有" variant="base"
+                                <lightning-button label={labels.shareSlack} variant="base"
                                     icon-name="utility:share" onclick={handleShareSlack}></lightning-button>
                             </div>
                             <div class="slds-col">
-                                <lightning-button label="クリップボードにコピー" variant="base"
+                                <lightning-button label={labels.copyToClipboard} variant="base"
                                     icon-name="utility:copy" onclick={handleCopyToClipboard}></lightning-button>
                             </div>
                         </div>
@@ -102,8 +102,8 @@
                 <!-- No Data State -->
                 <template if:false={currentTopic}>
                     <div class="slds-align_absolute-center slds-p-around_large">
-                        <lightning-icon icon-name="utility:info" size="large" alternative-text="情報なし"></lightning-icon>
-                        <p class="slds-m-top_small slds-text-body_regular">このレコードに関連するAgentforce Topicsはまだありません。</p>
+                        <lightning-icon icon-name="utility:info" size="large" alternative-text={labels.noData}></lightning-icon>
+                        <p class="slds-m-top_small slds-text-body_regular">{labels.noDataMsg}</p>
                     </div>
                 </template>
             </template>
@@ -115,37 +115,37 @@
                         <thead>
                             <tr class="slds-line-height_reset">
                                 <th scope="col">
-                                    <div class="slds-truncate" title="日付">日付</div>
+                                    <div class="slds-truncate" title={labels.colDate}>{labels.colDate}</div>
                                 </th>
                                 <th scope="col">
-                                    <div class="slds-truncate" title="トリガー">トリガー</div>
+                                    <div class="slds-truncate" title={labels.colTrigger}>{labels.colTrigger}</div>
                                 </th>
                                 <th scope="col">
-                                    <div class="slds-truncate" title="概要">概要</div>
+                                    <div class="slds-truncate" title={labels.colSummary}>{labels.colSummary}</div>
                                 </th>
                                 <th scope="col">
-                                    <div class="slds-truncate" title="アクション">アクション</div>
+                                    <div class="slds-truncate" title={labels.colAction}>{labels.colAction}</div>
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <template for:each={historyTopics} for:item="topic">
                                 <tr key={topic.Id} class="slds-hint-parent">
-                                    <td data-label="日付">
+                                    <td data-label={labels.colDate}>
                                         <lightning-formatted-date-time value={topic.Generated_Date__c}
                                             year="numeric" month="2-digit" day="2-digit"
                                             hour="2-digit" minute="2-digit"></lightning-formatted-date-time>
                                     </td>
-                                    <td data-label="トリガー">
+                                    <td data-label={labels.colTrigger}>
                                         <template if:true={topic.Trigger_Type__c}>
                                             <lightning-badge label={topic.Trigger_Type__c}></lightning-badge>
                                         </template>
                                     </td>
-                                    <td data-label="概要">
+                                    <td data-label={labels.colSummary}>
                                         <div class="slds-truncate" title={topic.Summary__c}>{topic.Summary__c}</div>
                                     </td>
-                                    <td data-label="アクション">
-                                        <lightning-button label="表示" variant="base" data-id={topic.Id}
+                                    <td data-label={labels.colAction}>
+                                        <lightning-button label={labels.btnView} variant="base" data-id={topic.Id}
                                             onclick={handleViewDetail}></lightning-button>
                                     </td>
                                 </tr>
@@ -157,8 +157,8 @@
                 <!-- No History State -->
                 <template if:false={hasHistory}>
                     <div class="slds-align_absolute-center slds-p-around_large">
-                        <lightning-icon icon-name="utility:info" size="large" alternative-text="履歴なし"></lightning-icon>
-                        <p class="slds-m-top_small slds-text-body_regular">履歴がありません。</p>
+                        <lightning-icon icon-name="utility:info" size="large" alternative-text={labels.noHistory}></lightning-icon>
+                        <p class="slds-m-top_small slds-text-body_regular">{labels.noHistoryMsg}</p>
                     </div>
                 </template>
             </template>

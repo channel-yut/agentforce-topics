@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Translations xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Custom Object Translation -->
+    <customObjectTranslations>
+        <name>Agentforce_Topic__c</name>
+        <label>Agentforce Topic</label>
+        <nameFieldLabel>Topic Number</nameFieldLabel>
+        <fields>
+            <name>Content__c</name>
+            <label>Content</label>
+        </fields>
+        <fields>
+            <name>Related_Record_Id__c</name>
+            <label>Related Record ID</label>
+        </fields>
+        <fields>
+            <name>Trigger_Type__c</name>
+            <label>Trigger Type</label>
+            <picklistValues>
+                <masterLabel>面談記録</masterLabel>
+                <translation>Meeting Notes</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>メール受信</masterLabel>
+                <translation>Email Received</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>リード獲得</masterLabel>
+                <translation>Lead Captured</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>商談更新</masterLabel>
+                <translation>Opportunity Updated</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>手動生成</masterLabel>
+                <translation>Manual Generation</translation>
+            </picklistValues>
+        </fields>
+        <fields>
+            <name>Generated_Date__c</name>
+            <label>Generated Date</label>
+        </fields>
+        <fields>
+            <name>Summary__c</name>
+            <label>Summary</label>
+        </fields>
+        <fields>
+            <name>Feedback__c</name>
+            <label>Feedback</label>
+            <picklistValues>
+                <masterLabel>役立った</masterLabel>
+                <translation>Helpful</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>役立たなかった</masterLabel>
+                <translation>Not Helpful</translation>
+            </picklistValues>
+        </fields>
+    </customObjectTranslations>
+
+    <!-- Picklist Translations for Trigger_Type__c -->
+    <customPageWebLinks>
+        <label>Meeting Notes</label>
+        <name>Agentforce_Topic__c-Trigger_Type__c-面談記録</name>
+    </customPageWebLinks>
+    <customPageWebLinks>
+        <label>Email Received</label>
+        <name>Agentforce_Topic__c-Trigger_Type__c-メール受信</name>
+    </customPageWebLinks>
+    <customPageWebLinks>
+        <label>Lead Captured</label>
+        <name>Agentforce_Topic__c-Trigger_Type__c-リード獲得</name>
+    </customPageWebLinks>
+    <customPageWebLinks>
+        <label>Opportunity Updated</label>
+        <name>Agentforce_Topic__c-Trigger_Type__c-商談更新</name>
+    </customPageWebLinks>
+    <customPageWebLinks>
+        <label>Manual Generation</label>
+        <name>Agentforce_Topic__c-Trigger_Type__c-手動生成</name>
+    </customPageWebLinks>
+
+    <!-- Picklist Translations for Feedback__c -->
+    <customPageWebLinks>
+        <label>Helpful</label>
+        <name>Agentforce_Topic__c-Feedback__c-役立った</name>
+    </customPageWebLinks>
+    <customPageWebLinks>
+        <label>Not Helpful</label>
+        <name>Agentforce_Topic__c-Feedback__c-役立たなかった</name>
+    </customPageWebLinks>
+</Translations>

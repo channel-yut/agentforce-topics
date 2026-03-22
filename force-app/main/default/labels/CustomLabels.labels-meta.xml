@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Component Header Labels -->
+    <labels>
+        <fullName>AgentforceTopics_Title</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Component Title</shortDescription>
+        <value>Agentforce Topics</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_SubtitleLatest</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Subtitle for Latest View</shortDescription>
+        <value>Latest AI-Generated Insights</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_TitleHistory</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Title for History List</shortDescription>
+        <value>Analysis History</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_SubtitleHistory</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Subtitle for History List</shortDescription>
+        <value>Past Agentforce Topics</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_TitleHistoryDetail</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Title for History Detail</shortDescription>
+        <value>History Detail</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_SubtitleArchive</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Subtitle Archive Prefix</shortDescription>
+        <value>Archive:</value>
+    </labels>
+
+    <!-- Button Labels -->
+    <labels>
+        <fullName>AgentforceTopics_BtnShowHistory</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Show History Button</shortDescription>
+        <value>Show History</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_BtnBackToLatest</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Back to Latest Button</shortDescription>
+        <value>Back to Latest</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_BtnBackToList</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Back to List Button</shortDescription>
+        <value>Back to List</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_BtnView</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>View Button</shortDescription>
+        <value>View</value>
+    </labels>
+
+    <!-- Banner and Status Labels -->
+    <labels>
+        <fullName>AgentforceTopics_HistoryBanner</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>History Archive Banner</shortDescription>
+        <value>Viewing Archived History</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_Loading</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Loading Message</shortDescription>
+        <value>Loading...</value>
+    </labels>
+
+    <!-- Feedback Labels -->
+    <labels>
+        <fullName>AgentforceTopics_FeedbackQuestion</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Feedback Question</shortDescription>
+        <value>Was this helpful?</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_FeedbackHelpful</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Helpful Feedback</shortDescription>
+        <value>Helpful</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_FeedbackNotHelpful</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Not Helpful Feedback</shortDescription>
+        <value>Not Helpful</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_FeedbackSuccess</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Feedback Success Title</shortDescription>
+        <value>Feedback Submitted</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_FeedbackSuccessMsg</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Feedback Success Message</shortDescription>
+        <value>Thank you for your feedback.</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_FeedbackError</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Feedback Error Message</shortDescription>
+        <value>Failed to submit feedback.</value>
+    </labels>
+
+    <!-- Action Labels -->
+    <labels>
+        <fullName>AgentforceTopics_ShareSlack</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Share on Slack Button</shortDescription>
+        <value>Share on Slack</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_CopyToClipboard</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Copy to Clipboard Button</shortDescription>
+        <value>Copy to Clipboard</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_NotImplemented</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Not Implemented Title</shortDescription>
+        <value>Not Implemented</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_SlackComingSoon</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Slack Coming Soon Message</shortDescription>
+        <value>Slack sharing feature coming soon.</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_CopySuccess</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Copy Success Title</shortDescription>
+        <value>Copied</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_CopySuccessMsg</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Copy Success Message</shortDescription>
+        <value>Copied to clipboard.</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_CopyError</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Copy Error Message</shortDescription>
+        <value>Failed to copy.</value>
+    </labels>
+
+    <!-- Table Column Headers -->
+    <labels>
+        <fullName>AgentforceTopics_ColDate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Date Column Header</shortDescription>
+        <value>Date</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_ColTrigger</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Trigger Column Header</shortDescription>
+        <value>Trigger</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_ColSummary</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Summary Column Header</shortDescription>
+        <value>Summary</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_ColAction</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Action Column Header</shortDescription>
+        <value>Action</value>
+    </labels>
+
+    <!-- Empty State Labels -->
+    <labels>
+        <fullName>AgentforceTopics_NoData</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Data Alt Text</shortDescription>
+        <value>No Information</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_NoDataMsg</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No Data Message</shortDescription>
+        <value>No Agentforce Topics found for this record yet.</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_NoHistory</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No History Alt Text</shortDescription>
+        <value>No History</value>
+    </labels>
+    <labels>
+        <fullName>AgentforceTopics_NoHistoryMsg</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>No History Message</shortDescription>
+        <value>No history available.</value>
+    </labels>
+
+    <!-- Common Error Label -->
+    <labels>
+        <fullName>AgentforceTopics_Error</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Error Title</shortDescription>
+        <value>Error</value>
+    </labels>
+</CustomLabels>
