@@ -45,7 +45,8 @@ public with sharing class AgentforceTopicGeneratorService {
      */
     private static String getRecordData(String recordId) {
         // Determine object type from ID
-        String objectType = recordId.getSObjectType().getDescribe().getName();
+        Id recId = (Id)recordId;
+        String objectType = recId.getSObjectType().getDescribe().getName();
 
         // Build dynamic SOQL to get relevant fields
         List<String> fields = new List<String>();
@@ -79,7 +80,8 @@ public with sharing class AgentforceTopicGeneratorService {
      * @return The object API name
      */
     private static String getRecordType(String recordId) {
-        return recordId.getSObjectType().getDescribe().getName();
+        Id recId = (Id)recordId;
+        return recId.getSObjectType().getDescribe().getName();
     }
 
     /**
