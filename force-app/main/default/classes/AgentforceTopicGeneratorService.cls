@@ -97,6 +97,9 @@ public with sharing class AgentforceTopicGeneratorService {
         String triggerType,
         String recordData
     ) {
+        // Get improvement context from self-learning service
+        String improvementContext = AgentforceSelfLearningService.getImprovementContext(triggerType);
+
         // PLACEHOLDER: In production, integrate with Einstein AI / Prompt Builder
         // Example integration code:
         /*
@@ -107,7 +110,8 @@ public with sharing class AgentforceTopicGeneratorService {
             'recordType' => recordType,
             'recordId' => recordId,
             'triggerType' => triggerType,
-            'recordData' => recordData
+            'recordData' => recordData,
+            'improvementContext' => improvementContext
         };
 
         ConnectApi.EinsteinLlmGenerationItemOutput response =
@@ -116,8 +120,8 @@ public with sharing class AgentforceTopicGeneratorService {
         String generatedContent = response.generations[0].text;
         */
 
-        // For now, return a sample response
-        String sampleContent = buildSampleContent(recordType, triggerType);
+        // For now, return a sample response with improvement context indicator
+        String sampleContent = buildSampleContent(recordType, triggerType, improvementContext);
         String sampleSummary = buildSampleSummary(recordType, triggerType);
 
         return new Map<String, String>{
@@ -128,19 +132,34 @@ public with sharing class AgentforceTopicGeneratorService {
 
     /**
      * @description Builds sample content for demonstration
+     * @param recordType The object type
+     * @param triggerType The trigger type
+     * @param improvementContext Improvement context from self-learning
      */
-    private static String buildSampleContent(String recordType, String triggerType) {
-        return '<h3>ネクストアクション</h3>' +
-               '<ul>' +
-               '<li>フォローアップミーティングのスケジューリング（今週中）</li>' +
-               '<li>提案資料の更新と送付</li>' +
-               '<li>技術チームとの連携確認</li>' +
-               '</ul>' +
-               '<h3>推奨事項</h3>' +
-               '<p><strong>重要：</strong>競合分析資料の準備を推奨します。顧客は複数社を比較検討している段階です。</p>' +
-               '<h3>主要インサイト</h3>' +
-               '<p>顧客のビジネス拡大に伴い、現在のソリューションでは対応が難しくなっています。' +
-               'スケーラビリティを重視した提案を行うことで、成約率が向上する見込みです。</p>';
+    private static String buildSampleContent(String recordType, String triggerType, String improvementContext) {
+        String content = '';
+
+        // Show improvement context indicator if available
+        if (String.isNotBlank(improvementContext)) {
+            content += '<div style="background-color:#f4f6f9;padding:10px;margin-bottom:15px;border-left:4px solid #0070d2;">' +
+                       '<p><strong>🔄 自己学習適用:</strong> 過去のフィードバックから学んだ改善点を反映しています</p>' +
+                       '</div>';
+        }
+
+        content += '<h3>ネクストアクション</h3>' +
+                   '<ul>' +
+                   '<li><strong>10/28週までに</strong>フォローアップミーティングをスケジューリング（営業部長承認済み）</li>' +
+                   '<li><strong>3営業日以内に</strong>提案資料を更新し、CTO宛に送付</li>' +
+                   '<li><strong>本日中に</strong>技術チームとの連携を確認（担当：田中）</li>' +
+                   '</ul>' +
+                   '<h3>推奨事項</h3>' +
+                   '<p><strong>重要：</strong>競合分析資料の準備を推奨します。顧客は複数社を比較検討している段階です。</p>' +
+                   '<p><strong>目標：</strong>提案の受注率を<strong>15%向上</strong>させることを目指します。</p>' +
+                   '<h3>主要インサイト</h3>' +
+                   '<p>顧客のビジネス拡大に伴い、現在のソリューションでは対応が難しくなっています。' +
+                   'スケーラビリティを重視した提案を行うことで、成約率が向上する見込みです。</p>';
+
+        return content;
     }
 
     /**

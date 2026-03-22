@@ -73,6 +73,46 @@
             <name>Feedback_Rate__c</name>
             <label>Feedback Rate</label>
         </fields>
+        <fields>
+            <name>Improvement_Patterns__c</name>
+            <label>Improvement Patterns</label>
+        </fields>
+        <fields>
+            <name>Learning_Context__c</name>
+            <label>Learning Context</label>
+        </fields>
+        <fields>
+            <name>Feedback_Category__c</name>
+            <label>Feedback Category</label>
+            <picklistValues>
+                <masterLabel>抽象的</masterLabel>
+                <translation>Too Abstract</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>不正確</masterLabel>
+                <translation>Inaccurate</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>無関係</masterLabel>
+                <translation>Irrelevant</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>期限不明確</masterLabel>
+                <translation>Unclear Deadline</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>数値目標なし</masterLabel>
+                <translation>No Numerical Goals</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>その他</masterLabel>
+                <translation>Other</translation>
+            </picklistValues>
+        </fields>
+        <fields>
+            <name>Generation__c</name>
+            <label>Generation</label>
+        </fields>
     </customObjectTranslations>
 
     <!-- Picklist Translations for Trigger_Type__c -->

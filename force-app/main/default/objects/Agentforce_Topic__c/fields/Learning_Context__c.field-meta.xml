@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Learning_Context__c</fullName>
+    <label>Learning Context</label>
+    <description>JSON data storing referenced feedback context used during generation</description>
+    <type>LongTextArea</type>
+    <length>32768</length>
+    <visibleLines>10</visibleLines>
+</CustomField>

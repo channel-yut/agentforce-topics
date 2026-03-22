@@ -73,6 +73,46 @@
             <name>Feedback_Rate__c</name>
             <label>満足度</label>
         </fields>
+        <fields>
+            <name>Improvement_Patterns__c</name>
+            <label>改善パターン</label>
+        </fields>
+        <fields>
+            <name>Learning_Context__c</name>
+            <label>学習コンテキスト</label>
+        </fields>
+        <fields>
+            <name>Feedback_Category__c</name>
+            <label>フィードバック分類</label>
+            <picklistValues>
+                <masterLabel>抽象的</masterLabel>
+                <translation>抽象的</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>不正確</masterLabel>
+                <translation>不正確</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>無関係</masterLabel>
+                <translation>無関係</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>期限不明確</masterLabel>
+                <translation>期限不明確</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>数値目標なし</masterLabel>
+                <translation>数値目標なし</translation>
+            </picklistValues>
+            <picklistValues>
+                <masterLabel>その他</masterLabel>
+                <translation>その他</translation>
+            </picklistValues>
+        </fields>
+        <fields>
+            <name>Generation__c</name>
+            <label>世代</label>
+        </fields>
     </customObjectTranslations>
 
     <!-- Custom Labels - Japanese -->
