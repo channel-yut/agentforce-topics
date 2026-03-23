@@ -195,8 +195,19 @@ export default class AgentforceTopics extends LightningElement {
         }).replace(/\//g, '/');
     }
 
+    // Filter out current topic from history list
+    get filteredHistoryTopics() {
+        if (!this.historyTopics || this.historyTopics.length === 0) return [];
+
+        // Get current topic ID (from latest or selected history)
+        const currentId = this.currentTopic?.Id;
+
+        // Filter out the current topic
+        return this.historyTopics.filter(topic => topic.Id !== currentId);
+    }
+
     get hasHistory() {
-        return this.historyTopics && this.historyTopics.length > 0;
+        return this.filteredHistoryTopics && this.filteredHistoryTopics.length > 0;
     }
 
     // Navigation handlers

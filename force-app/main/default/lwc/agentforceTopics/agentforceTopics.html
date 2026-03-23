@@ -67,6 +67,9 @@
                                 <template if:true={currentTopic.Trigger_Type__c}>
                                     <lightning-badge label={currentTopic.Trigger_Type__c} class="slds-m-left_small"></lightning-badge>
                                 </template>
+                                <template if:true={currentTopic.Summary__c}>
+                                    <span class="slds-text-body_small slds-m-left_small">{currentTopic.Summary__c}</span>
+                                </template>
                             </div>
                             <div class="slds-col slds-no-flex">
                                 <span class="slds-text-body_small slds-text-color_weak slds-m-right_small">{labels.feedbackQuestion}</span>
@@ -130,7 +133,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <template for:each={historyTopics} for:item="topic">
+                            <template for:each={filteredHistoryTopics} for:item="topic">
                                 <tr key={topic.Id} class="slds-hint-parent">
                                     <td data-label={labels.colDate}>
                                         <lightning-formatted-date-time value={topic.Generated_Date__c}
