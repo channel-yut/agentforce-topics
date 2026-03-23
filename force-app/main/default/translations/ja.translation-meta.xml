@@ -123,7 +123,7 @@
     </customLabels>
     <customLabels>
         <name>AgentforceTopics_NoDataMsg</name>
-        <label>このレコードに関連するAgentforce Topicsはまだありません。</label>
+        <label>このレコードに関連する Agentforce Topics はまだありません。</label>
     </customLabels>
     <customLabels>
         <name>AgentforceTopics_NoHistory</name>
