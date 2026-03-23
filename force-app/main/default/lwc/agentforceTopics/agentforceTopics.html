@@ -56,21 +56,21 @@
             <!-- Latest/Detail View -->
             <template if:true={showInsightView}>
                 <template if:true={currentTopic}>
-                    <!-- Meta Info (only in latest mode) -->
-                    <template if:false={isHistoryDetail}>
-                        <div class="slds-grid slds-grid_align-spread slds-m-bottom_medium">
-                            <div class="slds-col">
-                                <span class="slds-text-body_small slds-text-color_weak">
-                                    <lightning-icon icon-name="utility:clock" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
-                                    {formattedDate}
-                                </span>
-                                <template if:true={currentTopic.Trigger_Type__c}>
-                                    <lightning-badge label={currentTopic.Trigger_Type__c} class="slds-m-left_small"></lightning-badge>
-                                </template>
-                                <template if:true={currentTopic.Summary__c}>
-                                    <span class="slds-text-body_small slds-m-left_small">{currentTopic.Summary__c}</span>
-                                </template>
-                            </div>
+                    <!-- Meta Info -->
+                    <div class="slds-grid slds-grid_align-spread slds-m-bottom_medium">
+                        <div class="slds-col">
+                            <span class="slds-text-body_small slds-text-color_weak">
+                                <lightning-icon icon-name="utility:clock" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                                {formattedDate}
+                            </span>
+                            <template if:true={currentTopic.Trigger_Type__c}>
+                                <lightning-badge label={currentTopic.Trigger_Type__c} class="slds-m-left_small"></lightning-badge>
+                            </template>
+                            <template if:true={currentTopic.Summary__c}>
+                                <span class="slds-text-body_small slds-m-left_small">{currentTopic.Summary__c}</span>
+                            </template>
+                        </div>
+                        <template if:false={isHistoryDetail}>
                             <div class="slds-col slds-no-flex">
                                 <span class="slds-text-body_small slds-text-color_weak slds-m-right_small">{labels.feedbackQuestion}</span>
                                 <lightning-button-icon icon-name="utility:like" variant="border-filled"
@@ -80,8 +80,8 @@
                                     alternative-text={labels.feedbackNotHelpful} title={labels.feedbackNotHelpful} onclick={handleThumbsDown}
                                     class={thumbsDownClass}></lightning-button-icon>
                             </div>
-                        </div>
-                    </template>
+                        </template>
+                    </div>
 
                     <!-- Rich Text Content -->
                     <div class="insight-container slds-box slds-theme_default">
