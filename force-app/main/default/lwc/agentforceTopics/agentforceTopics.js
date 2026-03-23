@@ -228,7 +228,7 @@ export default class AgentforceTopics extends LightningElement {
     }
 
     handleViewDetail(event) {
-        const topicId = event.target.dataset.id;
+        const topicId = event.currentTarget.dataset.id;
         const selectedTopic = this.historyTopics.find(t => t.Id === topicId);
         if (selectedTopic) {
             this.currentTopic = selectedTopic;

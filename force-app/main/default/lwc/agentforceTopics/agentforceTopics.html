@@ -127,14 +127,11 @@
                                 <th scope="col">
                                     <div class="slds-truncate" title={labels.colSummary}>{labels.colSummary}</div>
                                 </th>
-                                <th scope="col">
-                                    <div class="slds-truncate" title={labels.colAction}>{labels.colAction}</div>
-                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             <template for:each={filteredHistoryTopics} for:item="topic">
-                                <tr key={topic.Id} class="slds-hint-parent">
+                                <tr key={topic.Id} class="slds-hint-parent" data-id={topic.Id} onclick={handleViewDetail}>
                                     <td data-label={labels.colDate}>
                                         <lightning-formatted-date-time value={topic.Generated_Date__c}
                                             year="numeric" month="2-digit" day="2-digit"
@@ -147,10 +144,6 @@
                                     </td>
                                     <td data-label={labels.colSummary}>
                                         <div class="slds-truncate" title={topic.Summary__c}>{topic.Summary__c}</div>
-                                    </td>
-                                    <td data-label={labels.colAction}>
-                                        <lightning-button label={labels.btnView} variant="base" data-id={topic.Id}
-                                            onclick={handleViewDetail}></lightning-button>
                                     </td>
                                 </tr>
                             </template>
