@@ -4,7 +4,6 @@ import { refreshApex } from '@salesforce/apex';
 import getLatestTopic from '@salesforce/apex/AgentforceTopicsController.getLatestTopic';
 import getTopicHistory from '@salesforce/apex/AgentforceTopicsController.getTopicHistory';
 import updateFeedback from '@salesforce/apex/AgentforceTopicsController.updateFeedback';
-import AGENTFORCE_ICON from '@salesforce/resourceUrl/agentforceIcon';
 
 // Import Custom Labels
 import LABEL_TITLE from '@salesforce/label/c.AgentforceTopics_Title';
@@ -52,8 +51,6 @@ export default class AgentforceTopics extends LightningElement {
     @track isLoading = false;
     @track error;
     @track isCollapsed = false;
-
-    agentforceIconUrl = AGENTFORCE_ICON;
 
     wiredLatestResult;
     wiredHistoryResult;

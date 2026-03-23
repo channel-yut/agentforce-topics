@@ -20,7 +20,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Title for History List</shortDescription>
-        <value>Analysis History</value>
+        <value>Agentforce Topics</value>
     </labels>
     <labels>
         <fullName>AgentforceTopics_SubtitleHistory</fullName>

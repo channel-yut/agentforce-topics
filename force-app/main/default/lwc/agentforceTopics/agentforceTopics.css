@@ -1,25 +1,3 @@
-/* AI Header Icon - Agentforce Style */
-.ai-header-icon {
-    background: transparent;
-    border-radius: 0.25rem;
-    width: 2rem;
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.25rem;
-}
-
-.ai-header-icon.history-mode {
-    background: transparent;
-}
-
-.icon-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
 /* Insight Container with left border accent */
 .insight-container {
     border-left: 4px solid #5a5ae1;
