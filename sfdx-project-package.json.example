@@ -3,7 +3,7 @@
     {
       "path": "force-app",
       "package": "Agentforce Topics",
-      "versionName": "Spring 2026",
+      "versionName": "ver 1.0",
       "versionNumber": "1.0.0.NEXT",
       "default": true
     }
@@ -12,5 +12,7 @@
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "64.0",
-  "packageAliases": {}
+  "packageAliases": {
+    "Agentforce Topics": "0HoXXXXXXXXXXXXXXX"
+  }
 }
