@@ -146,6 +146,8 @@ Salesforce組織上で動作する**自己学習型AIインサイトシステム
 
 ## 📦 インストール方法
 
+> **📄 パッケージユーザー向け**: シンプルなインストールガイドは [PACKAGE_README.md](PACKAGE_README.md) を参照してください。
+
 ### 方法A: 未ロックパッケージ（推奨）
 
 ```bash
@@ -469,8 +471,13 @@ input.promptTemplateApiName = 'YourPromptTemplate';
 
 ## 📚 関連ドキュメント
 
-- [デプロイ手順](CLAUDE.md) - 他の組織への適用方法
-- [HTMLスタイルガイド](docs/agentforce-topic-style-guide.md)
+### ユーザー向け
+- **[PACKAGE_README.md](PACKAGE_README.md)** - パッケージインストールガイド（エンドユーザー向け）
+- [HTMLスタイルガイド](docs/agentforce-topic-style-guide.md) - コンテンツ作成ガイド
+
+### 開発者向け
+- **[CLAUDE.md](CLAUDE.md)** - ソースからのデプロイ手順
+- **[PACKAGING.md](PACKAGING.md)** - パッケージング詳細ガイド
 - [Git履歴](https://github.com/your-repo/agentforce-topics)
 
 ---

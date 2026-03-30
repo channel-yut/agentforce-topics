@@ -84,9 +84,17 @@ if [ $? -eq 0 ]; then
     echo "   2. インストール:"
     echo "      sf package install --package $PACKAGE_VERSION_ID --target-org your-org-alias --wait 10"
     echo ""
-    echo "   3. README.mdにパッケージIDを記録:"
+    echo "   3. PACKAGE_README.mdにパッケージIDを記録:"
     echo "      **パッケージID**: $PACKAGE_VERSION_ID"
     echo ""
+
+    # Update PACKAGE_README.md with package ID
+    if [ -f "PACKAGE_README.md" ]; then
+        sed -i.bak "s/04tXXXXXXXXXXXXXXX/$PACKAGE_VERSION_ID/g" PACKAGE_README.md
+        rm PACKAGE_README.md.bak
+        echo -e "${GREEN}   ✅ PACKAGE_README.md を更新しました${NC}"
+        echo ""
+    fi
 else
     echo -e "${RED}❌ パッケージバージョン作成に失敗しました${NC}"
     cat /tmp/package-version-result.json | jq '.'
