@@ -221,6 +221,47 @@
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>decorate</name>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value>&lt;h1&gt;&lt;span style=&quot;font-size: 22px;&quot;&gt;How to Use !&lt;/span&gt;&lt;/h1&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;このコンポーネントでは、Agentforceの出力をリッチテキストで画面上に表示することができます。&lt;/p&gt;&lt;p&gt;また、Agentforceの動作履歴として、過去のサマリー、サジェスト情報も表示可能です。&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;h2&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;&amp;lt;ヘッダー項目の設定&amp;gt;&lt;/span&gt;&lt;/h2&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Related Record ID&lt;ul&gt;&lt;li&gt;紐づけるレコードのIDをURL等から取得して記録します&lt;/li&gt;&lt;li&gt;取引先や商談など、どのオブジェクトにも基本的に対応できます&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Trigger Type&lt;ul&gt;&lt;li&gt;面談記録やレコード更新など、Agentforceがどのトリガーで動き、レコードを作成したかを示します&lt;/li&gt;&lt;li&gt;履歴画面上でタグとして表示されます&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Generated Date&lt;ul&gt;&lt;li&gt;作成日です&lt;/li&gt;&lt;li&gt;最新のものが画面上に表示され、古いものは履歴一覧から開くことができます&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;h2&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;&amp;lt;コンテンツ項目の設定&amp;gt;&lt;/span&gt;&lt;/h2&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;em&gt;アクション内のコンテンツ編集ボタンから編集できます。&lt;/em&gt;&lt;/p&gt;&lt;p&gt;&lt;em&gt;サンプルデータを参考に、Gemini等で編集して登録してください。&lt;/em&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Summary&lt;ul&gt;&lt;li&gt;タイトルテキストです&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Content&lt;ul&gt;&lt;li&gt;リッチテキストで表現できるテキストコンテンツです&lt;/li&gt;&lt;li&gt;HTMLベースで記載するとデザイン性を意識した見た目にすることが可能です&lt;/li&gt;&lt;li&gt;Agentforceから出力する際はApexトピックの「&lt;code style=&quot;font-family: monospace; color: rgb(247, 107, 0); background-color: rgba(255, 255, 255, 0.1); font-size: 0.9em;&quot;&gt;&lt;strong&gt;Create or Update Agentforce Topic&lt;/strong&gt;&lt;/code&gt;」を利用して書き込むことで、HTMLベースで書き込めるほか、Goodボタン等からの学習へも対応可能です&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;h2&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;&amp;lt;Agentforce向けの学習設定&amp;gt;&lt;/span&gt;&lt;/h2&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;h3&gt;&lt;strong&gt;初期設定（スケジューラーを有効化）&lt;/strong&gt;&lt;/h3&gt;&lt;p&gt;Developer Console → Execute Anonymous で実行：&lt;/p&gt;&lt;pre class=&quot;ql-syntax&quot; spellcheck=&quot;false&quot;&gt;AgentforceTopicsSetup.enableScheduler();
+&lt;/pre&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;h3&gt;&lt;strong&gt;設定変更&lt;/strong&gt;&lt;/h3&gt;&lt;p&gt;Setup → Custom Metadata Types → &lt;strong&gt;Agentforce Topics Config&lt;/strong&gt; → Manage Records → Default を編集&lt;/p&gt;&lt;table class=&quot;ql-table-blob&quot;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;項目&lt;/th&gt;
+&lt;th&gt;説明&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Analysis Enabled&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;分析のON/OFF（チェックなしでスキップ）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Analysis Frequency&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;Daily&lt;/code&gt;（毎朝9時）または&amp;nbsp;&lt;code&gt;Weekly&lt;/code&gt;（毎週月曜9時）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Min Feedback Count&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;分析を実行する最低フィードバック数（デフォルト5件）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Admin Profile Name&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;分析レポートメールの送信先プロファイル名（デフォルト: System Administrator）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;設定変更後、スケジューラーを再起動する必要があります：&lt;/p&gt;&lt;pre class=&quot;ql-syntax&quot; spellcheck=&quot;false&quot;&gt;AgentforceTopicsSetup.disableScheduler();
+AgentforceTopicsSetup.enableScheduler();
+&lt;/pre&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;h3&gt;&lt;strong&gt;現在の状態確認&lt;/strong&gt;&lt;/h3&gt;&lt;p&gt;&lt;span style=&quot;font-size: 1em; font-family: monospace, monospace;&quot;&gt;AgentforceTopicsSetup.getStatus();&lt;/span&gt;&lt;/p&gt;</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:richText</componentName>
+                <identifier>flexipage_richText</identifier>
+            </componentInstance>
+        </itemInstances>
         <name>sidebar</name>
         <type>Region</type>
     </flexiPageRegions>
