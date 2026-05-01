@@ -123,7 +123,7 @@ Related Record Id に指定したレコード（Account 等）を開くと、**A
 
 ---
 
-## Agentforceからの活用
+## Agentforce からの活用
 
 Agentforce で利用できる Apex Action を用意しています。
 
@@ -178,19 +178,21 @@ triggerType    → {Agent が実行したアクションを表す固定文字列
 
 **パッケージ初期値:**
 
-| 値 |
-|----|
-| 面談記録 |
+
+| 値        |
+| -------- |
+| 面談記録     |
 | レコードサマリー |
-| 推奨アクション |
-| 契約更新 |
-| 問い合わせ起票 |
-| 顧客リサーチ |
-| 競合分析 |
-| リスク分析 |
-| 決算サマリー |
-| イベント参加 |
-| その他 |
+| 推奨アクション  |
+| 契約更新     |
+| 問い合わせ起票  |
+| 顧客リサーチ   |
+| 競合分析     |
+| リスク分析    |
+| 決算サマリー   |
+| イベント参加   |
+| その他      |
+
 
 **値の追加・変更方法（UI）:**
 
@@ -270,15 +272,25 @@ Agentforce_Topic_Learning__c に新レコードを保存（世代番号 +1）
 
 ### スケジューラーの設定
 
-```apex
-// Developer Console → Execute Anonymous で実行
-WeeklyFeedbackAnalysisScheduler.scheduleWeeklyJob();
-// → 毎週月曜 9:00 AM に自動実行
+Developer Console → Execute Anonymous で実行します。
 
-// カスタムスケジュールにする場合
+```apex
+// スケジューラーを有効化（本番環境推奨）
+AgentforceTopicsSetup.enableScheduler();
+
+// スケジューラーを無効化（デモ環境等）
+AgentforceTopicsSetup.disableScheduler();
+
+// 現在の状態を確認
+AgentforceTopicsSetup.getStatus();
+```
+
+手動でスケジュールを指定する場合：
+
+```apex
 System.schedule(
     'Agentforce Topics Weekly Analysis',
-    '0 0 9 ? * MON',
+    '0 0 9 ? * MON',  // 毎週月曜 9:00 AM
     new WeeklyFeedbackAnalysisScheduler()
 );
 ```
@@ -358,6 +370,7 @@ System.debug(context);
 | AgentforceSelfLearningService   | フィードバック分析・改善指示生成                    |
 | AgentforceTopicTriggerHandler   | フィードバック集計トリガー処理                     |
 | WeeklyFeedbackAnalysisScheduler | 週次分析スケジューラー                         |
+| AgentforceTopicsSetup           | スケジューラーの有効化・無効化・状態確認ユーティリティ         |
 
 
 ---
