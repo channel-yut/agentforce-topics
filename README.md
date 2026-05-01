@@ -44,8 +44,15 @@ https://login.salesforce.com/packaging/installPackage.apexp?p0=04tId000000cEh1IA
 https://test.salesforce.com/packaging/installPackage.apexp?p0=04tId000000cEh1IAE
 ```
 
-インストール後、Permission Set を対象ユーザーに割り当てます。
+インストール後、Permission Set **Agentforce Topics Access** を対象ユーザーに割り当てます。
 
+**UIから設定する場合:**
+1. Setup → **Permission Sets** を検索
+2. `Agentforce Topics Access` を開く
+3. **Manage Assignments** → **Add Assignments**
+4. 対象ユーザーを選択して **Assign**
+
+**CLIから設定する場合:**
 ```bash
 sf org assign permset --name Agentforce_Topics_Access --target-org <org-alias>
 ```
