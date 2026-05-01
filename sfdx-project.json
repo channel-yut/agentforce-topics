@@ -1,8 +1,8 @@
 {
   "packageDirectories": [
     {
-      "versionName": "Spring 2026",
-      "versionNumber": "1.0.0.NEXT",
+      "versionName": "Spring 2026 v1.1",
+      "versionNumber": "1.1.0.NEXT",
       "path": "force-app",
       "default": true,
       "package": "Agentforce Topics",
