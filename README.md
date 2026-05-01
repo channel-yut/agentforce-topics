@@ -57,10 +57,6 @@ https://test.salesforce.com/packaging/installPackage.apexp?p0=04tId000000cEh1IAE
 sf org assign permset --name Agentforce_Topics_Access --target-org <org-alias>
 ```
 
-### ソースからデプロイ
-
-開発・カスタマイズ用途の場合は [CLAUDE.md](CLAUDE.md) を参照してください。
-
 ---
 
 ## セットアップ
