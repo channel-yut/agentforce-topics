@@ -154,7 +154,6 @@ public with sharing class AgentforceSelfLearningService {
                   AND Object_Api_Name__c = :objectApiName
                   AND Feedback__c = '役立たなかった'
                   AND CreatedDate = LAST_N_DAYS:30
-                WITH SECURITY_ENFORCED
                 ORDER BY CreatedDate DESC
             ];
         }
@@ -165,7 +164,6 @@ public with sharing class AgentforceSelfLearningService {
             WHERE Trigger_Type__c = :triggerType
               AND Feedback__c = '役立たなかった'
               AND CreatedDate = LAST_N_DAYS:30
-            WITH SECURITY_ENFORCED
             ORDER BY CreatedDate DESC
         ];
     }

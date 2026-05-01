@@ -12,6 +12,15 @@
         <object>Agentforce_Topic__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Agentforce_Topic_Learning__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>Agentforce_Topic__c.Content__c</field>
@@ -82,30 +91,13 @@
         <field>Agentforce_Topic__c.Object_Api_Name__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <objectPermissions>
-        <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>false</modifyAllRecords>
-        <object>Agentforce_Topic_Learning__c</object>
-        <viewAllRecords>true</viewAllRecords>
-    </objectPermissions>
     <fieldPermissions>
         <editable>true</editable>
         <field>Agentforce_Topic_Learning__c.Object_Api_Name__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Agentforce_Topic_Learning__c.Trigger_Type__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Agentforce_Topic_Learning__c.Generation__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
+
+
     <fieldPermissions>
         <editable>true</editable>
         <field>Agentforce_Topic_Learning__c.Is_Active__c</field>

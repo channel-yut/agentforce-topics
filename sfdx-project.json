@@ -1,16 +1,21 @@
 {
   "packageDirectories": [
     {
-      "path": "force-app",
-      "package": "Agentforce Topics",
       "versionName": "Spring 2026",
       "versionNumber": "1.0.0.NEXT",
-      "default": true
+      "path": "force-app",
+      "default": true,
+      "package": "Agentforce Topics",
+      "versionDescription": "Agentforce Topic management components for Salesforce"
     }
   ],
   "name": "agentforce-topics",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "64.0",
-  "packageAliases": {}
+  "packageAliases": {
+    "Agentforce Topics": "0HoId000000TN1KKAW",
+    "Agentforce Topics@1.0.0-1": "04tId000000cEgwIAE",
+    "Agentforce Topics@1.0.0-2": "04tId000000cEh1IAE"
+  }
 }
