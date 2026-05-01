@@ -3,7 +3,7 @@
  * Controlled by Agentforce_Topics_Config__mdt (Default record).
  * Enable/disable from Setup → Custom Metadata Types → Agentforce Topics Config → Manage Records.
  */
-global class WeeklyFeedbackAnalysisScheduler implements Schedulable {
+global without sharing class WeeklyFeedbackAnalysisScheduler implements Schedulable {
 
     private static final String JOB_NAME   = 'Agentforce Topics Feedback Analysis';
     private static final String CRON_DAILY  = '0 0 9 * * ?';
@@ -133,7 +133,7 @@ global class WeeklyFeedbackAnalysisScheduler implements Schedulable {
         mail.setToAddresses(toAddresses);
         mail.setSubject('【Agentforce Topics】フィードバック分析レポート - ' + System.today().format());
         mail.setPlainTextBody(body);
-        mail.setHtmlBody(body.replace('\n', '<br/>'));
+        mail.setHtmlBody(String.escapeSingleQuotes(body).replace('\n', '<br/>'));
 
         try {
             Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });

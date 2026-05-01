@@ -18,6 +18,9 @@ public with sharing class AgentforceSelfLearningService {
      * @return Map containing analysis results
      */
     public static Map<String, Object> analyzeFeedbackPatterns(String triggerType, String objectApiName) {
+        if (!Schema.SObjectType.Agentforce_Topic__c.isAccessible()) {
+            return new Map<String, Object>{ 'total_count' => 0 };
+        }
         List<Agentforce_Topic__c> negativeTopics = queryNegativeTopics(triggerType, objectApiName);
 
         Map<String, Integer> categoryCount = new Map<String, Integer>();
@@ -151,6 +154,7 @@ public with sharing class AgentforceSelfLearningService {
                   AND Object_Api_Name__c = :objectApiName
                   AND Feedback__c = '役立たなかった'
                   AND CreatedDate = LAST_N_DAYS:30
+                WITH SECURITY_ENFORCED
                 ORDER BY CreatedDate DESC
             ];
         }
@@ -161,6 +165,7 @@ public with sharing class AgentforceSelfLearningService {
             WHERE Trigger_Type__c = :triggerType
               AND Feedback__c = '役立たなかった'
               AND CreatedDate = LAST_N_DAYS:30
+            WITH SECURITY_ENFORCED
             ORDER BY CreatedDate DESC
         ];
     }

@@ -4,6 +4,14 @@ public with sharing class AgentforceTopicCreator {
     public static List<Result> createOrUpdateTopic(List<Request> requests) {
         List<Result> results = new List<Result>();
 
+        if (!Schema.SObjectType.Agentforce_Topic__c.isCreateable()
+                || !Schema.SObjectType.Agentforce_Topic__c.isUpdateable()) {
+            Result r = new Result();
+            r.success = false;
+            r.message = 'Insufficient permissions to create or update Agentforce Topic';
+            return new List<Result>{ r };
+        }
+
         for (Request req : requests) {
             Result result = new Result();
 
