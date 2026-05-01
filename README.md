@@ -81,10 +81,6 @@ sf org assign permset --name Agentforce_Topics_Access --target-org <org-alias>
 5. **Org Default** タブを選択 → **Assign as Org Default**
 6. **Save** をクリック
 
-### 言語設定（日本語表示）
-
-Setup → 右上ユーザーアイコン → Settings → Language: **Japanese (日本語)** → Save
-
 ---
 
 ## デモデータの作成
