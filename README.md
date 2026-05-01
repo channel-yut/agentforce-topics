@@ -174,12 +174,35 @@ triggerType    → {Agent が実行したアクションを表す固定文字列
 
 `triggerType` はAgentが何を行ったかを表す値を固定文字列で指定します。フィードバックの学習スコープとして使われるため、Topicごとに適切な値を設定してください。
 
-| Agentの動作例 | triggerType の値（例） |
-|-------------|-------------------|
-| 面談記録のサマリー生成 | `面談記録` |
-| 顧客リサーチ・Web調査 | `顧客リサーチ` |
-| 商談進捗の分析 | `商談分析` |
-| 決算情報の要約 | `決算サマリー` |
+`Trigger_Type__c` は**制限付き選択リスト**です。Agent Builder で指定する値はリストに登録された値と一致している必要があります。
+
+**パッケージ初期値:**
+
+| 値 |
+|----|
+| 面談記録 |
+| メール受信 |
+| リード獲得 |
+| 商談更新 |
+| 手動生成 |
+
+**値の追加・変更方法（UI）:**
+
+1. Setup → **Object Manager** → **Agentforce Topic**
+2. **Fields & Relationships** → `Trigger Type` を開く
+3. **Values** セクションで **New** をクリックして値を追加
+
+**値の追加・変更方法（メタデータ）:**
+
+[Trigger_Type__c.field-meta.xml](force-app/main/default/objects/Agentforce_Topic__c/fields/Trigger_Type__c.field-meta.xml) の `valueSetDefinition` に値を追加してデプロイします。
+
+```xml
+<value>
+    <fullName>顧客リサーチ</fullName>
+    <default>false</default>
+    <label>顧客リサーチ</label>
+</value>
+```
 
 ### Agent へのプロンプト指示例
 
