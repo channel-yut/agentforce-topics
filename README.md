@@ -70,7 +70,16 @@ sf org assign permset --name Agentforce_Topics_Access --target-org <org-alias>
 5. 任意で **agentforceTopicsStats**（統計ダッシュボード）も配置
 6. 保存 → Activate
 
-> Agentforce Topic オブジェクト専用のレコードページ（`Agentforce_Topic_Record_Page`）はパッケージに含まれています。App Builder で OrgDefault として設定してください。
+### Agentforce Topic レコードページの有効化
+
+パッケージには `Agentforce_Topic_Record_Page` が含まれていますが、OrgDefault への設定は自動化できないため、インストール後に手動で行ってください。
+
+1. Setup → **Object Manager** → **Agentforce Topic** を開く
+2. 左メニュー **Lightning Record Pages** を選択
+3. `Agentforce Topic Record Page` の行をクリック
+4. 右上 **Activation...** ボタンをクリック
+5. **Org Default** タブを選択 → **Assign as Org Default**
+6. **Save** をクリック
 
 ### 言語設定（日本語表示）
 
