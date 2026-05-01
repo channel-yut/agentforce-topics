@@ -1,0 +1,45 @@
+.preview-wrapper {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-left: 4px solid #0176d3;
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    margin: 0.5rem 0;
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-bottom: 0.75rem;
+    color: #0176d3;
+}
+
+.preview-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.preview-summary {
+    font-size: 0.875rem;
+    color: #444;
+    margin: 0 0 0.75rem 0;
+    line-height: 1.5;
+}
+
+.preview-divider {
+    border-top: 1px solid #e0e0e0;
+    margin-bottom: 0.75rem;
+}
+
+.preview-content {
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.preview-error {
+    color: #c23934;
+    font-size: 0.875rem;
+}
