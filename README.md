@@ -89,42 +89,25 @@ sf org assign permset --name Agentforce_Topics_Access --target-org <org-alias>
 
 ### ステップ1: Agentforce Topic レコードを作成
 
-App Launcher → **Agentforce Topics** タブ → New
+App Launcher → **Agentforce Topics** タブ → **新規**
+
+以下のフィールドを入力して保存します。
 
 | フィールド | 入力例 |
 |-----------|--------|
 | Related Record Id | 表示したいレコード（Account 等）の ID |
 | Trigger Type | `面談記録` |
-| Summary | `山田商事様 - DX投資計画への対応提案` |
-| Content | 下記HTMLサンプルを貼り付け |
 | Generated Date | 今日の日付 |
 
-新規作成時は Summary・Content が空白の場合、サンプルコンテンツが自動入力されます。
+> Summary・Content は空白のまま保存すると、サンプルコンテンツが自動入力されます。
 
-### ステップ2: HTMLコンテンツのサンプル
+### ステップ2: コンテンツを編集
 
-```html
-<h3 style="color: #1976d2; font-size: 18px; font-weight: bold; margin-bottom: 12px;">
-  💼 推奨アクション
-</h3>
-<div style="background-color: #e1f5fe; padding: 16px; border-radius: 8px; border-left: 4px solid #0288d1; margin-bottom: 16px;">
-  <ol style="font-size: 14px; line-height: 1.7; margin: 0; padding-left: 20px;">
-    <li style="margin-bottom: 8px;"><strong>面談設定（今週中）</strong> — DX投資計画の進捗確認と資金ニーズのヒアリング</li>
-    <li style="margin-bottom: 8px;"><strong>提案書作成（3営業日以内）</strong> — 設備資金融資5億円規模の概算提案</li>
-    <li><strong>社内連携</strong> — DXソリューション部門・環境ファイナンスチームへの共有</li>
-  </ol>
-</div>
-<h3 style="color: #d32f2f; font-size: 18px; font-weight: bold; margin-bottom: 12px;">
-  ⚠️ 注意事項
-</h3>
-<div style="background-color: #ffebee; padding: 16px; border-radius: 8px; border-left: 4px solid #c62828;">
-  <p style="font-size: 14px; line-height: 1.7; margin: 0;">
-    最終接触から <strong>166日</strong> が経過しています。早期のフォローアップが必要です。
-  </p>
-</div>
-```
+保存後、作成されたレコードページを開き、**コンテンツ編集** アクションをクリックします。
 
-スタイルガイドの詳細は [docs/agentforce-topic-style-guide.md](docs/agentforce-topic-style-guide.md) を参照してください。
+自動入力されたサンプルの Summary・Content をベースに、Gemini や ChatGPT 等で実際のコンテンツに書き換えてください。
+
+Content は HTML 形式です。スタイルガイドの詳細は [docs/agentforce-topic-style-guide.md](docs/agentforce-topic-style-guide.md) を参照してください。
 
 ### ステップ3: レコードページで確認
 
