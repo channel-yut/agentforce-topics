@@ -15,24 +15,54 @@
                 <label>面談記録</label>
             </value>
             <value>
-                <fullName>メール受信</fullName>
+                <fullName>レコードサマリー</fullName>
                 <default>false</default>
-                <label>メール受信</label>
+                <label>レコードサマリー</label>
             </value>
             <value>
-                <fullName>リード獲得</fullName>
+                <fullName>推奨アクション</fullName>
                 <default>false</default>
-                <label>リード獲得</label>
+                <label>推奨アクション</label>
             </value>
             <value>
-                <fullName>商談更新</fullName>
+                <fullName>契約更新</fullName>
                 <default>false</default>
-                <label>商談更新</label>
+                <label>契約更新</label>
             </value>
             <value>
-                <fullName>手動生成</fullName>
+                <fullName>問い合わせ起票</fullName>
                 <default>false</default>
-                <label>手動生成</label>
+                <label>問い合わせ起票</label>
+            </value>
+            <value>
+                <fullName>顧客リサーチ</fullName>
+                <default>false</default>
+                <label>顧客リサーチ</label>
+            </value>
+            <value>
+                <fullName>競合分析</fullName>
+                <default>false</default>
+                <label>競合分析</label>
+            </value>
+            <value>
+                <fullName>リスク分析</fullName>
+                <default>false</default>
+                <label>リスク分析</label>
+            </value>
+            <value>
+                <fullName>決算サマリー</fullName>
+                <default>false</default>
+                <label>決算サマリー</label>
+            </value>
+            <value>
+                <fullName>イベント参加</fullName>
+                <default>false</default>
+                <label>イベント参加</label>
+            </value>
+            <value>
+                <fullName>その他</fullName>
+                <default>false</default>
+                <label>その他</label>
             </value>
         </valueSetDefinition>
     </valueSet>
