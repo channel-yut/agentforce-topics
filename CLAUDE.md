@@ -274,3 +274,39 @@ sf apex run test --class-names AgentforceTopicCreatorTest --target-org your-org-
 
 **Version**: 1.0
 **Last Updated**: 2026-03-30
+
+---
+
+## 📦 パッケージ管理
+
+### DevHub
+- **エイリアス**: `channaka-develop`
+- **パッケージID**: `0HoId000000TN1KKAW`
+- **現在のリリース済みバージョン**: `1.0.0.2`（SubscriberPackageVersionId: `04tId000000cEh1IAE`）
+
+### 次バージョン（1.1.0）の作業状況
+
+2026-05-01 に1日のバージョン作成上限に達したため中断。以下のコマンドで再開してください。
+
+**バージョン作成:**
+```bash
+sf package version create \
+  --package "Agentforce Topics" \
+  --installation-key-bypass \
+  --code-coverage \
+  --wait 20 \
+  --target-dev-hub channaka-develop
+```
+
+**プロモート:**
+```bash
+sf package version promote \
+  --package "Agentforce Topics@1.1.0-1" \
+  --target-dev-hub channaka-develop \
+  --no-prompt
+```
+
+**1.1.0 の主な変更点:**
+- `Trigger_Type__c` 選択リストをAgentforceユースケース向けに刷新（面談記録・レコードサマリー・推奨アクション等11種類）
+- README全面刷新
+- PermissionSet・AgentforceSelfLearningServiceのパッケージング対応修正
