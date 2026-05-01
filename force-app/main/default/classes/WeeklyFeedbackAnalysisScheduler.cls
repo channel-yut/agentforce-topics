@@ -21,14 +21,24 @@ global without sharing class WeeklyFeedbackAnalysisScheduler implements Schedula
             ? config.Min_Feedback_Count__c.intValue()
             : 5;
 
+        // Count only feedbacks since the last analysis run
+        List<Agentforce_Topic_Learning__c> lastRun = [
+            SELECT Analysis_Date__c
+            FROM Agentforce_Topic_Learning__c
+            ORDER BY Analysis_Date__c DESC
+            LIMIT 1
+        ];
+        DateTime sinceDate = lastRun.isEmpty() ? DateTime.newInstance(1900, 1, 1) : lastRun[0].Analysis_Date__c;
+
         Integer unanalyzedCount = [
             SELECT COUNT()
             FROM Agentforce_Topic__c
             WHERE Feedback__c = '役立たなかった'
+              AND CreatedDate > :sinceDate
         ];
 
         if (unanalyzedCount < minCount) {
-            System.debug('Agentforce Topics: feedback count (' + unanalyzedCount + ') below threshold (' + minCount + '). Skipping.');
+            System.debug('Agentforce Topics: new feedback count (' + unanalyzedCount + ') below threshold (' + minCount + '). Skipping.');
             return;
         }
 
@@ -70,7 +80,7 @@ global without sharing class WeeklyFeedbackAnalysisScheduler implements Schedula
 
     private static Agentforce_Topics_Config__mdt getConfig() {
         List<Agentforce_Topics_Config__mdt> configs = [
-            SELECT Analysis_Enabled__c, Analysis_Frequency__c, Min_Feedback_Count__c
+            SELECT Analysis_Enabled__c, Analysis_Frequency__c, Min_Feedback_Count__c, Admin_Profile_Name__c
             FROM Agentforce_Topics_Config__mdt
             WHERE DeveloperName = 'Default'
             LIMIT 1
@@ -115,9 +125,14 @@ global without sharing class WeeklyFeedbackAnalysisScheduler implements Schedula
     }
 
     private void sendReport(Integer totalAnalyzed, Integer totalImproved, List<String> reportLines) {
+        Agentforce_Topics_Config__mdt config = getConfig();
+        String profileName = String.isNotBlank(config.Admin_Profile_Name__c)
+            ? config.Admin_Profile_Name__c
+            : 'System Administrator';
+
         List<User> admins = [
             SELECT Email FROM User
-            WHERE Profile.Name = 'System Administrator' AND IsActive = true
+            WHERE Profile.Name = :profileName AND IsActive = true
             LIMIT 50
         ];
         if (admins.isEmpty()) return;

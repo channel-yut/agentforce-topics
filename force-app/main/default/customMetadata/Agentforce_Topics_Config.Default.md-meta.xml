@@ -14,4 +14,8 @@
         <field>Min_Feedback_Count__c</field>
         <value xsi:type="xsd:double">5</value>
     </values>
+    <values>
+        <field>Admin_Profile_Name__c</field>
+        <value xsi:type="xsd:string">System Administrator</value>
+    </values>
 </CustomMetadata>

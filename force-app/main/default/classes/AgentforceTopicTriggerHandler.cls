@@ -1,48 +1,30 @@
 /**
  * @description Trigger handler for Agentforce_Topic__c.
  * Handles feedback aggregation and statistics calculation.
+ * Aggregated counts are written back only to the latest topic per related record
+ * to avoid DML row count scaling with topic volume.
  */
 public with sharing class AgentforceTopicTriggerHandler {
 
     private static final String FEEDBACK_HELPFUL     = '役立った';
     private static final String FEEDBACK_NOT_HELPFUL = '役立たなかった';
 
-    /**
-     * @description Handles after update logic.
-     */
     public static void handleAfterUpdate(List<Agentforce_Topic__c> newTopics, Map<Id, Agentforce_Topic__c> oldTopicsMap) {
-        Set<Id> changedIds = new Set<Id>();
+        Set<String> changedRelatedIds = new Set<String>();
 
         for (Agentforce_Topic__c newTopic : newTopics) {
-            if (newTopic.Feedback__c != oldTopicsMap.get(newTopic.Id).Feedback__c) {
-                changedIds.add(newTopic.Id);
+            if (newTopic.Feedback__c != oldTopicsMap.get(newTopic.Id).Feedback__c
+                    && String.isNotBlank(newTopic.Related_Record_Id__c)) {
+                changedRelatedIds.add(newTopic.Related_Record_Id__c);
             }
         }
 
-        if (!changedIds.isEmpty()) {
-            aggregateFeedbackCounts(changedIds);
+        if (!changedRelatedIds.isEmpty()) {
+            aggregateFeedbackCounts(changedRelatedIds);
         }
     }
 
-    /**
-     * @description Aggregates feedback counts for all topics sharing the same Related_Record_Id__c.
-     */
-    private static void aggregateFeedbackCounts(Set<Id> changedIds) {
-        // Resolve Related_Record_Id__c values from changed topics
-        Set<String> relatedRecordIds = new Set<String>();
-        for (Agentforce_Topic__c topic : [
-            SELECT Related_Record_Id__c
-            FROM Agentforce_Topic__c
-            WHERE Id IN :changedIds
-              AND Related_Record_Id__c != null
-        ]) {
-            relatedRecordIds.add(topic.Related_Record_Id__c);
-        }
-
-        if (relatedRecordIds.isEmpty()) {
-            return;
-        }
-
+    private static void aggregateFeedbackCounts(Set<String> relatedRecordIds) {
         // Aggregate feedback counts per related record
         Map<String, FeedbackStats> statsMap = new Map<String, FeedbackStats>();
         for (AggregateResult ar : [
@@ -71,18 +53,20 @@ public with sharing class AgentforceTopicTriggerHandler {
             }
         }
 
-        // Update all topics under the same related records
+        // Write counts back to the latest topic only (1 DML row per related record)
         List<Agentforce_Topic__c> toUpdate = new List<Agentforce_Topic__c>();
-        for (Agentforce_Topic__c topic : [
+        for (Agentforce_Topic__c latest : [
             SELECT Id, Related_Record_Id__c
             FROM Agentforce_Topic__c
             WHERE Related_Record_Id__c IN :relatedRecordIds
+            ORDER BY Generated_Date__c DESC NULLS LAST, CreatedDate DESC
         ]) {
-            FeedbackStats stats = statsMap.get(topic.Related_Record_Id__c);
-            topic.Helpful_Count__c       = stats != null ? stats.helpful    : 0;
-            topic.Not_Helpful_Count__c   = stats != null ? stats.notHelpful : 0;
-            topic.Total_Feedback_Count__c = stats != null ? stats.total     : 0;
-            toUpdate.add(topic);
+            if (!statsMap.containsKey(latest.Related_Record_Id__c)) continue;
+            FeedbackStats stats = statsMap.remove(latest.Related_Record_Id__c);
+            latest.Helpful_Count__c        = stats.helpful;
+            latest.Not_Helpful_Count__c    = stats.notHelpful;
+            latest.Total_Feedback_Count__c = stats.total;
+            toUpdate.add(latest);
         }
 
         if (!toUpdate.isEmpty()) {

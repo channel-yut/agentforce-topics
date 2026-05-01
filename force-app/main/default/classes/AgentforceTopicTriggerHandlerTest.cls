@@ -51,8 +51,8 @@ private class AgentforceTopicTriggerHandlerTest {
     }
 
     @isTest
-    static void handleAfterUpdate_MultipleTopicsSameRelatedRecord_AggregatesAcrossAll() {
-        // Given — 3 topics under same related record
+    static void handleAfterUpdate_MultipleTopicsSameRelatedRecord_AggregatesOnLatestOnly() {
+        // Given — 3 topics under same related record (inserted in order, last one is latest)
         List<Agentforce_Topic__c> topics = TestDataFactory.createTopics(3, RELATED_ID, TRIGGER_TYPE, null, null, true);
 
         // When — give feedback to each
@@ -63,16 +63,20 @@ private class AgentforceTopicTriggerHandlerTest {
         update topics;
         Test.stopTest();
 
-        // Then — all topics under the same related record should reflect aggregated counts
+        // Then — aggregated counts are written to the latest topic only
         List<Agentforce_Topic__c> updated = [
-            SELECT Helpful_Count__c, Not_Helpful_Count__c, Total_Feedback_Count__c
-            FROM Agentforce_Topic__c WHERE Related_Record_Id__c = :RELATED_ID
+            SELECT Id, Helpful_Count__c, Not_Helpful_Count__c, Total_Feedback_Count__c
+            FROM Agentforce_Topic__c
+            WHERE Related_Record_Id__c = :RELATED_ID
+            ORDER BY CreatedDate DESC
         ];
-        for (Agentforce_Topic__c t : updated) {
-            Assert.areEqual(2, t.Helpful_Count__c.intValue(), 'Helpful count should be 2 across all topics');
-            Assert.areEqual(1, t.Not_Helpful_Count__c.intValue(), 'Not helpful count should be 1 across all topics');
-            Assert.areEqual(3, t.Total_Feedback_Count__c.intValue(), 'Total count should be 3 across all topics');
-        }
+        // Latest topic should have aggregated counts
+        Assert.areEqual(2, updated[0].Helpful_Count__c.intValue(), 'Latest topic: helpful count should be 2');
+        Assert.areEqual(1, updated[0].Not_Helpful_Count__c.intValue(), 'Latest topic: not helpful count should be 1');
+        Assert.areEqual(3, updated[0].Total_Feedback_Count__c.intValue(), 'Latest topic: total count should be 3');
+        // Older topics should NOT have counts updated
+        Assert.isTrue(updated[1].Helpful_Count__c == null || updated[1].Helpful_Count__c == 0,
+            'Older topics should not have counts updated');
     }
 
     @isTest

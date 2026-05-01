@@ -90,30 +90,25 @@ public with sharing class AgentforceTopicsController {
         try {
             FeedbackStatistics stats = new FeedbackStatistics();
 
-            List<Agentforce_Topic__c> topics = [
-                SELECT Id, Helpful_Count__c, Not_Helpful_Count__c,
-                       Total_Feedback_Count__c, Feedback_Rate__c
+            List<AggregateResult> aggregates = [
+                SELECT COUNT(Id) totalTopics,
+                       MAX(Helpful_Count__c) helpfulCount,
+                       MAX(Not_Helpful_Count__c) notHelpfulCount,
+                       MAX(Total_Feedback_Count__c) totalFeedbackCount,
+                       MAX(Feedback_Rate__c) feedbackRate
                 FROM Agentforce_Topic__c
                 WHERE Related_Record_Id__c = :recordId
                 WITH SECURITY_ENFORCED
-                ORDER BY Generated_Date__c DESC NULLS LAST, CreatedDate DESC
-                LIMIT 1
             ];
 
-            if (!topics.isEmpty()) {
-                Agentforce_Topic__c topic = topics[0];
-                stats.helpfulCount      = topic.Helpful_Count__c      != null ? topic.Helpful_Count__c.intValue()      : 0;
-                stats.notHelpfulCount   = topic.Not_Helpful_Count__c   != null ? topic.Not_Helpful_Count__c.intValue()   : 0;
-                stats.totalFeedbackCount = topic.Total_Feedback_Count__c != null ? topic.Total_Feedback_Count__c.intValue() : 0;
-                stats.feedbackRate      = topic.Feedback_Rate__c      != null ? topic.Feedback_Rate__c : 0;
+            if (!aggregates.isEmpty()) {
+                AggregateResult ar = aggregates[0];
+                stats.totalTopicsCount   = ar.get('totalTopics')        != null ? ((Integer)ar.get('totalTopics'))                        : 0;
+                stats.helpfulCount       = ar.get('helpfulCount')       != null ? ((Decimal)ar.get('helpfulCount')).intValue()            : 0;
+                stats.notHelpfulCount    = ar.get('notHelpfulCount')    != null ? ((Decimal)ar.get('notHelpfulCount')).intValue()         : 0;
+                stats.totalFeedbackCount = ar.get('totalFeedbackCount') != null ? ((Decimal)ar.get('totalFeedbackCount')).intValue()      : 0;
+                stats.feedbackRate       = ar.get('feedbackRate')       != null ? (Decimal)ar.get('feedbackRate')                        : 0;
             }
-
-            stats.totalTopicsCount = [
-                SELECT COUNT() FROM Agentforce_Topic__c
-                WHERE Related_Record_Id__c = :recordId
-                WITH SECURITY_ENFORCED
-                LIMIT 50000
-            ];
 
             return stats;
         } catch (Exception e) {
