@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Trigger_Type__c</fullName>
+    <label>トリガータイプ</label>
+    <description>Trigger type this learning record applies to. Combined with Object_Api_Name__c to scope learning.</description>
+    <inlineHelpText>この学習レコードが対象とするトリガータイプ。関連オブジェクトAPI名と組み合わせて学習スコープを特定します。</inlineHelpText>
+    <type>Text</type>
+    <length>255</length>
+    <required>true</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

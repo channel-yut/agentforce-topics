@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Generation__c</fullName>
+    <label>世代番号</label>
+    <description>Version number of this learning record. Increments each time feedback analysis produces a new learning cycle.</description>
+    <inlineHelpText>学習サイクルのバージョン番号。フィードバック分析のたびにインクリメントされます。</inlineHelpText>
+    <type>Number</type>
+    <precision>10</precision>
+    <scale>0</scale>
+    <required>true</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

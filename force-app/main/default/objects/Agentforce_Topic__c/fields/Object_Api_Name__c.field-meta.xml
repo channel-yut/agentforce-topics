@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Object_Api_Name__c</fullName>
+    <label>関連オブジェクトAPI名</label>
+    <description>API name of the Salesforce object associated with this topic (e.g., Account, Opportunity). Used for object-scoped learning analysis.</description>
+    <inlineHelpText>関連レコードのSalesforceオブジェクトAPIName（例：Account, Opportunity）。省略可能。設定すると学習分析がオブジェクト単位で行われます。</inlineHelpText>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

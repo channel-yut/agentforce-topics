@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Active__c</fullName>
+    <label>最新学習</label>
+    <description>Indicates whether this is the currently active learning record for this object/trigger type combination. Only one record per scope should be active at a time.</description>
+    <inlineHelpText>このレコードが現在有効な学習データかどうかを示します。同一スコープで有効なレコードは常に1件のみです。</inlineHelpText>
+    <type>Checkbox</type>
+    <defaultValue>false</defaultValue>
+</CustomField>

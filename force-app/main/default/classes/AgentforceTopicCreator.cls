@@ -9,35 +9,39 @@ public with sharing class AgentforceTopicCreator {
 
             try {
                 if (String.isNotBlank(req.topicId)) {
-                    // Update existing record
                     Agentforce_Topic__c topic = new Agentforce_Topic__c(
-                        Id = req.topicId,
+                        Id         = req.topicId,
                         Summary__c = req.summary,
                         Content__c = req.content
                     );
-
-                    // Update optional fields if provided
                     if (String.isNotBlank(req.relatedRecordId)) {
                         topic.Related_Record_Id__c = req.relatedRecordId;
                     }
                     if (String.isNotBlank(req.triggerType)) {
                         topic.Trigger_Type__c = req.triggerType;
                     }
-
+                    if (String.isNotBlank(req.objectApiName)) {
+                        topic.Object_Api_Name__c = req.objectApiName;
+                    }
                     update topic;
 
                     result.topicId = topic.Id;
                     result.success = true;
                     result.message = 'Successfully updated Agentforce Topic';
                 } else {
-                    // Create new record
-                    Agentforce_Topic__c topic = new Agentforce_Topic__c();
-                    topic.Related_Record_Id__c = req.relatedRecordId;
-                    topic.Trigger_Type__c = req.triggerType;
-                    topic.Generated_Date__c = DateTime.now();
-                    topic.Summary__c = req.summary;
-                    topic.Content__c = req.content;
-
+                    Agentforce_Topic__c topic = new Agentforce_Topic__c(
+                        Related_Record_Id__c = req.relatedRecordId,
+                        Trigger_Type__c      = req.triggerType,
+                        Generated_Date__c    = DateTime.now(),
+                        Summary__c           = req.summary,
+                        Content__c           = req.content
+                    );
+                    if (String.isNotBlank(req.objectApiName)) {
+                        topic.Object_Api_Name__c = req.objectApiName;
+                    } else if (String.isNotBlank(req.relatedRecordId) && req.relatedRecordId.length() >= 3) {
+                        // Auto-detect object type from record ID prefix when objectApiName is not provided
+                        topic.Object_Api_Name__c = resolveObjectApiName(req.relatedRecordId);
+                    }
                     insert topic;
 
                     result.topicId = topic.Id;
@@ -56,15 +60,31 @@ public with sharing class AgentforceTopicCreator {
         return results;
     }
 
+    /**
+     * @description Resolves object API name from a Salesforce record ID using Schema.
+     * Returns null if the ID is not a valid Salesforce ID or the object cannot be resolved.
+     */
+    private static String resolveObjectApiName(String recordId) {
+        try {
+            Id sfId = (Id)recordId;
+            return sfId.getSObjectType().getDescribe().getName();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public class Request {
         @InvocableVariable(label='Topic ID (for update)' description='ID of existing Agentforce Topic (leave blank for new record)' required=false)
         public String topicId;
 
-        @InvocableVariable(label='Related Record ID' description='ID of the related record (Task, Event, etc.)' required=false)
+        @InvocableVariable(label='Related Record ID' description='ID of the related record (Account, Opportunity, etc.)' required=false)
         public String relatedRecordId;
 
         @InvocableVariable(label='Trigger Type' description='Type of trigger (e.g., 面談記録, 商談更新)' required=false)
         public String triggerType;
+
+        @InvocableVariable(label='Object API Name' description='Salesforce object API name (e.g., Account, Opportunity). Auto-detected from Related Record ID if omitted.' required=false)
+        public String objectApiName;
 
         @InvocableVariable(label='Summary' description='Short summary text' required=true)
         public String summary;

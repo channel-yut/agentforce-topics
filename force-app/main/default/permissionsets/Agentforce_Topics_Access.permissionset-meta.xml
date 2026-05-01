@@ -77,6 +77,60 @@
         <field>Agentforce_Topic__c.Generation__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Agentforce_Topic__c.Object_Api_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Agentforce_Topic_Learning__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Agentforce_Topic_Learning__c.Object_Api_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Agentforce_Topic_Learning__c.Trigger_Type__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Agentforce_Topic_Learning__c.Generation__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Agentforce_Topic_Learning__c.Is_Active__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Agentforce_Topic_Learning__c.Analysis_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Agentforce_Topic_Learning__c.Negative_Feedback_Count__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Agentforce_Topic_Learning__c.Improvement_Patterns__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Agentforce_Topic_Learning__c.Analysis_Result__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <tabSettings>
         <tab>Agentforce_Topic__c</tab>
         <visibility>Visible</visibility>

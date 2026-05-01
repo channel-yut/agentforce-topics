@@ -1,50 +1,50 @@
 /**
- * @description Trigger handler for Agentforce_Topic__c
- * Handles feedback aggregation and statistics calculation
+ * @description Trigger handler for Agentforce_Topic__c.
+ * Handles feedback aggregation and statistics calculation.
  */
 public with sharing class AgentforceTopicTriggerHandler {
 
+    private static final String FEEDBACK_HELPFUL     = '役立った';
+    private static final String FEEDBACK_NOT_HELPFUL = '役立たなかった';
+
     /**
-     * @description Handles after update logic
-     * @param newTopics New version of records
-     * @param oldTopicsMap Old version of records mapped by Id
+     * @description Handles after update logic.
      */
     public static void handleAfterUpdate(List<Agentforce_Topic__c> newTopics, Map<Id, Agentforce_Topic__c> oldTopicsMap) {
-        Set<Id> topicsToAggregate = new Set<Id>();
+        Set<Id> changedIds = new Set<Id>();
 
-        // Identify records where Feedback__c changed
         for (Agentforce_Topic__c newTopic : newTopics) {
-            Agentforce_Topic__c oldTopic = oldTopicsMap.get(newTopic.Id);
-
-            // If feedback field changed, mark for aggregation
-            if (newTopic.Feedback__c != oldTopic.Feedback__c) {
-                topicsToAggregate.add(newTopic.Id);
+            if (newTopic.Feedback__c != oldTopicsMap.get(newTopic.Id).Feedback__c) {
+                changedIds.add(newTopic.Id);
             }
         }
 
-        // Aggregate feedback counts
-        if (!topicsToAggregate.isEmpty()) {
-            aggregateFeedbackCounts(topicsToAggregate);
+        if (!changedIds.isEmpty()) {
+            aggregateFeedbackCounts(changedIds);
         }
     }
 
     /**
-     * @description Aggregates feedback counts for related records
-     * @param topicIds Set of topic IDs that need aggregation
+     * @description Aggregates feedback counts for all topics sharing the same Related_Record_Id__c.
      */
-    private static void aggregateFeedbackCounts(Set<Id> topicIds) {
-        // Get the related record IDs for these topics
-        Map<Id, String> topicToRelatedRecordMap = new Map<Id, String>();
-        for (Agentforce_Topic__c topic : [SELECT Id, Related_Record_Id__c FROM Agentforce_Topic__c WHERE Id IN :topicIds]) {
-            topicToRelatedRecordMap.put(topic.Id, topic.Related_Record_Id__c);
+    private static void aggregateFeedbackCounts(Set<Id> changedIds) {
+        // Resolve Related_Record_Id__c values from changed topics
+        Set<String> relatedRecordIds = new Set<String>();
+        for (Agentforce_Topic__c topic : [
+            SELECT Related_Record_Id__c
+            FROM Agentforce_Topic__c
+            WHERE Id IN :changedIds
+              AND Related_Record_Id__c != null
+        ]) {
+            relatedRecordIds.add(topic.Related_Record_Id__c);
         }
 
-        Set<String> relatedRecordIds = new Set<String>(topicToRelatedRecordMap.values());
+        if (relatedRecordIds.isEmpty()) {
+            return;
+        }
 
-        // Aggregate feedback for all topics related to these record IDs
+        // Aggregate feedback counts per related record
         Map<String, FeedbackStats> statsMap = new Map<String, FeedbackStats>();
-
-        // Query all topics with feedback grouped by related record and feedback value
         for (AggregateResult ar : [
             SELECT Related_Record_Id__c relatedId,
                    Feedback__c feedback,
@@ -55,74 +55,44 @@ public with sharing class AgentforceTopicTriggerHandler {
             GROUP BY Related_Record_Id__c, Feedback__c
         ]) {
             String relatedId = (String)ar.get('relatedId');
-            String feedback = (String)ar.get('feedback');
-            Integer cnt = (Integer)ar.get('cnt');
+            String feedback  = (String)ar.get('feedback');
+            Integer cnt      = (Integer)ar.get('cnt');
 
-            // Initialize stats if not exists
             if (!statsMap.containsKey(relatedId)) {
                 statsMap.put(relatedId, new FeedbackStats());
             }
 
             FeedbackStats stats = statsMap.get(relatedId);
             stats.total += cnt;
-
-            if (feedback == getFeedbackHelpfulValue()) {
+            if (feedback == FEEDBACK_HELPFUL) {
                 stats.helpful += cnt;
-            } else if (feedback == getFeedbackNotHelpfulValue()) {
+            } else if (feedback == FEEDBACK_NOT_HELPFUL) {
                 stats.notHelpful += cnt;
             }
         }
 
-        // Query all topics that need to be updated
-        List<Agentforce_Topic__c> topicsToUpdate = new List<Agentforce_Topic__c>();
+        // Update all topics under the same related records
+        List<Agentforce_Topic__c> toUpdate = new List<Agentforce_Topic__c>();
         for (Agentforce_Topic__c topic : [
             SELECT Id, Related_Record_Id__c
             FROM Agentforce_Topic__c
             WHERE Related_Record_Id__c IN :relatedRecordIds
         ]) {
             FeedbackStats stats = statsMap.get(topic.Related_Record_Id__c);
-            if (stats != null) {
-                topic.Helpful_Count__c = stats.helpful;
-                topic.Not_Helpful_Count__c = stats.notHelpful;
-                topic.Total_Feedback_Count__c = stats.total;
-            } else {
-                // No feedback yet, reset to zero
-                topic.Helpful_Count__c = 0;
-                topic.Not_Helpful_Count__c = 0;
-                topic.Total_Feedback_Count__c = 0;
-            }
-            topicsToUpdate.add(topic);
+            topic.Helpful_Count__c       = stats != null ? stats.helpful    : 0;
+            topic.Not_Helpful_Count__c   = stats != null ? stats.notHelpful : 0;
+            topic.Total_Feedback_Count__c = stats != null ? stats.total     : 0;
+            toUpdate.add(topic);
         }
 
-        if (!topicsToUpdate.isEmpty()) {
-            update topicsToUpdate;
+        if (!toUpdate.isEmpty()) {
+            update toUpdate;
         }
     }
 
-    /**
-     * @description Gets the "Helpful" feedback value
-     * @return The helpful feedback value based on user's language
-     */
-    private static String getFeedbackHelpfulValue() {
-        // Use the same label that the LWC uses
-        return '役立った'; // This should match the picklist value
-    }
-
-    /**
-     * @description Gets the "Not Helpful" feedback value
-     * @return The not helpful feedback value based on user's language
-     */
-    private static String getFeedbackNotHelpfulValue() {
-        // Use the same label that the LWC uses
-        return '役立たなかった'; // This should match the picklist value
-    }
-
-    /**
-     * @description Inner class to hold feedback statistics
-     */
     private class FeedbackStats {
-        public Integer total = 0;
-        public Integer helpful = 0;
+        public Integer total      = 0;
+        public Integer helpful    = 0;
         public Integer notHelpful = 0;
     }
 }

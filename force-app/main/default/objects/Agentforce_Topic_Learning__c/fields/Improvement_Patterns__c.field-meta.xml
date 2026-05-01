@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Improvement_Patterns__c</fullName>
+    <label>改善パターン</label>
+    <description>JSON structure containing improvement guidelines derived from feedback analysis. Used to inject improvement context into prompt generation.</description>
+    <inlineHelpText>フィードバック分析から導出した改善ガイドラインのJSON。プロンプト生成時に改善コンテキストとして注入されます。</inlineHelpText>
+    <type>LongTextArea</type>
+    <length>131072</length>
+    <visibleLines>5</visibleLines>
+</CustomField>

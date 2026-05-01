@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Analysis_Result__c</fullName>
+    <label>分析結果</label>
+    <description>JSON structure containing the raw feedback analysis result including category breakdown and problem examples.</description>
+    <inlineHelpText>カテゴリ別内訳・問題事例などを含む、フィードバック分析の生データJSON。</inlineHelpText>
+    <type>LongTextArea</type>
+    <length>131072</length>
+    <visibleLines>5</visibleLines>
+</CustomField>

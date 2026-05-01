@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Object_Api_Name__c</fullName>
+    <label>関連オブジェクトAPI名</label>
+    <description>API name of the Salesforce object this learning record applies to (e.g., Account, Opportunity).</description>
+    <inlineHelpText>学習対象のSalesforceオブジェクトAPIName（例：Account, Opportunity）。Trigger Typeと組み合わせてスコープを特定します。</inlineHelpText>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <unique>false</unique>
+    <externalId>false</externalId>
+</CustomField>

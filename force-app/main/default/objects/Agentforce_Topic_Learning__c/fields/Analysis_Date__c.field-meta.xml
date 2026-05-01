@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Analysis_Date__c</fullName>
+    <label>分析実行日時</label>
+    <description>Timestamp when the feedback analysis was executed to produce this learning record.</description>
+    <inlineHelpText>このレコードを生成したフィードバック分析の実行日時。</inlineHelpText>
+    <type>DateTime</type>
+    <required>false</required>
+</CustomField>

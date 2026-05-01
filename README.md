@@ -28,7 +28,7 @@ Salesforce組織上で動作する**自己学習型AIインサイトシステム
 | **コンポーネント数** | 75+ (オブジェクト、Apex、LWC、Flow等) |
 
 **適用済みメタデータ:**
-- ✅ カスタムオブジェクト: Agentforce_Topic__c (14フィールド)
+- ✅ カスタムオブジェクト: Agentforce_Topic__c (15フィールド) + Agentforce_Topic_Learning__c (新規)
 - ✅ Apexクラス: 7個 (Controller, TriggerHandler, SelfLearningService等)
 - ✅ LWCコンポーネント: 2個 (agentforceTopics, agentforceTopicsStats)
 - ✅ Flow: 2個 (Create, Edit)
@@ -103,20 +103,32 @@ Salesforce組織上で動作する**自己学習型AIインサイトシステム
 **主要フィールド:**
 - `Content__c` (Rich Text Area) - AI生成HTMLコンテンツ
 - `Summary__c` (Text) - 1-2行の概要
-- `Trigger_Type__c` (Text) - トリガータイプ
+- `Trigger_Type__c` (Picklist) - トリガータイプ
 - `Related_Record_Id__c` (Text) - 関連レコードID
+- `Object_Api_Name__c` (Text) - 関連オブジェクトAPI名（任意。省略時はRelated Record IDから自動検出）
 - `Generated_Date__c` (DateTime) - 生成日時
 - `Feedback__c` (Text) - フィードバック（役立った/役立たなかった）
 
-**自己学習フィールド:**
+**フィードバック集計フィールド:**
 - `Helpful_Count__c` (Number) - 役立った件数
 - `Not_Helpful_Count__c` (Number) - 役立たなかった件数
 - `Total_Feedback_Count__c` (Number) - 総フィードバック数
 - `Feedback_Rate__c` (Percent) - フィードバック率
 - `Feedback_Category__c` (Text) - フィードバックカテゴリ
-- `Improvement_Patterns__c` (Long Text) - 改善パターン（JSON）
 - `Learning_Context__c` (Long Text) - 学習コンテキスト（JSON）
+
+### カスタムオブジェクト: Agentforce_Topic_Learning__c
+
+学習データ専用オブジェクト。通常トピックとは分離して管理されます。
+
+- `Trigger_Type__c` (Text) - 学習スコープのトリガータイプ
+- `Object_Api_Name__c` (Text) - 学習スコープのオブジェクトAPI名（任意）
 - `Generation__c` (Number) - 世代番号
+- `Is_Active__c` (Checkbox) - 現在有効な学習レコードか
+- `Analysis_Date__c` (DateTime) - 分析実行日時
+- `Negative_Feedback_Count__c` (Number) - 分析対象ネガティブフィードバック件数
+- `Improvement_Patterns__c` (Long Text) - 改善ガイドライン（JSON）
+- `Analysis_Result__c` (Long Text) - 分析生データ（JSON）
 
 ### LWCコンポーネント
 
@@ -421,21 +433,26 @@ AI生成コンテンツのHTML構造については [docs/agentforce-topic-style
 ```
 1. ユーザーがフィードバック評価 (役立った/役立たなかった)
    ↓
-2. トリガーでフィードバックカウント集計
+2. トリガーでフィードバックカウント集計（Agentforce_Topic__cのみ対象）
    ↓
 3. スケジューラーが週次でネガティブフィードバックを分析
    ↓
 4. カテゴリ別に問題パターンと改善指示を抽出
    ↓
-5. マスターレコード (IMPROVEMENT_MASTER_{triggerType}) に保存
+5. Agentforce_Topic_Learning__c に新レコードとして保存（履歴蓄積）
    ↓
-6. 次回生成時、改善コンテキストをプロンプトに注入
+6. 次回生成時、有効な学習レコードから改善コンテキストをプロンプトに注入
 ```
 
-**マスターレコード形式:**
-- Related_Record_Id__c = `IMPROVEMENT_MASTER_{triggerType}`
-- Improvement_Patterns__c = JSON形式の改善パターン
-- Generation__c = 世代番号（v1, v2, v3...）
+**学習スコープの仕組み:**
+- `Object_Api_Name__c` + `Trigger_Type__c` の組み合わせで学習をスコープ
+- `Object_Api_Name__c` が空の場合は `Trigger_Type__c` のみでスコープ
+- 複数オブジェクトで同じトリガータイプを使っても学習が混在しない
+
+**学習レコードの管理:**
+- 最新の学習サイクルのレコードのみ `Is_Active__c = true`
+- 過去レコードは `Is_Active__c = false` として履歴として残る
+- `Generation__c` で世代番号を管理（v1, v2, v3...）
 
 ---
 
