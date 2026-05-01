@@ -113,9 +113,8 @@ public with sharing class AgentforceSelfLearningService {
     }
 
     /**
-     * @description Backward-compatible overload (triggerType only).
+     * @description Backward-compatible overload (triggerType only). Not exposed to LWC directly.
      */
-    @AuraEnabled(cacheable=true)
     public static String getImprovementContext(String triggerType) {
         return getImprovementContext(triggerType, null);
     }

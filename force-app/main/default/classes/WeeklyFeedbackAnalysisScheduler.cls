@@ -1,30 +1,56 @@
 /**
- * @description Weekly scheduler for automatic feedback pattern analysis
- * Runs every Monday at 9 AM to analyze feedback and update improvement patterns
+ * @description Scheduled job for automatic feedback pattern analysis.
+ * Controlled by Agentforce_Topics_Config__mdt (Default record).
+ * Enable/disable from Setup → Custom Metadata Types → Agentforce Topics Config → Manage Records.
  */
 global class WeeklyFeedbackAnalysisScheduler implements Schedulable {
 
-    global void execute(SchedulableContext sc) {
-        // Get all active trigger types
-        List<String> triggerTypes = getTriggerTypes();
+    private static final String JOB_NAME   = 'Agentforce Topics Feedback Analysis';
+    private static final String CRON_DAILY  = '0 0 9 * * ?';
+    private static final String CRON_WEEKLY = '0 0 9 ? * MON';
 
+    global void execute(SchedulableContext sc) {
+        Agentforce_Topics_Config__mdt config = getConfig();
+
+        if (!config.Analysis_Enabled__c) {
+            System.debug('Agentforce Topics: analysis disabled via config. Skipping.');
+            return;
+        }
+
+        Integer minCount = config.Min_Feedback_Count__c != null
+            ? config.Min_Feedback_Count__c.intValue()
+            : 5;
+
+        Integer unanalyzedCount = [
+            SELECT COUNT()
+            FROM Agentforce_Topic__c
+            WHERE Feedback__c = '役立たなかった'
+        ];
+
+        if (unanalyzedCount < minCount) {
+            System.debug('Agentforce Topics: feedback count (' + unanalyzedCount + ') below threshold (' + minCount + '). Skipping.');
+            return;
+        }
+
+        runAnalysis();
+    }
+
+    private void runAnalysis() {
+        List<String> triggerTypes = getTriggerTypes();
         Integer totalAnalyzed = 0;
         Integer totalImproved = 0;
         List<String> reportLines = new List<String>();
 
-        // Analyze each trigger type
         for (String triggerType : triggerTypes) {
             try {
-                // Analyze feedback patterns
                 Map<String, Object> analysis =
-                    AgentforceSelfLearningService.analyzeFeedbackPatterns(triggerType);
+                    AgentforceSelfLearningService.analyzeFeedbackPatterns(triggerType, null);
 
                 Integer feedbackCount = (Integer)analysis.get('total_count');
                 totalAnalyzed += feedbackCount;
 
-                // Save improvement patterns if there's negative feedback
                 if (feedbackCount > 0) {
-                    AgentforceSelfLearningService.saveImprovementPattern(triggerType, analysis);
+                    AgentforceSelfLearningService.saveImprovementPattern(triggerType, null, analysis);
                     totalImproved++;
 
                     Map<String, Object> categoryBreakdown =
@@ -37,42 +63,47 @@ global class WeeklyFeedbackAnalysisScheduler implements Schedulable {
             }
         }
 
-        // Send weekly report to administrators
         if (totalAnalyzed > 0) {
-            sendWeeklyReport(totalAnalyzed, totalImproved, reportLines);
+            sendReport(totalAnalyzed, totalImproved, reportLines);
         }
     }
 
-    /**
-     * @description Gets all active trigger types from picklist
-     */
+    private static Agentforce_Topics_Config__mdt getConfig() {
+        List<Agentforce_Topics_Config__mdt> configs = [
+            SELECT Analysis_Enabled__c, Analysis_Frequency__c, Min_Feedback_Count__c
+            FROM Agentforce_Topics_Config__mdt
+            WHERE DeveloperName = 'Default'
+            LIMIT 1
+        ];
+        if (!configs.isEmpty()) {
+            return configs[0];
+        }
+        // Fallback: disabled with safe defaults
+        Agentforce_Topics_Config__mdt fallback = new Agentforce_Topics_Config__mdt();
+        fallback.Analysis_Enabled__c   = false;
+        fallback.Min_Feedback_Count__c = 5;
+        fallback.Analysis_Frequency__c = 'Weekly';
+        return fallback;
+    }
+
     private List<String> getTriggerTypes() {
         List<String> triggerTypes = new List<String>();
-
-        // Get picklist values from Trigger_Type__c field
         Schema.DescribeFieldResult fieldResult =
             Agentforce_Topic__c.Trigger_Type__c.getDescribe();
-        List<Schema.PicklistEntry> entries = fieldResult.getPicklistValues();
-
-        for (Schema.PicklistEntry entry : entries) {
+        for (Schema.PicklistEntry entry : fieldResult.getPicklistValues()) {
             if (entry.isActive()) {
                 triggerTypes.add(entry.getValue());
             }
         }
-
         return triggerTypes;
     }
 
-    /**
-     * @description Builds report line for a trigger type
-     */
     private String buildTriggerTypeReport(
         String triggerType,
         Integer feedbackCount,
         Map<String, Object> categoryBreakdown
     ) {
         String report = '📊 ' + triggerType + ': ' + feedbackCount + '件の「役立たなかった」フィードバック\n';
-
         if (categoryBreakdown != null && !categoryBreakdown.isEmpty()) {
             report += '   問題カテゴリ:\n';
             for (String category : categoryBreakdown.keySet()) {
@@ -80,120 +111,84 @@ global class WeeklyFeedbackAnalysisScheduler implements Schedulable {
                 report += '   - ' + category + ': ' + count + '件\n';
             }
         }
-
         return report;
     }
 
-    /**
-     * @description Sends weekly analysis report to administrators
-     */
-    private void sendWeeklyReport(
-        Integer totalAnalyzed,
-        Integer totalImproved,
-        List<String> reportLines
-    ) {
-        // Get system administrators
+    private void sendReport(Integer totalAnalyzed, Integer totalImproved, List<String> reportLines) {
         List<User> admins = [
-            SELECT Email
-            FROM User
-            WHERE Profile.Name = 'System Administrator'
-              AND IsActive = true
+            SELECT Email FROM User
+            WHERE Profile.Name = 'System Administrator' AND IsActive = true
             LIMIT 50
         ];
-
-        if (admins.isEmpty()) {
-            return;
-        }
+        if (admins.isEmpty()) return;
 
         List<String> toAddresses = new List<String>();
         for (User admin : admins) {
-            if (String.isNotBlank(admin.Email)) {
-                toAddresses.add(admin.Email);
-            }
+            if (String.isNotBlank(admin.Email)) toAddresses.add(admin.Email);
         }
+        if (toAddresses.isEmpty()) return;
 
-        if (toAddresses.isEmpty()) {
-            return;
-        }
-
-        // Build email body
-        String emailBody = buildEmailBody(totalAnalyzed, totalImproved, reportLines);
-
-        // Send email
+        String body = buildEmailBody(totalAnalyzed, totalImproved, reportLines);
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         mail.setToAddresses(toAddresses);
-        mail.setSubject('【Agentforce Topics】週次フィードバック分析レポート - ' + System.today().format());
-        mail.setPlainTextBody(emailBody);
-        mail.setHtmlBody(emailBody.replace('\n', '<br/>'));
+        mail.setSubject('【Agentforce Topics】フィードバック分析レポート - ' + System.today().format());
+        mail.setPlainTextBody(body);
+        mail.setHtmlBody(body.replace('\n', '<br/>'));
 
         try {
             Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
         } catch (Exception e) {
-            System.debug('Error sending weekly report email: ' + e.getMessage());
+            System.debug('Error sending report email: ' + e.getMessage());
         }
     }
 
-    /**
-     * @description Builds email body for weekly report
-     */
-    private String buildEmailBody(
-        Integer totalAnalyzed,
-        Integer totalImproved,
-        List<String> reportLines
-    ) {
+    private String buildEmailBody(Integer totalAnalyzed, Integer totalImproved, List<String> reportLines) {
         String body = '==============================================\n';
-        body += '  Agentforce Topics 週次フィードバック分析レポート\n';
+        body += '  Agentforce Topics フィードバック分析レポート\n';
         body += '==============================================\n\n';
-        body += '分析期間: 過去30日間\n';
         body += '実行日時: ' + System.now().format('yyyy年MM月dd日 HH:mm') + '\n\n';
-
         body += '【サマリー】\n';
         body += '総フィードバック数: ' + totalAnalyzed + '件\n';
         body += '改善パターン更新: ' + totalImproved + 'トリガータイプ\n\n';
-
         if (!reportLines.isEmpty()) {
             body += '【詳細】\n';
             body += String.join(reportLines, '\n') + '\n';
         }
-
-        body += '\n【アクション】\n';
-        body += '改善パターンは自動的に次回のトピック生成時に反映されます。\n';
-        body += 'さらなる改善が必要な場合は、プロンプトテンプレートの見直しをご検討ください。\n\n';
-
-        body += '詳細は Agentforce_Topic__c オブジェクトのレコード\n';
-        body += '(Related_Record_Id__c が "IMPROVEMENT_MASTER_" で始まるもの) をご確認ください。\n\n';
-
+        body += '\n改善パターンは次回のトピック生成時に自動反映されます。\n';
         body += '==============================================\n';
         body += 'このメールは自動送信されています。\n';
-
         return body;
     }
 
     /**
-     * @description Schedules this job to run every Monday at 9 AM
-     * Execute in Anonymous Apex:
-     *
-     * WeeklyFeedbackAnalysisScheduler scheduler = new WeeklyFeedbackAnalysisScheduler();
-     * String cronExp = '0 0 9 ? * MON';
-     * System.schedule('Agentforce Topics Weekly Feedback Analysis', cronExp, scheduler);
+     * @description Schedules this job based on config frequency (Daily/Weekly).
+     * Safe to call repeatedly — aborts any existing job first.
      */
-    public static void scheduleWeeklyJob() {
-        String cronExp = '0 0 9 ? * MON'; // Every Monday at 9 AM
-        String jobName = 'Agentforce Topics Weekly Feedback Analysis';
-
-        // Check if job already exists
-        List<CronTrigger> existingJobs = [
-            SELECT Id, CronJobDetail.Name
-            FROM CronTrigger
-            WHERE CronJobDetail.Name = :jobName
+    public static void enableScheduler() {
+        abortExistingJob();
+        Agentforce_Topics_Config__mdt config = [
+            SELECT Analysis_Frequency__c
+            FROM Agentforce_Topics_Config__mdt
+            WHERE DeveloperName = 'Default'
+            LIMIT 1
         ];
+        String cronExp = (config.Analysis_Frequency__c == 'Daily') ? CRON_DAILY : CRON_WEEKLY;
+        System.schedule(JOB_NAME, cronExp, new WeeklyFeedbackAnalysisScheduler());
+    }
 
-        // Delete existing job if found
-        for (CronTrigger job : existingJobs) {
+    /**
+     * @description Aborts the scheduled job without disabling the config.
+     */
+    public static void disableScheduler() {
+        abortExistingJob();
+    }
+
+    private static void abortExistingJob() {
+        for (CronTrigger job : [
+            SELECT Id FROM CronTrigger
+            WHERE CronJobDetail.Name = :JOB_NAME
+        ]) {
             System.abortJob(job.Id);
         }
-
-        // Schedule new job
-        System.schedule(jobName, cronExp, new WeeklyFeedbackAnalysisScheduler());
     }
 }
