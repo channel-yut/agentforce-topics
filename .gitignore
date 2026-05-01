@@ -42,6 +42,9 @@ $RECYCLE.BIN/
 # Local environment variables
 .env
 
+# Claude Code instructions (internal dev notes)
+CLAUDE.md
+
 # Python Salesforce Functions
 **/__pycache__/
 **/.venv/
