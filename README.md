@@ -169,8 +169,17 @@ Agentforce で利用できる Apex Action を用意しています。
 summary        → {Agent が生成した概要テキスト}
 content        → {Agent が生成した HTML コンテンツ}
 relatedRecordId → {コンテキストレコードの ID}
-triggerType    → "Agentforce"
+triggerType    → {Agent が実行したアクションを表す固定文字列}
 ```
+
+`triggerType` はAgentが何を行ったかを表す値を固定文字列で指定します。フィードバックの学習スコープとして使われるため、Topicごとに適切な値を設定してください。
+
+| Agentの動作例 | triggerType の値（例） |
+|-------------|-------------------|
+| 面談記録のサマリー生成 | `面談記録` |
+| 顧客リサーチ・Web調査 | `顧客リサーチ` |
+| 商談進捗の分析 | `商談分析` |
+| 決算情報の要約 | `決算サマリー` |
 
 ### Agent へのプロンプト指示例
 
