@@ -270,22 +270,52 @@ Agentforce_Topic_Learning__c に新レコードを保存（世代番号 +1）
 | Analysis_Result__c      | 分析生データ（JSON）            |
 
 
+### 設定（カスタムメタデータ）
+
+自己学習の動作は **`Agentforce_Topics_Config__mdt`** レコード（`Default`）で制御します。
+
+| フィールド | デフォルト値 | 説明 |
+|-----------|------------|------|
+| Analysis_Enabled__c | false | 自動分析の有効 / 無効 |
+| Analysis_Frequency__c | Weekly | 分析頻度（Weekly 固定） |
+| Min_Feedback_Count__c | 5 | 分析を実行する最小フィードバック件数 |
+| Admin_Profile_Name__c | System Administrator | スケジューラー実行プロファイル名 |
+
+**UIから変更する場合:**
+
+1. Setup → **Custom Metadata Types** を検索
+2. `Agentforce Topics Config` → **Manage Records**
+3. `Default` レコードを開いて編集
+
+**メタデータから変更する場合:**
+
+[Agentforce_Topics_Config.Default.md-meta.xml](force-app/main/default/customMetadata/Agentforce_Topics_Config.Default.md-meta.xml) を編集してデプロイします。
+
 ### スケジューラーの設定
 
-Developer Console → Execute Anonymous で実行します。
+**UIから設定する場合:**
+
+1. Setup → **Apex Classes** を検索
+2. 右上 **Schedule Apex** ボタンをクリック
+3. 以下を入力して保存：
+   - Job Name: `Agentforce Topics Weekly Analysis`
+   - Apex Class: `WeeklyFeedbackAnalysisScheduler`
+   - Frequency: Weekly（任意の曜日・時間を指定）
+
+**Apex（Execute Anonymous）から設定する場合:**
 
 ```apex
-// スケジューラーを有効化（本番環境推奨）
+// スケジューラーを有効化（カスタムメタデータの Analysis_Enabled__c も true に更新）
 AgentforceTopicsSetup.enableScheduler();
 
-// スケジューラーを無効化（デモ環境等）
+// スケジューラーを無効化
 AgentforceTopicsSetup.disableScheduler();
 
 // 現在の状態を確認
 AgentforceTopicsSetup.getStatus();
 ```
 
-手動でスケジュールを指定する場合：
+スケジュールを手動指定する場合：
 
 ```apex
 System.schedule(
