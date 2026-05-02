@@ -48,6 +48,28 @@ https://login.salesforce.com/packaging/installPackage.apexp?p0=04tId000000cEhBIA
 https://test.salesforce.com/packaging/installPackage.apexp?p0=04tId000000cEhBIAU
 ```
 
+### バージョンアップ
+
+既にインストール済みの組織に最新バージョンを適用する場合は、上記と同じインストールURLに最新の SubscriberPackageVersionId をセットしてアクセスするだけです。Salesforce が自動でアップグレード処理を行います。
+
+### 英語表示に切り替える場合
+
+デフォルトは日本語表示です。英語に切り替えるには、インストール後に翻訳ファイルを別途デプロイしてください。
+
+**前提:** デプロイ先組織で Translation Workbench が有効になっていること
+（Setup → Translation Workbench → **Enable**）
+
+```bash
+# リポジトリをクローン後、翻訳ファイルのみデプロイ
+sf project deploy start \
+  --source-dir force-app/main/default/translations \
+  --target-org <org-alias>
+```
+
+デプロイ後、Salesforce の言語設定を English に変更すると英語表示になります。
+
+---
+
 インストール後、Permission Set **Agentforce Topics Access** を対象ユーザーに割り当てます。
 
 **UIから設定する場合:**
