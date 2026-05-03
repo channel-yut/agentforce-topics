@@ -14,3 +14,6 @@ package.xml
 # Translations (cannot be included in unlocked packages)
 **/translations/**
 
+# AiAuthoringBundle (Agent Script) - not supported in unlocked packages
+**/aiAuthoringBundles/**
+
