@@ -12,7 +12,7 @@
   "name": "agentforce-topics",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "64.0",
+  "sourceApiVersion": "66.0",
   "packageAliases": {
     "Agentforce Topics": "0HoId000000TN1KKAW",
     "Agentforce Topics@1.0.0-1": "04tId000000cEgwIAE",

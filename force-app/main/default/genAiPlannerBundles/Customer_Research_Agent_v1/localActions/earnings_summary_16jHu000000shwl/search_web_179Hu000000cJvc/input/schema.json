@@ -1,0 +1,14 @@
+{
+  "required" : [ "searchQuery" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "searchQuery" : {
+      "title" : "Search Query",
+      "description" : "検索クエリ文字列",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

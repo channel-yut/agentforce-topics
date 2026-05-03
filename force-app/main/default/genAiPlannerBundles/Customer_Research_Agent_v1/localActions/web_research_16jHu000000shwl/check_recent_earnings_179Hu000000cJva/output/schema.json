@@ -1,0 +1,30 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "earningsDate" : {
+      "title" : "Earnings Date",
+      "description" : "決算発表日（参考情報）",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : false
+    },
+    "hasExistingTopic" : {
+      "title" : "Has Existing Topic",
+      "description" : "同取引先の決算Topicsが既に存在するかどうか",
+      "lightning:type" : "lightning__booleanType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : false
+    },
+    "hasRecentEarnings" : {
+      "title" : "Has Recent Earnings",
+      "description" : "直近2週間以内に決算発表があったかどうか",
+      "lightning:type" : "lightning__booleanType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

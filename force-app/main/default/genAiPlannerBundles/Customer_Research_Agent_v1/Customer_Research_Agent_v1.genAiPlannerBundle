@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>取引先・商談のWebリサーチ、決算サマリー、競合分析を行いAgentforce Topicsに保存するEmployee Agent</description>
+    <localTopicLinks>
+        <genAiPluginName>agent_router_16jHu000000shwl</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>ambiguous_question_16jHu000000shwl</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>competitive_analysis_16jHu000000shwl</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>earnings_summary_16jHu000000shwl</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>off_topic_16jHu000000shwl</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>save_topic_16jHu000000shwl</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>web_research_16jHu000000shwl</genAiPluginName>
+    </localTopicLinks>
+    <localTopics>
+        <fullName>ambiguous_question_16jHu000000shwl</fullName>
+        <canEscalate>false</canEscalate>
+        <description>意図が不明な依頼に対して、具体的な情報を確認する</description>
+        <developerName>ambiguous_question_16jHu000000shwl</developerName>
+        <genAiPluginInstructions>
+            <description>あなたは顧客リサーチを支援するAIアシスタントです。
+取引先・商談・ケース等に関するWebリサーチ、決算サマリー、競合分析を行い、
+結果をチャット上でわかりやすく回答します。
+必要に応じてAgentforce Topicsとして保存することもできます。
+回答は日本語で行い、簡潔かつ正確であることを心がけてください。
+Do NOT use the show_command tool. Always compose your response as direct text.</description>
+            <developerName>instruction0_179Hu000000cJve</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Hu000000cJve</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>ambiguous_question</localDeveloperName>
+        <masterLabel>Ambiguous Question</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>off_topic_16jHu000000shwl</fullName>
+        <canEscalate>false</canEscalate>
+        <description>スコープ外の依頼を丁寧に断り、対応可能な内容を案内する</description>
+        <developerName>off_topic_16jHu000000shwl</developerName>
+        <genAiPluginInstructions>
+            <description>あなたは顧客リサーチを支援するAIアシスタントです。
+取引先・商談・ケース等に関するWebリサーチ、決算サマリー、競合分析を行い、
+結果をチャット上でわかりやすく回答します。
+必要に応じてAgentforce Topicsとして保存することもできます。
+回答は日本語で行い、簡潔かつ正確であることを心がけてください。
+Do NOT use the show_command tool. Always compose your response as direct text.</description>
+            <developerName>instruction0_179Hu000000cJvd</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Hu000000cJvd</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>off_topic</localDeveloperName>
+        <masterLabel>Off Topic</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>earnings_summary_16jHu000000shwl</fullName>
+        <canEscalate>false</canEscalate>
+        <description>取引先の直近決算内容をWebリサーチし、決算サマリーをチャットで回答する。</description>
+        <developerName>earnings_summary_16jHu000000shwl</developerName>
+        <genAiPluginInstructions>
+            <description>あなたは顧客リサーチを支援するAIアシスタントです。
+取引先・商談・ケース等に関するWebリサーチ、決算サマリー、競合分析を行い、
+結果をチャット上でわかりやすく回答します。
+必要に応じてAgentforce Topicsとして保存することもできます。
+回答は日本語で行い、簡潔かつ正確であることを心がけてください。
+Do NOT use the show_command tool. Always compose your response as direct text.</description>
+            <developerName>instruction0_179Hu000000cJvc</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Hu000000cJvc</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>search_web_179Hu000000cJvc</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>search_web_179Hu000000cJvc</fullName>
+            <description>Webを検索して指定クエリの最新情報を取得する</description>
+            <developerName>search_web_179Hu000000cJvc</developerName>
+            <invocationTarget>WebSearchAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>search_web</localDeveloperName>
+            <masterLabel>Search Web</masterLabel>
+        </localActions>
+        <localDeveloperName>earnings_summary</localDeveloperName>
+        <masterLabel>Earnings Summary</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>save_topic_16jHu000000shwl</fullName>
+        <canEscalate>false</canEscalate>
+        <description>リサーチ結果をAgentforce Topicsレコードとして保存する。保存先レコード（取引先 or 商談）をユーザーに確認してから保存する。</description>
+        <developerName>save_topic_16jHu000000shwl</developerName>
+        <genAiPluginInstructions>
+            <description>あなたは顧客リサーチを支援するAIアシスタントです。
+取引先・商談・ケース等に関するWebリサーチ、決算サマリー、競合分析を行い、
+結果をチャット上でわかりやすく回答します。
+必要に応じてAgentforce Topicsとして保存することもできます。
+回答は日本語で行い、簡潔かつ正確であることを心がけてください。
+Do NOT use the show_command tool. Always compose your response as direct text.</description>
+            <developerName>instruction0_179Hu000000cJvb</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Hu000000cJvb</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>create_topic_179Hu000000cJvb</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>create_topic_179Hu000000cJvb</fullName>
+            <description>Agentforce Topicsレコードを新規作成または更新する</description>
+            <developerName>create_topic_179Hu000000cJvb</developerName>
+            <invocationTarget>AgentforceTopicCreator</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>create_topic</localDeveloperName>
+            <masterLabel>Create Topic</masterLabel>
+        </localActions>
+        <localDeveloperName>save_topic</localDeveloperName>
+        <masterLabel>Save Topic</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>web_research_16jHu000000shwl</fullName>
+        <canEscalate>false</canEscalate>
+        <description>取引先の直近ニュース・動向をWebリサーチし、結果をチャットで回答する。決算の有無も自動確認し、未作成の場合はサジェストする。</description>
+        <developerName>web_research_16jHu000000shwl</developerName>
+        <genAiPluginInstructions>
+            <description>あなたは顧客リサーチを支援するAIアシスタントです。
+取引先・商談・ケース等に関するWebリサーチ、決算サマリー、競合分析を行い、
+結果をチャット上でわかりやすく回答します。
+必要に応じてAgentforce Topicsとして保存することもできます。
+回答は日本語で行い、簡潔かつ正確であることを心がけてください。
+Do NOT use the show_command tool. Always compose your response as direct text.</description>
+            <developerName>instruction0_179Hu000000cJva</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Hu000000cJva</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>search_web_179Hu000000cJva</functionName>
+        </localActionLinks>
+        <localActionLinks>
+            <functionName>check_recent_earnings_179Hu000000cJva</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>search_web_179Hu000000cJva</fullName>
+            <description>Webを検索して指定クエリの最新情報を取得する</description>
+            <developerName>search_web_179Hu000000cJva</developerName>
+            <invocationTarget>WebSearchAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>search_web</localDeveloperName>
+            <masterLabel>Search Web</masterLabel>
+        </localActions>
+        <localActions>
+            <fullName>check_recent_earnings_179Hu000000cJva</fullName>
+            <description>取引先名で直近2週間の決算発表有無を確認し、既存の決算Topicsの有無も確認する</description>
+            <developerName>check_recent_earnings_179Hu000000cJva</developerName>
+            <invocationTarget>CheckRecentEarnings</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>check_recent_earnings</localDeveloperName>
+            <masterLabel>Check Recent Earnings</masterLabel>
+        </localActions>
+        <localDeveloperName>web_research</localDeveloperName>
+        <masterLabel>Web Research</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>competitive_analysis_16jHu000000shwl</fullName>
+        <canEscalate>false</canEscalate>
+        <description>取引先の競合他社・市場シェア・比較情報をWebリサーチし、競合分析結果をチャットで回答する。</description>
+        <developerName>competitive_analysis_16jHu000000shwl</developerName>
+        <genAiPluginInstructions>
+            <description>あなたは顧客リサーチを支援するAIアシスタントです。
+取引先・商談・ケース等に関するWebリサーチ、決算サマリー、競合分析を行い、
+結果をチャット上でわかりやすく回答します。
+必要に応じてAgentforce Topicsとして保存することもできます。
+回答は日本語で行い、簡潔かつ正確であることを心がけてください。
+Do NOT use the show_command tool. Always compose your response as direct text.</description>
+            <developerName>instruction0_179Hu000000cJvZ</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Hu000000cJvZ</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>search_web_179Hu000000cJvZ</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>search_web_179Hu000000cJvZ</fullName>
+            <description>Webを検索して指定クエリの最新情報を取得する</description>
+            <developerName>search_web_179Hu000000cJvZ</developerName>
+            <invocationTarget>WebSearchAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>search_web</localDeveloperName>
+            <masterLabel>Search Web</masterLabel>
+        </localActions>
+        <localDeveloperName>competitive_analysis</localDeveloperName>
+        <masterLabel>Competitive Analysis</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>agent_router_16jHu000000shwl</fullName>
+        <canEscalate>false</canEscalate>
+        <description>ユーザーの意図を判断し、適切なサブエージェントへルーティングする。ルーティングのみ行い、自分では回答しない。</description>
+        <developerName>agent_router_16jHu000000shwl</developerName>
+        <genAiPluginInstructions>
+            <description>あなたは顧客リサーチを支援するAIアシスタントです。
+取引先・商談・ケース等に関するWebリサーチ、決算サマリー、競合分析を行い、
+結果をチャット上でわかりやすく回答します。
+必要に応じてAgentforce Topicsとして保存することもできます。
+回答は日本語で行い、簡潔かつ正確であることを心がけてください。
+Do NOT use the show_command tool. Always compose your response as direct text.</description>
+            <developerName>instruction0_179Hu000000cJvY</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179Hu000000cJvY</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>agent_router</localDeveloperName>
+        <masterLabel>Agent Router</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <masterLabel>顧客リサーチエージェント</masterLabel>
+    <plannerType>Atlas__ConcurrentMultiAgentOrchestration</plannerType>
+</GenAiPlannerBundle>

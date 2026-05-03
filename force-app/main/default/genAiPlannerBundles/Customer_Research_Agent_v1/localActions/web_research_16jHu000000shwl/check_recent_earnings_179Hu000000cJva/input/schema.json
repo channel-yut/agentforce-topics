@@ -1,0 +1,21 @@
+{
+  "required" : [ "accountName" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "accountName" : {
+      "title" : "Account Name",
+      "description" : "リサーチ対象の取引先名",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "relatedRecordId" : {
+      "title" : "Related Record Id",
+      "description" : "関連レコードID（任意）",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}
