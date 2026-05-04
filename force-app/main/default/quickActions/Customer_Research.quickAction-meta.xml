@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionSubtype>ScreenAction</actionSubtype>
+    <description>顧客リサーチエージェントをヘッドレスで起動し、Webリサーチ結果をAgentforce Topicsに自動保存します。</description>
+    <flowDefinition>Customer_Research_Action</flowDefinition>
+    <label>顧客リサーチ</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>
