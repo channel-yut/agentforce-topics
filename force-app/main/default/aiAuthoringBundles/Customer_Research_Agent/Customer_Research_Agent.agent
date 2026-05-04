@@ -472,10 +472,47 @@ subagent headless_research:
                 メッセージのフォーマット「【自動実行】取引先名 / リサーチ種別 / レコードID / オブジェクトAPI名」を受け取ったら、
                 以下の順番でアクションを実行してください。ユーザーへの確認は一切不要です。
                 1. hl_set_vars を呼び出してメッセージから4変数（account_name・trigger_type・related_record_id・object_api_name）を抽出する
-                2. hl_search_web を呼び出して取引先名でWebリサーチを実行する（searchQuery は account_name を使用）
+                2. hl_search_web を呼び出してWebリサーチを実行する
+                   - trigger_type が「顧客リサーチ」の場合: searchQuery = 「{取引先名} 最新ニュース 動向 2026」
+                   - trigger_type が「競合分析」の場合: searchQuery = 「{取引先名} 競合 市場シェア 比較」
+                   - trigger_type が「決算サマリー」の場合: searchQuery = 「{取引先名} 決算 業績 四半期報告」
                 3. hl_create_topic を呼び出してリサーチ結果をAgentforce Topicsとして保存する
-                   subject: 「{取引先名} リサーチ（自動）」形式の1文タイトル
-                   content: 検索結果をスタイル付きHTMLで整形したもの
+                   subject（1文のみ）:
+                   - 顧客リサーチ → 「{取引先名} 最新動向リサーチ（{年月}）」
+                   - 競合分析 → 「{取引先名} 競合分析（{年月}）」
+                   - 決算サマリー → 「{取引先名} 決算サマリー（{年月}）」
+                   content（スタイル付きHTML）:
+                   trigger_type が「顧客リサーチ」の場合:
+                   <div style="font-family: sans-serif; padding: 16px; color: #333;">
+                     <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">📰 主要ニュース・トピック</h2>
+                     <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;">
+                       <strong>ニュースタイトル</strong><br/><span style="color:#555; font-size:0.9em;">YYYY年MM月DD日 | 出典名</span><br/>概要テキスト
+                     </div>
+                     <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">📊 事業動向・注目点</h3>
+                     <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">動向テキスト</div>
+                     <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">💼 営業活動への示唆</h3>
+                     <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">示唆テキスト</div>
+                   </div>
+                   trigger_type が「競合分析」の場合:
+                   <div style="font-family: sans-serif; padding: 16px; color: #333;">
+                     <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">🏢 主要競合他社</h2>
+                     <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;"><strong>競合社名</strong><br/>強み: テキスト<br/>弱み: テキスト</div>
+                     <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">📊 市場ポジション・シェア概況</h3>
+                     <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">市場概況テキスト</div>
+                     <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">💼 差別化ポイント・営業戦略への示唆</h3>
+                     <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">示唆テキスト</div>
+                   </div>
+                   trigger_type が「決算サマリー」の場合:
+                   <div style="font-family: sans-serif; padding: 16px; color: #333;">
+                     <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">📈 決算概要</h2>
+                     <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;">
+                       対象期間: <strong>YYYY年M月〜M月</strong><br/>営業収益: <strong>X兆X億円</strong>（前年同期比+X%）<br/>営業利益: <strong>X兆X億円</strong>
+                     </div>
+                     <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">📊 前期比較・トレンド</h3>
+                     <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">前期比較テキスト</div>
+                     <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">💼 営業活動への示唆</h3>
+                     <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">示唆テキスト</div>
+                   </div>
                    relatedRecordId: related_record_id の値
                    triggerType: trigger_type の値
                    objectApiName: object_api_name の値
