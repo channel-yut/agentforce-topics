@@ -337,17 +337,12 @@ sf project deploy start \
   --source-dir force-app/main/default/aiAuthoringBundles \
   --target-org <org-alias>
 
-# 3. バリデーション
-sf agent validate authoring-bundle \
-  --api-name Customer_Research_Agent \
-  --json
-
-# 4. Publish（バージョンを確定）
+# 3. Publish（バージョンを確定）
 sf agent publish authoring-bundle \
   --api-name Customer_Research_Agent \
   --json
 
-# 5. Activate（ユーザーへ公開）
+# 4. Activate（ユーザーへ公開）
 sf agent activate \
   --api-name Customer_Research_Agent \
   --json
