@@ -148,36 +148,21 @@ Related Record Id に指定したレコード（Account 等）を開くと、**A
 
 ## Agentforce からの活用
 
-Agentforceエージェントとの連携方法は2通りあります。
+エージェントが生成したコンテンツを Agentforce Topic レコードとして保存するには、`AgentforceTopicCreator` Apex Action をサブエージェントのアクションとして組み込みます。Agent Builder で構築したエージェントでも、Agent Script ベースのエージェントでも同じ Action を使います。
 
-**① Apex Action を直接 Agent Builder に組み込む（シンプルな用途向け）**
-
-既存の Agent Builder の Topic/Action に `AgentforceTopicCreator` を追加するだけで使えます。エージェントが生成したコンテンツを自動的に Agentforce Topic レコードとして保存できます。
-
-**② Agent Script で作成したエージェントを使う（高度な用途向け）**
-
-このリポジトリには `Customer Research Agent`（顧客リサーチエージェント）のAgent Scriptソース（`.agent`ファイル）が含まれています。ただし、`AiAuthoringBundle` メタデータはアンロックパッケージ非対応のため、パッケージには含まれていません。エージェントを使う場合は[顧客リサーチエージェント](#顧客リサーチエージェント)セクションのデプロイ手順を参照してください。
-
----
-
-### 利用可能な Apex Action
-
-#### Create or Update Agentforce Topic
+### Apex Action: Create or Update Agentforce Topic
 
 `AgentforceTopicCreator.createOrUpdateTopic`
 
 既存レコードがあれば更新、なければ新規作成します。
 
-
 | パラメータ           | 型      | 必須  | 説明                  |
 | --------------- | ------ | --- | ------------------- |
-| summary         | String | ○   | 1〜2行の概要テキスト         |
+| summary         | String | ○   | タイトル（1文） |
 | content         | String | ○   | HTML形式のリッチコンテンツ     |
 | relatedRecordId | String | -   | 関連レコードID（Account 等） |
-| triggerType     | String | -   | トリガータイプ（例: `面談記録`）  |
+| triggerType     | String | -   | トリガータイプ（例: `顧客リサーチ`）  |
 | topicId         | String | -   | 更新時: 既存レコードID       |
-
-
 
 | 出力      | 型       | 説明               |
 | ------- | ------- | ---------------- |
@@ -185,12 +170,11 @@ Agentforceエージェントとの連携方法は2通りあります。
 | success | Boolean | 成功 / 失敗          |
 | message | String  | 結果メッセージ          |
 
-
 ### Agent Builder への登録手順
 
 1. Setup → **Agent Builder** → 対象 Agent を開く
-2. Topics → New Topic（例: `顧客インサイト生成`）
-3. Actions → Add Action → **Apex Action**
+2. Topics → **New Topic**（例: `顧客リサーチ`）
+3. Actions → **Add Action** → **Apex Action**
 4. `Create or Update Agentforce Topic` を選択
 5. 入力パラメータをマッピング
 
@@ -198,15 +182,12 @@ Agentforceエージェントとの連携方法は2通りあります。
 summary        → {Agent が生成した概要テキスト}
 content        → {Agent が生成した HTML コンテンツ}
 relatedRecordId → {コンテキストレコードの ID}
-triggerType    → {Agent が実行したアクションを表す固定文字列}
+triggerType    → 顧客リサーチ  ← Topicに合わせて固定文字列で指定
 ```
 
-`triggerType` はAgentが何を行ったかを表す値を固定文字列で指定します。フィードバックの学習スコープとして使われるため、Topicごとに適切な値を設定してください。
-
-`Trigger_Type__c` は**制限付き選択リスト**です。Agent Builder で指定する値はリストに登録された値と一致している必要があります。
+`triggerType` はフィードバックの学習スコープとして使われるため、Topic ごとに適切な値を固定文字列で指定してください。`Trigger_Type__c` は**制限付き選択リスト**です。指定する値はリストに登録された値と一致している必要があります。
 
 **パッケージ初期値:**
-
 
 | 値        |
 | -------- |
@@ -221,7 +202,6 @@ triggerType    → {Agent が実行したアクションを表す固定文字列
 | 決算サマリー   |
 | イベント参加   |
 | その他      |
-
 
 **値の追加・変更方法（UI）:**
 
@@ -241,24 +221,42 @@ triggerType    → {Agent が実行したアクションを表す固定文字列
 </value>
 ```
 
-### Agent へのプロンプト指示例
+### Topic Instructions でのアウトプット形式指定
 
-Topic Instructions に以下を追加すると、出力形式が統一されます。
+`summary`・`content` に何を渡すかは、Topic Instructions でエージェントに指示します。`content` は HTML 形式に対応しているため、スタイル付きカードレイアウトを指定すると見やすい表示になります。
+
+**指示例:**
 
 ```
-顧客情報を分析し、以下の構成で HTML 形式のコンテンツを生成してください。
+リサーチ結果を保存する際は以下の形式で出力してください。
 
-1. 推奨アクション（優先順位順・担当者・期限を明記）
-2. 注意事項（リスクと懸念点）
-3. 主要インサイト（数値目標を含む）
+summary（1文のタイトル）:
+「{会社名} 顧客リサーチ（{年月}）」のように短いタイトルにする。
 
-スタイル:
-- 見出し: <h3 style="color: #1976d2; font-size: 18px; font-weight: bold;">
-- セクション: <div style="background-color: #e1f5fe; padding: 16px; border-left: 4px solid #0288d1;">
-- リスト: <ol style="font-size: 14px; line-height: 1.7;">
-
-抽象的な表現は避け、具体的な担当者・期限・数値目標を必ず含めてください。
+content（HTML）:
+<div style="font-family: sans-serif; padding: 16px; color: #333;">
+  <h2 style="border-bottom: 2px solid #1a73e8; padding-bottom: 8px;">📋 概要</h2>
+  <div style="background: #e8f4fd; border-left: 4px solid #1a73e8; padding: 12px; margin: 8px 0; border-radius: 4px;">
+    （主要な情報・数値）
+  </div>
+  <h2 style="border-bottom: 2px solid #34a853; padding-bottom: 8px;">📊 トレンド・動向</h2>
+  <div style="background: #e8f5e9; border-left: 4px solid #34a853; padding: 12px; margin: 8px 0; border-radius: 4px;">
+    （市場・業績トレンド）
+  </div>
+  <h2 style="border-bottom: 2px solid #fbbc04; padding-bottom: 8px;">💼 営業活動への示唆</h2>
+  <div style="background: #fffde7; border-left: 4px solid #fbbc04; padding: 12px; margin: 8px 0; border-radius: 4px;">
+    （具体的なアクション・提案）
+  </div>
+</div>
 ```
+
+色の使い分け: 青=メイン情報、緑=トレンド、黄=営業示唆、紫=競合・コメント
+
+---
+
+### 活用例：顧客リサーチエージェント
+
+上記の仕組みを実装した Agent Script ベースのエージェントをこのリポジトリで提供しています。詳細は[顧客リサーチエージェント](#顧客リサーチエージェント)セクションを参照してください。
 
 ---
 
@@ -280,7 +278,7 @@ agent_router
   └── ambiguous_question — 意図不明時の確認
 ```
 
-### デプロイ手順（CLI）
+### 有効化手順（CLI）
 
 **前提:** このリポジトリをクローンし、デプロイ先組織にログイン済みであること。パッケージ本体（v1.3.0）が先にインストール済みであること。
 
@@ -300,25 +298,25 @@ sf agent validate authoring-bundle \
   --api-name Customer_Research_Agent \
   --json
 
-# 4. Publish（バージョンを確定してエージェントを利用可能な状態にする）
+# 4. Publish（バージョンを確定）
 sf agent publish authoring-bundle \
   --api-name Customer_Research_Agent \
   --json
 
-# 5. Activate（最新バージョンをユーザーに公開）
+# 5. Activate（ユーザーへ公開）
 sf agent activate \
   --api-name Customer_Research_Agent \
   --json
 ```
 
-### デプロイ手順（UI）
+### 有効化手順（UI）
 
 **前提:** パッケージ本体（v1.3.0）が先にインストール済みであること。
 
 1. **メタデータをデプロイ**
    - このリポジトリをクローンし、`force-app/main/default/aiAuthoringBundles/Customer_Research_Agent/` 配下の2ファイルを Workbench または VS Code の Salesforce 拡張機能でデプロイ
 
-2. **Agent Builder で Publish**
+2. **Publish**
    - Setup → **Einstein Agents** → `Customer Research Agent` を開く
    - 右上 **Publish** ボタンをクリック → 確認ダイアログで **Publish**
 
