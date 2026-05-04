@@ -49,6 +49,7 @@ start_agent agent_router:
         instructions: |
                 あなたはルーターです。ユーザーのメッセージを分析し、適切なサブエージェントへ即座に遷移してください。
                 自分でリサーチや回答を行わないこと。必ずいずれかの遷移アクションを呼び出してください。
+                - 「【自動実行】」で始まるメッセージ → go_to_headless（最優先）
                 - 保存・記録・トピックとして保存に関する依頼 → go_to_save
                 - 競合分析・競合比較・市場シェアに関する依頼 → go_to_competitive_analysis
                 - 決算・財務・業績・四半期報告に関する依頼 → go_to_earnings_summary
@@ -64,6 +65,8 @@ start_agent agent_router:
                 description: "競合分析・競合比較・市場シェア調査の依頼"
             go_to_earnings_summary: @utils.transition to @subagent.earnings_summary
                 description: "決算・財務・業績・四半期報告に関するサマリーの依頼"
+            go_to_headless: @utils.transition to @subagent.headless_research
+                description: "「【自動実行】」で始まるメッセージ。確認なしで即リサーチ・保存を実行する"
             go_to_off_topic: @utils.transition to @subagent.off_topic
                 description: "顧客リサーチ・競合分析・決算以外のスコープ外の依頼"
             go_to_ambiguous_question: @utils.transition to @subagent.ambiguous_question
@@ -85,7 +88,7 @@ subagent web_research:
                     set @variables.has_existing_earnings_topic = @outputs.hasExistingTopic
 
                 | 取引先「{!@variables.account_name}」について、以下の手順でWebリサーチを実施してください。
-                  1. search_web アクションを使って直近のニュース・動向を検索する
+                  1. wr_search_web アクションを使って直近のニュース・動向を検索する
                   2. 検索クエリは「{!@variables.account_name} 最新ニュース 動向」などを使用する
                   3. 検索結果をもとに、以下の構成でスタイル付きHTMLコンテンツを作成してチャットで回答する:
 
@@ -120,7 +123,7 @@ subagent web_research:
                 description: "リサーチ対象の取引先名が不明な場合に取得する"
                 with account_name = ...
 
-            search_web: @actions.search_web
+            wr_search_web: @actions.wr_search_web
                 description: "Webを検索して取引先の最新情報を取得する"
                 with searchQuery = ...
 
@@ -163,7 +166,7 @@ subagent web_research:
                     description: "決算発表日（参考情報）"
                     filter_from_agent: True
 
-        search_web:
+        wr_search_web:
             description: "Webを検索して指定クエリの最新情報を取得する"
             label: "Search The Web"
             source: "EmployeeCopilot__WebSearch"
@@ -203,7 +206,7 @@ subagent competitive_analysis:
 
             if @variables.account_name != "":
                 | 取引先「{!@variables.account_name}」の競合分析を実施してください。
-                  1. search_web アクションを使って競合・市場情報を検索する
+                  1. ca_search_web アクションを使って競合・市場情報を検索する
                      （クエリ例: 「{!@variables.account_name} 競合 市場シェア 比較」）
                   2. 検索結果をもとに、以下の構成でスタイル付きHTMLコンテンツを作成してチャットで回答する:
 
@@ -238,7 +241,7 @@ subagent competitive_analysis:
                 description: "競合分析対象の取引先名が不明な場合に取得する"
                 with account_name = ...
 
-            search_web: @actions.search_web
+            ca_search_web: @actions.ca_search_web
                 description: "競合・市場情報をWebで検索する"
                 with searchQuery = ...
 
@@ -257,7 +260,7 @@ subagent competitive_analysis:
 
 
     actions:
-        search_web:
+        ca_search_web:
             description: "Webを検索して指定クエリの最新情報を取得する"
             label: "Search The Web"
             source: "EmployeeCopilot__WebSearch"
@@ -297,7 +300,7 @@ subagent earnings_summary:
 
             if @variables.account_name != "":
                 | 取引先「{!@variables.account_name}」の決算サマリーを作成してください。
-                  1. search_web アクションを使って決算・財務情報を検索する
+                  1. es_search_web アクションを使って決算・財務情報を検索する
                      （クエリ例: 「{!@variables.account_name} 決算 業績 四半期報告」）
                   2. 検索結果をもとに、以下の構成でスタイル付きHTMLコンテンツを作成してチャットで回答する:
 
@@ -338,7 +341,7 @@ subagent earnings_summary:
                 description: "決算サマリー対象の取引先名が不明な場合に取得する"
                 with account_name = ...
 
-            search_web: @actions.search_web
+            es_search_web: @actions.es_search_web
                 description: "決算・財務情報をWebで検索する"
                 with searchQuery = ...
 
@@ -357,7 +360,7 @@ subagent earnings_summary:
 
 
     actions:
-        search_web:
+        es_search_web:
             description: "Webを検索して指定クエリの最新情報を取得する"
             label: "Search The Web"
             source: "EmployeeCopilot__WebSearch"
@@ -406,7 +409,7 @@ subagent save_topic:
                   例: 「取引先 0015g000000xxxxAAA」または「商談 0065g000000xxxxAAA」
 
             if @variables.save_confirmed == True and @variables.related_record_id != "" and @variables.topic_id == "":
-                | 保存を実行します。create_topic アクションを呼び出してください。
+                | 保存を実行します。st_create_topic アクションを呼び出してください。
 
         actions:
             confirm_save: @utils.setVariables
@@ -415,7 +418,7 @@ subagent save_topic:
                 with related_record_id = ...
                 with object_api_name = ...
 
-            create_topic: @actions.create_topic
+            st_create_topic: @actions.st_create_topic
                 description: "Agentforce Topicsレコードを作成する"
                 with subject = @variables.research_result_summary
                 with content = @variables.research_result_content
@@ -434,7 +437,7 @@ subagent save_topic:
 
 
     actions:
-        create_topic:
+        st_create_topic:
             description: "Agentforce Topicsレコードを新規作成または更新する"
             target: "apex://AgentforceTopicCreator"
             inputs:
@@ -446,6 +449,104 @@ subagent save_topic:
                     is_required: True
                 relatedRecordId: string
                     description: "保存先レコードのID（取引先またはオポチュニティ）"
+                triggerType: string
+                    description: "トリガータイプ（顧客リサーチ / 決算サマリー / 競合分析）"
+                objectApiName: string
+                    description: "保存先オブジェクトのAPI名（Account, Opportunity等）"
+            outputs:
+                topicId: string
+                    description: "作成または更新されたAgentforce TopicのレコードID"
+                    filter_from_agent: False
+                success: boolean
+                    description: "処理が成功したかどうか"
+                    filter_from_agent: True
+                message: string
+                    description: "結果メッセージ"
+                    filter_from_agent: False
+
+subagent headless_research:
+    description: "【自動実行】プレフィックス付きのメッセージに対して、確認なしでリサーチを実行し、指定レコードに即保存する。"
+
+    reasoning:
+        instructions: |
+                メッセージのフォーマット「【自動実行】取引先名 / リサーチ種別 / レコードID / オブジェクトAPI名」を受け取ったら、
+                以下の順番でアクションを実行してください。ユーザーへの確認は一切不要です。
+                1. hl_set_vars を呼び出してメッセージから4変数（account_name・trigger_type・related_record_id・object_api_name）を抽出する
+                2. hl_search_web を呼び出して取引先名でWebリサーチを実行する（searchQuery は account_name を使用）
+                3. hl_create_topic を呼び出してリサーチ結果をAgentforce Topicsとして保存する
+                   subject: 「{取引先名} リサーチ（自動）」形式の1文タイトル
+                   content: 検索結果をスタイル付きHTMLで整形したもの
+                   relatedRecordId: related_record_id の値
+                   triggerType: trigger_type の値
+                   objectApiName: object_api_name の値
+                4. 保存完了後「自動リサーチ・保存が完了しました。」と回答する
+                hl_search_web は1回のみ呼び出すこと。Do NOT use the show_command tool.
+
+        actions:
+            hl_set_vars: @utils.setVariables
+                description: "【自動実行】メッセージからaccount_name・trigger_type・related_record_id・object_api_nameを抽出する"
+                with account_name = ...
+                with trigger_type = ...
+                with related_record_id = ...
+                with object_api_name = ...
+
+            hl_search_web: @actions.hl_search_web
+                description: "取引先名でWebリサーチを実行する"
+                with searchQuery = ...
+
+            hl_create_topic: @actions.hl_create_topic
+                description: "リサーチ結果をAgentforce Topicsとして保存する"
+                with subject = ...
+                with content = ...
+                with relatedRecordId = @variables.related_record_id
+                with triggerType = @variables.trigger_type
+                with objectApiName = @variables.object_api_name
+                set @variables.topic_id = @outputs.topicId
+
+
+    actions:
+        hl_search_web:
+            description: "Webを検索して指定クエリの最新情報を取得する"
+            label: "Search The Web"
+            source: "EmployeeCopilot__WebSearch"
+            target: "standardInvocableAction://webSearchStream"
+            include_in_progress_indicator: True
+            progress_indicator_message: "Searching the web"
+            inputs:
+                searchQuery: string
+                    description: "検索クエリ文字列"
+                    is_required: True
+                    is_user_input: False
+                searchProvider: string
+                    description: "DO NOT set this parameter. Always omit it."
+                    is_required: False
+                    is_user_input: False
+                siteFilter: string
+                    description: "DO NOT set this parameter. Always omit it."
+                    is_required: False
+                    is_user_input: False
+            outputs:
+                webSearchSummary: object
+                    description: "Web検索からの情報サマリー"
+                    filter_from_agent: False
+                    complex_data_type_name: "lightning__richTextType"
+                citationSources: object
+                    description: "引用ソースリンク"
+                    filter_from_agent: False
+                    complex_data_type_name: "@apexClassType/AiCopilot__GenAiCitationInput"
+
+        hl_create_topic:
+            description: "Agentforce Topicsレコードを新規作成または更新する"
+            target: "apex://AgentforceTopicCreator"
+            inputs:
+                subject: string
+                    description: "リサーチ結果のタイトル（1文）"
+                    is_required: True
+                content: string
+                    description: "リサーチ結果のHTMLコンテンツ"
+                    is_required: True
+                relatedRecordId: string
+                    description: "保存先レコードのID"
                 triggerType: string
                     description: "トリガータイプ（顧客リサーチ / 決算サマリー / 競合分析）"
                 objectApiName: string
