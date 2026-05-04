@@ -22,23 +22,6 @@
     text-transform: uppercase;
 }
 
-.preview-summary {
-    font-size: 0.875rem;
-    color: #444;
-    margin: 0 0 0.75rem 0;
-    line-height: 1.5;
-}
-
-.preview-divider {
-    border-top: 1px solid #e0e0e0;
-    margin-bottom: 0.75rem;
-}
-
-.preview-content {
-    font-size: 0.875rem;
-    line-height: 1.6;
-}
-
 .preview-error {
     color: #c23934;
     font-size: 0.875rem;

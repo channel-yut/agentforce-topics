@@ -18,6 +18,12 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>relatedLinks</name>
+            <value>
+                <elementReference>New_Related_Links</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>subject</name>
             <value>
                 <elementReference>New_Subject</elementReference>
@@ -98,6 +104,16 @@
             <fieldText>コンテンツ（HTML）</fieldText>
             <fieldType>LargeTextArea</fieldType>
             <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>New_Related_Links</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Topic.Related_Links__c</elementReference>
+            </defaultValue>
+            <fieldText>関連レコードID（JSON配列 例: ["001xxx","00Txxx"]）</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>false</isRequired>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>

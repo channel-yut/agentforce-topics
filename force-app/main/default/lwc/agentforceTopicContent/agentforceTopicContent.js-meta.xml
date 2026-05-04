@@ -3,12 +3,15 @@
     <apiVersion>64.0</apiVersion>
     <isExposed>true</isExposed>
     <masterLabel>Agentforce Topic Content</masterLabel>
-    <description>Displays Summary and Content fields of an Agentforce Topic record in read-only mode</description>
+    <description>Displays Subject, Content and related links of an Agentforce Topic record</description>
     <targets>
         <target>lightning__RecordPage</target>
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
+            <objects>
+                <object>Agentforce_Topic__c</object>
+            </objects>
             <property name="recordId" type="String" />
         </targetConfig>
     </targetConfigs>

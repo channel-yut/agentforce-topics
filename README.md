@@ -235,22 +235,22 @@ summary（1文のタイトル）:
 
 content（HTML）:
 <div style="font-family: sans-serif; padding: 16px; color: #333;">
-  <h2 style="border-bottom: 2px solid #1a73e8; padding-bottom: 8px;">📋 概要</h2>
-  <div style="background: #e8f4fd; border-left: 4px solid #1a73e8; padding: 12px; margin: 8px 0; border-radius: 4px;">
+  <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">📋 概要</h2>
+  <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;">
     （主要な情報・数値）
   </div>
-  <h2 style="border-bottom: 2px solid #34a853; padding-bottom: 8px;">📊 トレンド・動向</h2>
-  <div style="background: #e8f5e9; border-left: 4px solid #34a853; padding: 12px; margin: 8px 0; border-radius: 4px;">
+  <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">📊 トレンド・動向</h3>
+  <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">
     （市場・業績トレンド）
   </div>
-  <h2 style="border-bottom: 2px solid #fbbc04; padding-bottom: 8px;">💼 営業活動への示唆</h2>
-  <div style="background: #fffde7; border-left: 4px solid #fbbc04; padding: 12px; margin: 8px 0; border-radius: 4px;">
+  <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">💼 営業活動への示唆</h3>
+  <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">
     （具体的なアクション・提案）
   </div>
 </div>
 ```
 
-色の使い分け: 青=メイン情報、緑=トレンド、黄=営業示唆、紫=競合・コメント
+色の使い分け: 青(`#0070d2`)=メインセクション、緑(`#2e844a`)=トレンド・分析、赤(`#c23934`)=示唆・アクション
 
 ---
 

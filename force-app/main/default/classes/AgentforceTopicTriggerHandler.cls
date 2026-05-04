@@ -11,20 +11,20 @@ public with sharing class AgentforceTopicTriggerHandler {
 
     private static final String SAMPLE_SUMMARY = 'サンプルコンテンツ（コピーしてGemini等で編集してください）';
     private static final String SAMPLE_CONTENT =
-        '<h2 style="color: #0070d2; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 3px solid #0070d2; font-size: 1.5em;">&#127919; 優先アプローチ推奨</h2>' +
+        '<h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">&#127919; 優先アプローチ推奨</h2>' +
         '<div style="background-color: #f0f8ff; border-left: 4px solid #0070d2; padding: 16px; margin-bottom: 24px;">' +
         '<p style="margin: 0; font-size: 1.02em;">この企業は<strong>2つの戦略テーマ</strong>に取り組んでおり、<strong>166日間接触がない</strong>状態です。過去の面談記録や決算発表の内容から、複数の事業課題に対して具体的な投資計画を検討していることが確認されており、優先的なアプローチをお勧めします。</p></div>' +
-        '<h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.3em; font-weight: 600;">✨ 顧客関心領域</h3>' +
+        '<h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">✨ 顧客関心領域</h3>' +
         '<div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 16px; margin-bottom: 24px;">' +
         '<div style="margin-bottom: 16px;"><div style="font-weight: bold; color: #2e844a; margin-bottom: 6px;">&#128202; DX推進</div>' +
         '<p style="margin: 0 0 0 20px; font-size: 0.95em; color: #3c4043;">前期決算説明会でDX投資計画（3年で5億円）を発表。基幹システム刷新と業務効率化に向けた資金ニーズが想定されます。</p></div>' +
         '<div style="margin-bottom: 16px;"><div style="font-weight: bold; color: #2e844a; margin-bottom: 6px;">&#127793; カーボンニュートラル</div>' +
         '<p style="margin: 0 0 0 20px; font-size: 0.95em; color: #3c4043;">昨年11月の面談でESG経営への取り組みを言及。工場の省エネ設備導入と再生可能エネルギー活用を検討中とのこと。</p></div></div>' +
-        '<h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.3em; font-weight: 600;">⏰ 最終接触状況</h3>' +
+        '<h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">⏰ 最終接触状況</h3>' +
         '<div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 16px; margin-bottom: 24px;">' +
         '<p style="margin: 0 0 8px 0;"><strong>最終接触日:</strong> 2025/10/18</p>' +
         '<p style="margin: 0; color: #c23934; font-weight: bold;">⚠️ 経過日数: 166日前（関係維持のため早期接触が必要）</p></div>' +
-        '<h3 style="color: #0070d2; margin: 24px 0 12px 0; font-size: 1.3em; font-weight: 600;">&#128161; 推奨アクション</h3>' +
+        '<h3 style="color: #0070d2; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #0070d2;">&#128161; 推奨アクション</h3>' +
         '<div style="background-color: #f4f6f9; border-left: 4px solid #0070d2; padding: 16px;">' +
         '<ol style="margin: 0; padding-left: 24px;">' +
         '<li style="margin-bottom: 12px;"><strong>面談設定（優先度: 高）</strong><br>' +

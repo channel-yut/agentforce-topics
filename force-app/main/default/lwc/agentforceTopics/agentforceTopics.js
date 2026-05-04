@@ -1,11 +1,9 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
-import { NavigationMixin } from 'lightning/navigation';
 import getLatestTopic from '@salesforce/apex/AgentforceTopicsController.getLatestTopic';
 import getTopicHistory from '@salesforce/apex/AgentforceTopicsController.getTopicHistory';
 import updateFeedback from '@salesforce/apex/AgentforceTopicsController.updateFeedback';
-import getRelatedRecordsInfo from '@salesforce/apex/AgentforceTopicsController.getRelatedRecordsInfo';
 
 // Import Custom Labels
 import LABEL_TITLE from '@salesforce/label/c.AgentforceTopics_Title';
@@ -43,7 +41,7 @@ import LABEL_NO_HISTORY from '@salesforce/label/c.AgentforceTopics_NoHistory';
 import LABEL_NO_HISTORY_MSG from '@salesforce/label/c.AgentforceTopics_NoHistoryMsg';
 import LABEL_ERROR from '@salesforce/label/c.AgentforceTopics_Error';
 
-export default class AgentforceTopics extends NavigationMixin(LightningElement) {
+export default class AgentforceTopics extends LightningElement {
     @api recordId; // Record ID from the record page context
     @api defaultCollapsed = false; // Property to control initial collapsed state
     @track currentMode = 'latest'; // 'latest', 'history-list', 'history-detail'
@@ -53,8 +51,6 @@ export default class AgentforceTopics extends NavigationMixin(LightningElement) 
     @track isLoading = false;
     @track error;
     @track isCollapsed = false;
-    @track relatedRecords = [];
-    @track isLoadingLinks = false;
 
     wiredLatestResult;
     wiredHistoryResult;
@@ -95,7 +91,6 @@ export default class AgentforceTopics extends NavigationMixin(LightningElement) 
         if (result.data) {
             if (this.currentMode === 'latest') {
                 this.currentTopic = result.data;
-                this.loadRelatedRecords(result.data.Related_Links__c);
             }
             this.error = undefined;
             // Set initial collapsed state: use defaultCollapsed property if data exists
@@ -157,7 +152,13 @@ export default class AgentforceTopics extends NavigationMixin(LightningElement) 
         if (this.currentMode === 'latest') return LABEL_SUBTITLE_LATEST;
         if (this.currentMode === 'history-list') return LABEL_SUBTITLE_HISTORY;
         if (this.currentTopic) {
-            return `${LABEL_SUBTITLE_ARCHIVE} ${this.formatDateTime(this.currentTopic.Generated_Date__c)}`;
+            const dateStr = this.currentTopic.Generated_Date__c
+                ? new Date(this.currentTopic.Generated_Date__c).toLocaleString('ja-JP', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit'
+                })
+                : '';
+            return `${LABEL_SUBTITLE_ARCHIVE} ${dateStr}`;
         }
         return '';
     }
@@ -179,25 +180,6 @@ export default class AgentforceTopics extends NavigationMixin(LightningElement) 
         return this.currentTopic?.Feedback__c === LABEL_FEEDBACK_NOT_HELPFUL
             ? 'slds-m-left_xx-small feedback-active'
             : 'slds-m-left_xx-small';
-    }
-
-    // Date formatting
-    get formattedDate() {
-        return this.currentTopic?.Generated_Date__c
-            ? this.formatDateTime(this.currentTopic.Generated_Date__c)
-            : '';
-    }
-
-    formatDateTime(dateTime) {
-        if (!dateTime) return '';
-        const date = new Date(dateTime);
-        return date.toLocaleString('ja-JP', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        }).replace(/\//g, '/');
     }
 
     // Filter out current topic from history list
@@ -238,43 +220,6 @@ export default class AgentforceTopics extends NavigationMixin(LightningElement) 
         if (selectedTopic) {
             this.currentTopic = selectedTopic;
             this.currentMode = 'history-detail';
-            this.loadRelatedRecords(selectedTopic.Related_Links__c);
-        }
-    }
-
-    // Related record link cards
-    get hasRelatedLinks() {
-        return this.relatedRecords.length > 0 || this.isLoadingLinks;
-    }
-
-    async loadRelatedRecords(relatedLinksJson) {
-        this.relatedRecords = [];
-        if (!relatedLinksJson) return;
-
-        let ids;
-        try {
-            ids = JSON.parse(relatedLinksJson);
-        } catch (e) {
-            return;
-        }
-        if (!Array.isArray(ids) || ids.length === 0) return;
-
-        this.isLoadingLinks = true;
-        try {
-            const infos = await getRelatedRecordsInfo({ recordIds: ids });
-            this.relatedRecords = infos.map(info => ({
-                ...info,
-                url: `/lightning/r/${info.recordId}/view`
-            }));
-        } catch (e) {
-            this.relatedRecords = ids.map(id => ({
-                recordId: id,
-                label: id,
-                iconName: 'standard:record',
-                url: `/lightning/r/${id}/view`
-            }));
-        } finally {
-            this.isLoadingLinks = false;
         }
     }
 
