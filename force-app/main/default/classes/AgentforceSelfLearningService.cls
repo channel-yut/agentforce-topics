@@ -36,7 +36,7 @@ public with sharing class AgentforceSelfLearningService {
 
                 if (problemExamples.size() < 5) {
                     problemExamples.add(new Map<String, String>{
-                        'summary'  => topic.Summary__c,
+                        'subject'  => topic.Subject__c,
                         'category' => category,
                         'date'     => topic.CreatedDate.format('yyyy-MM-dd')
                     });
@@ -148,7 +148,7 @@ public with sharing class AgentforceSelfLearningService {
         if (String.isNotBlank(objectApiName)) {
             return [
                 SELECT Id, Content__c, Feedback_Category__c, Trigger_Type__c,
-                       Summary__c, CreatedDate
+                       Subject__c, CreatedDate
                 FROM Agentforce_Topic__c
                 WHERE Trigger_Type__c = :triggerType
                   AND Object_Api_Name__c = :objectApiName
@@ -159,7 +159,7 @@ public with sharing class AgentforceSelfLearningService {
         }
         return [
             SELECT Id, Content__c, Feedback_Category__c, Trigger_Type__c,
-                   Summary__c, CreatedDate
+                   Subject__c, CreatedDate
             FROM Agentforce_Topic__c
             WHERE Trigger_Type__c = :triggerType
               AND Feedback__c = '役立たなかった'

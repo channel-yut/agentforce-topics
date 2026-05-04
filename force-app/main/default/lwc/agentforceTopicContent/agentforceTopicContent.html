@@ -5,7 +5,7 @@
             <span class="preview-label">コンテンツ プレビュー</span>
         </div>
         <template lwc:if={record.data}>
-            <p class="preview-summary">{summary}</p>
+            <p class="preview-summary">{subject}</p>
             <div class="preview-divider"></div>
             <div class="preview-content">
                 <lightning-formatted-rich-text value={content}></lightning-formatted-rich-text>

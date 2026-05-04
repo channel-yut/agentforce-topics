@@ -1,9 +1,9 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import SUMMARY_FIELD from '@salesforce/schema/Agentforce_Topic__c.Summary__c';
+import SUBJECT_FIELD from '@salesforce/schema/Agentforce_Topic__c.Subject__c';
 import CONTENT_FIELD from '@salesforce/schema/Agentforce_Topic__c.Content__c';
 
-const FIELDS = [SUMMARY_FIELD, CONTENT_FIELD];
+const FIELDS = [SUBJECT_FIELD, CONTENT_FIELD];
 
 export default class AgentforceTopicContent extends LightningElement {
     @api recordId;
@@ -11,8 +11,8 @@ export default class AgentforceTopicContent extends LightningElement {
     @wire(getRecord, { recordId: '$recordId', fields: FIELDS })
     record;
 
-    get summary() {
-        return getFieldValue(this.record.data, SUMMARY_FIELD);
+    get subject() {
+        return getFieldValue(this.record.data, SUBJECT_FIELD);
     }
 
     get content() {

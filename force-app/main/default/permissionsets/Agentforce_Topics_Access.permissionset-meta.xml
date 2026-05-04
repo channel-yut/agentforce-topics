@@ -38,7 +38,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Agentforce_Topic__c.Summary__c</field>
+        <field>Agentforce_Topic__c.Subject__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Agentforce_Topic__c.Related_Links__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

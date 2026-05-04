@@ -1,9 +1,11 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
+import { NavigationMixin } from 'lightning/navigation';
 import getLatestTopic from '@salesforce/apex/AgentforceTopicsController.getLatestTopic';
 import getTopicHistory from '@salesforce/apex/AgentforceTopicsController.getTopicHistory';
 import updateFeedback from '@salesforce/apex/AgentforceTopicsController.updateFeedback';
+import getRelatedRecordsInfo from '@salesforce/apex/AgentforceTopicsController.getRelatedRecordsInfo';
 
 // Import Custom Labels
 import LABEL_TITLE from '@salesforce/label/c.AgentforceTopics_Title';
@@ -41,7 +43,7 @@ import LABEL_NO_HISTORY from '@salesforce/label/c.AgentforceTopics_NoHistory';
 import LABEL_NO_HISTORY_MSG from '@salesforce/label/c.AgentforceTopics_NoHistoryMsg';
 import LABEL_ERROR from '@salesforce/label/c.AgentforceTopics_Error';
 
-export default class AgentforceTopics extends LightningElement {
+export default class AgentforceTopics extends NavigationMixin(LightningElement) {
     @api recordId; // Record ID from the record page context
     @api defaultCollapsed = false; // Property to control initial collapsed state
     @track currentMode = 'latest'; // 'latest', 'history-list', 'history-detail'
@@ -51,6 +53,8 @@ export default class AgentforceTopics extends LightningElement {
     @track isLoading = false;
     @track error;
     @track isCollapsed = false;
+    @track relatedRecords = [];
+    @track isLoadingLinks = false;
 
     wiredLatestResult;
     wiredHistoryResult;
@@ -91,6 +95,7 @@ export default class AgentforceTopics extends LightningElement {
         if (result.data) {
             if (this.currentMode === 'latest') {
                 this.currentTopic = result.data;
+                this.loadRelatedRecords(result.data.Related_Links__c);
             }
             this.error = undefined;
             // Set initial collapsed state: use defaultCollapsed property if data exists
@@ -233,6 +238,43 @@ export default class AgentforceTopics extends LightningElement {
         if (selectedTopic) {
             this.currentTopic = selectedTopic;
             this.currentMode = 'history-detail';
+            this.loadRelatedRecords(selectedTopic.Related_Links__c);
+        }
+    }
+
+    // Related record link cards
+    get hasRelatedLinks() {
+        return this.relatedRecords.length > 0 || this.isLoadingLinks;
+    }
+
+    async loadRelatedRecords(relatedLinksJson) {
+        this.relatedRecords = [];
+        if (!relatedLinksJson) return;
+
+        let ids;
+        try {
+            ids = JSON.parse(relatedLinksJson);
+        } catch (e) {
+            return;
+        }
+        if (!Array.isArray(ids) || ids.length === 0) return;
+
+        this.isLoadingLinks = true;
+        try {
+            const infos = await getRelatedRecordsInfo({ recordIds: ids });
+            this.relatedRecords = infos.map(info => ({
+                ...info,
+                url: `/lightning/r/${info.recordId}/view`
+            }));
+        } catch (e) {
+            this.relatedRecords = ids.map(id => ({
+                recordId: id,
+                label: id,
+                iconName: 'standard:record',
+                url: `/lightning/r/${id}/view`
+            }));
+        } finally {
+            this.isLoadingLinks = false;
         }
     }
 

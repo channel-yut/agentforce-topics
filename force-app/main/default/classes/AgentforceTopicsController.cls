@@ -8,8 +8,8 @@ public with sharing class AgentforceTopicsController {
     public static Agentforce_Topic__c getLatestTopic(String recordId) {
         try {
             List<Agentforce_Topic__c> topics = [
-                SELECT Id, Name, Content__c, Summary__c, Trigger_Type__c,
-                       Generated_Date__c, Feedback__c, Related_Record_Id__c
+                SELECT Id, Name, Content__c, Subject__c, Trigger_Type__c,
+                       Generated_Date__c, Feedback__c, Related_Record_Id__c, Related_Links__c
                 FROM Agentforce_Topic__c
                 WHERE Related_Record_Id__c = :recordId
                 WITH SECURITY_ENFORCED
@@ -26,8 +26,8 @@ public with sharing class AgentforceTopicsController {
     public static List<Agentforce_Topic__c> getTopicHistory(String recordId) {
         try {
             return [
-                SELECT Id, Name, Content__c, Summary__c, Trigger_Type__c,
-                       Generated_Date__c, Feedback__c, Related_Record_Id__c
+                SELECT Id, Name, Content__c, Subject__c, Trigger_Type__c,
+                       Generated_Date__c, Feedback__c, Related_Record_Id__c, Related_Links__c
                 FROM Agentforce_Topic__c
                 WHERE Related_Record_Id__c = :recordId
                 WITH SECURITY_ENFORCED
@@ -66,7 +66,7 @@ public with sharing class AgentforceTopicsController {
     }
 
     @AuraEnabled
-    public static String createTopic(String recordId, String content, String summary, String triggerType) {
+    public static String createTopic(String recordId, String content, String subject, String triggerType) {
         if (!Schema.SObjectType.Agentforce_Topic__c.isCreateable()) {
             throw new AuraHandledException('Insufficient permissions to create topic');
         }
@@ -74,7 +74,7 @@ public with sharing class AgentforceTopicsController {
             Agentforce_Topic__c newTopic = new Agentforce_Topic__c(
                 Related_Record_Id__c = recordId,
                 Content__c           = content,
-                Summary__c           = summary,
+                Subject__c           = subject,
                 Trigger_Type__c      = triggerType,
                 Generated_Date__c    = System.now()
             );
@@ -83,6 +83,97 @@ public with sharing class AgentforceTopicsController {
         } catch (Exception e) {
             throw new AuraHandledException('Error creating topic');
         }
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<RelatedRecordInfo> getRelatedRecordsInfo(List<String> recordIds) {
+        List<RelatedRecordInfo> results = new List<RelatedRecordInfo>();
+        if (recordIds == null || recordIds.isEmpty()) return results;
+
+        Map<String, List<String>> objectToIds = new Map<String, List<String>>();
+        for (String rid : recordIds) {
+            try {
+                Id sfId = (Id) rid;
+                String objName = sfId.getSObjectType().getDescribe().getName();
+                if (!objectToIds.containsKey(objName)) {
+                    objectToIds.put(objName, new List<String>());
+                }
+                objectToIds.get(objName).add(rid);
+            } catch (Exception e) {
+                RelatedRecordInfo info = new RelatedRecordInfo();
+                info.recordId = rid;
+                info.label = rid;
+                info.iconName = 'standard:record';
+                results.add(info);
+            }
+        }
+
+        Map<String, String> idToName = new Map<String, String>();
+        Map<String, String> idToIcon = new Map<String, String>();
+
+        for (String objName : objectToIds.keySet()) {
+            List<String> ids = objectToIds.get(objName);
+            String icon = getIconForObject(objName);
+            String nameField = getNameFieldForObject(objName);
+
+            try {
+                String soql = 'SELECT Id, ' + nameField + ' FROM ' + objName
+                    + ' WHERE Id IN :ids WITH SECURITY_ENFORCED LIMIT 200';
+                for (SObject obj : Database.query(soql)) {
+                    String recId = (String) obj.get('Id');
+                    Object nameVal = obj.get(nameField);
+                    idToName.put(recId, nameVal != null ? String.valueOf(nameVal) : recId);
+                    idToIcon.put(recId, icon);
+                }
+            } catch (Exception e) {
+                for (String rid : ids) {
+                    idToName.put(rid, rid);
+                    idToIcon.put(rid, 'standard:record');
+                }
+            }
+        }
+
+        for (String rid : recordIds) {
+            RelatedRecordInfo info = new RelatedRecordInfo();
+            info.recordId = rid;
+            info.label = idToName.containsKey(rid) ? idToName.get(rid) : rid;
+            info.iconName = idToIcon.containsKey(rid) ? idToIcon.get(rid) : 'standard:record';
+            results.add(info);
+        }
+        return results;
+    }
+
+    private static String getNameFieldForObject(String objName) {
+        Map<String, String> nameFields = new Map<String, String>{
+            'Task'         => 'Subject',
+            'Event'        => 'Subject',
+            'Case'         => 'Subject',
+            'EmailMessage' => 'Subject'
+        };
+        return nameFields.containsKey(objName) ? nameFields.get(objName) : 'Name';
+    }
+
+    private static String getIconForObject(String objName) {
+        Map<String, String> icons = new Map<String, String>{
+            'Account'      => 'standard:account',
+            'Opportunity'  => 'standard:opportunity',
+            'Contact'      => 'standard:contact',
+            'Lead'         => 'standard:lead',
+            'Case'         => 'standard:case',
+            'Task'         => 'standard:task',
+            'Event'        => 'standard:event',
+            'Contract'     => 'standard:contract',
+            'Order'        => 'standard:orders'
+        };
+        if (icons.containsKey(objName)) return icons.get(objName);
+        if (objName.endsWith('__c')) return 'standard:custom';
+        return 'standard:record';
+    }
+
+    public class RelatedRecordInfo {
+        @AuraEnabled public String recordId  { get; set; }
+        @AuraEnabled public String label     { get; set; }
+        @AuraEnabled public String iconName  { get; set; }
     }
 
     @AuraEnabled(cacheable=true)

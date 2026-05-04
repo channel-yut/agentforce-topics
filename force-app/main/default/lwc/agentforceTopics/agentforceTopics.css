@@ -39,6 +39,44 @@
     gap: 0.5rem;
 }
 
+/* Related record link cards grid */
+.related-links-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.related-link-card {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--slds-g-color-neutral-base-95, #f3f3f2);
+    border: 1px solid var(--slds-g-color-neutral-base-80, #c9c9c9);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--slds-g-color-neutral-base-10, #181818);
+    font-size: 0.8125rem;
+    overflow: hidden;
+    transition: background-color 0.15s;
+}
+
+.related-link-card:hover {
+    background-color: var(--slds-g-color-neutral-base-90, #e5e5e5);
+    text-decoration: none;
+}
+
+.related-link-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 1;
+}
+
+.related-link-card_loading {
+    justify-content: center;
+    min-height: 2.5rem;
+}
+
 /* Responsive design for mobile */
 @media (max-width: 768px) {
     .slds-grid.slds-grid_align-spread {
@@ -47,5 +85,9 @@
 
     .slds-grid.slds-grid_align-spread .slds-col {
         margin-bottom: 0.5rem;
+    }
+
+    .related-links-grid {
+        grid-template-columns: 1fr;
     }
 }

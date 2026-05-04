@@ -37,8 +37,8 @@ public with sharing class AgentforceTopicTriggerHandler {
 
     public static void handleBeforeInsert(List<Agentforce_Topic__c> newTopics) {
         for (Agentforce_Topic__c topic : newTopics) {
-            if (String.isBlank(topic.Summary__c)) {
-                topic.Summary__c = SAMPLE_SUMMARY;
+            if (String.isBlank(topic.Subject__c)) {
+                topic.Subject__c = SAMPLE_SUMMARY;
             }
             if (String.isBlank(topic.Content__c)) {
                 topic.Content__c = SAMPLE_CONTENT;

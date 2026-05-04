@@ -5,7 +5,7 @@ public class TestDataFactory {
         Agentforce_Topic__c topic = new Agentforce_Topic__c(
             Related_Record_Id__c  = relatedRecordId,
             Trigger_Type__c       = triggerType,
-            Summary__c            = 'Test Summary - ' + triggerType,
+            Subject__c            = 'Test Summary - ' + triggerType,
             Content__c            = '<p>Test Content</p>',
             Generated_Date__c     = System.now(),
             Feedback__c           = feedback,
@@ -21,7 +21,7 @@ public class TestDataFactory {
             topics.add(new Agentforce_Topic__c(
                 Related_Record_Id__c  = relatedRecordId,
                 Trigger_Type__c       = triggerType,
-                Summary__c            = 'Test Summary ' + i,
+                Subject__c            = 'Test Summary ' + i,
                 Content__c            = '<p>Test Content ' + i + '</p>',
                 Generated_Date__c     = System.now(),
                 Feedback__c           = feedback,

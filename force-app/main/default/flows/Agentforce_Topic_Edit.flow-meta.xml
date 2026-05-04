@@ -18,9 +18,9 @@
             </value>
         </inputParameters>
         <inputParameters>
-            <name>summary</name>
+            <name>subject</name>
             <value>
-                <elementReference>New_Summary</elementReference>
+                <elementReference>New_Subject</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
@@ -80,12 +80,12 @@
             <targetReference>Update_Topic</targetReference>
         </connector>
         <fields>
-            <name>New_Summary</name>
+            <name>New_Subject</name>
             <dataType>String</dataType>
             <defaultValue>
-                <elementReference>Get_Topic.Summary__c</elementReference>
+                <elementReference>Get_Topic.Subject__c</elementReference>
             </defaultValue>
-            <fieldText>サマリー</fieldText>
+            <fieldText>件名</fieldText>
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
         </fields>

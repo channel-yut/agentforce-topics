@@ -89,7 +89,7 @@ private class AgentforceTopicTriggerHandlerTest {
 
         // When — update something other than feedback
         Test.startTest();
-        topic.Summary__c = 'Updated Summary';
+        topic.Subject__c = 'Updated Subject';
         update topic;
         Test.stopTest();
 

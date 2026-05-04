@@ -19,7 +19,7 @@ public with sharing class AgentforceTopicCreator {
                 if (String.isNotBlank(req.topicId)) {
                     Agentforce_Topic__c topic = new Agentforce_Topic__c(
                         Id         = req.topicId,
-                        Summary__c = req.summary,
+                        Subject__c = req.subject,
                         Content__c = req.content
                     );
                     if (String.isNotBlank(req.relatedRecordId)) {
@@ -31,6 +31,9 @@ public with sharing class AgentforceTopicCreator {
                     if (String.isNotBlank(req.objectApiName)) {
                         topic.Object_Api_Name__c = req.objectApiName;
                     }
+                    if (String.isNotBlank(req.relatedLinks)) {
+                        topic.Related_Links__c = req.relatedLinks;
+                    }
                     update topic;
 
                     result.topicId = topic.Id;
@@ -41,9 +44,12 @@ public with sharing class AgentforceTopicCreator {
                         Related_Record_Id__c = req.relatedRecordId,
                         Trigger_Type__c      = req.triggerType,
                         Generated_Date__c    = DateTime.now(),
-                        Summary__c           = req.summary,
+                        Subject__c           = req.subject,
                         Content__c           = req.content
                     );
+                    if (String.isNotBlank(req.relatedLinks)) {
+                        topic.Related_Links__c = req.relatedLinks;
+                    }
                     if (String.isNotBlank(req.objectApiName)) {
                         topic.Object_Api_Name__c = req.objectApiName;
                     } else if (String.isNotBlank(req.relatedRecordId) && req.relatedRecordId.length() >= 3) {
@@ -94,11 +100,14 @@ public with sharing class AgentforceTopicCreator {
         @InvocableVariable(label='Object API Name' description='Salesforce object API name (e.g., Account, Opportunity). Auto-detected from Related Record ID if omitted.' required=false)
         public String objectApiName;
 
-        @InvocableVariable(label='Summary' description='Short summary text' required=true)
-        public String summary;
+        @InvocableVariable(label='Subject' description='Subject title (single line)' required=true)
+        public String subject;
 
         @InvocableVariable(label='Content' description='Rich HTML content' required=true)
         public String content;
+
+        @InvocableVariable(label='Related Links' description='JSON array of related record IDs (e.g. ["001xxx","00Txxx"])' required=false)
+        public String relatedLinks;
     }
 
     public class Result {

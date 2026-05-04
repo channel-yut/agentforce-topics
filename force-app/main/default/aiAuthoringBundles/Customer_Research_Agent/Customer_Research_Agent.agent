@@ -417,7 +417,7 @@ subagent save_topic:
 
             create_topic: @actions.create_topic
                 description: "Agentforce Topicsレコードを作成する"
-                with summary = @variables.research_result_summary
+                with subject = @variables.research_result_summary
                 with content = @variables.research_result_content
                 with relatedRecordId = @variables.related_record_id
                 with triggerType = @variables.trigger_type
@@ -438,8 +438,8 @@ subagent save_topic:
             description: "Agentforce Topicsレコードを新規作成または更新する"
             target: "apex://AgentforceTopicCreator"
             inputs:
-                summary: string
-                    description: "リサーチ結果の概要テキスト（1〜2行）"
+                subject: string
+                    description: "リサーチ結果のタイトル（1文）"
                     is_required: True
                 content: string
                     description: "リサーチ結果のHTMLコンテンツ"
