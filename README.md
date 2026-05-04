@@ -323,13 +323,7 @@ agent_router
 **前提:** このリポジトリをクローンし、デプロイ先組織にログイン済みであること。パッケージ本体（v1.3.0）が先にインストール済みであること。
 
 ```bash
-# 1. Apex Actions をデプロイ（パッケージに含まれていない場合）
-sf project deploy start \
-  --metadata ApexClass:CheckRecentEarnings \
-  --metadata ApexClass:AgentforceHeadlessResearch \
-  --target-org <org-alias>
-
-# 2. Screen Flow と Quick Action をデプロイ
+# 1. Screen Flow と Quick Action をデプロイ
 sf project deploy start \
   --source-dir force-app/main/default/flows/Customer_Research_Action.flow-meta.xml \
   --target-org <org-alias>
@@ -338,22 +332,22 @@ sf project deploy start \
   --source-dir force-app/main/default/quickActions/Customer_Research.quickAction-meta.xml \
   --target-org <org-alias>
 
-# 3. エージェントのメタデータをデプロイ
+# 2. エージェントのメタデータをデプロイ
 sf project deploy start \
   --source-dir force-app/main/default/aiAuthoringBundles \
   --target-org <org-alias>
 
-# 4. バリデーション
+# 3. バリデーション
 sf agent validate authoring-bundle \
   --api-name Customer_Research_Agent \
   --json
 
-# 5. Publish（バージョンを確定）
+# 4. Publish（バージョンを確定）
 sf agent publish authoring-bundle \
   --api-name Customer_Research_Agent \
   --json
 
-# 6. Activate（ユーザーへ公開）
+# 5. Activate（ユーザーへ公開）
 sf agent activate \
   --api-name Customer_Research_Agent \
   --json
