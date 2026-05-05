@@ -120,6 +120,44 @@ private class WeeklyFeedbackAnalysisSchedulerTest {
     }
 
     // ─────────────────────────────────────────────
+    // execute() — enabled path (runAnalysis coverage)
+    // ─────────────────────────────────────────────
+
+    @isTest
+    static void execute_EnabledWithSufficientFeedback_RunsAnalysis() {
+        // Given — enough negative feedback to exceed threshold
+        TestDataFactory.createTopics(6, RELATED_ID, TRIGGER_TYPE, '役立たなかった', '抽象的', true);
+        WeeklyFeedbackAnalysisScheduler.testOverrideEnabled = true;
+
+        // When
+        Test.startTest();
+        WeeklyFeedbackAnalysisScheduler scheduler = new WeeklyFeedbackAnalysisScheduler();
+        scheduler.execute(null);
+        Test.stopTest();
+
+        // Then — learning record should be created
+        Integer learningCount = [SELECT COUNT() FROM Agentforce_Topic_Learning__c];
+        Assert.isTrue(learningCount > 0, 'Learning record should be created when analysis runs');
+    }
+
+    @isTest
+    static void execute_EnabledBelowThreshold_SkipsRunAnalysis() {
+        // Given — only 1 negative feedback (below default threshold of 5)
+        TestDataFactory.createTopics(1, RELATED_ID, TRIGGER_TYPE, '役立たなかった', '抽象的', true);
+        WeeklyFeedbackAnalysisScheduler.testOverrideEnabled = true;
+
+        // When
+        Test.startTest();
+        WeeklyFeedbackAnalysisScheduler scheduler = new WeeklyFeedbackAnalysisScheduler();
+        scheduler.execute(null);
+        Test.stopTest();
+
+        // Then — no learning record because count is below threshold
+        Integer learningCount = [SELECT COUNT() FROM Agentforce_Topic_Learning__c];
+        Assert.areEqual(0, learningCount, 'No learning record when feedback count below threshold');
+    }
+
+    // ─────────────────────────────────────────────
     // Scheduled execution via System.schedule
     // ─────────────────────────────────────────────
 

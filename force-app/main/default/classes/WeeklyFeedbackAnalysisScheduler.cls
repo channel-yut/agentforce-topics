@@ -9,10 +9,13 @@ global without sharing class WeeklyFeedbackAnalysisScheduler implements Schedula
     private static final String CRON_DAILY  = '0 0 9 * * ?';
     private static final String CRON_WEEKLY = '0 0 9 ? * MON';
 
+    @TestVisible
+    private static Boolean testOverrideEnabled = false;
+
     global void execute(SchedulableContext sc) {
         Agentforce_Topics_Config__mdt config = getConfig();
 
-        if (!config.Analysis_Enabled__c) {
+        if (!testOverrideEnabled && !config.Analysis_Enabled__c) {
             System.debug('Agentforce Topics: analysis disabled via config. Skipping.');
             return;
         }
