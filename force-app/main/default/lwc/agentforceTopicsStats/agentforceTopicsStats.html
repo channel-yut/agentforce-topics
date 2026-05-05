@@ -1,0 +1,105 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="standard:dashboard" size="small"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-text-heading_small">{labels.title}</span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Error State -->
+            <template if:true={error}>
+                <div class="slds-p-around_medium">
+                    <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                        <span class="slds-assistive-text">error</span>
+                        <h2>エラーが発生しました</h2>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Statistics Content -->
+            <template if:true={hasData}>
+                <!-- KPI Tiles -->
+                <div class="slds-grid slds-wrap slds-gutters_small slds-m-bottom_medium">
+                    <!-- Total Topics -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                        <div class="slds-box slds-theme_default stat-tile">
+                            <div class="stat-label">{labels.totalTopics}</div>
+                            <div class="stat-value">{statistics.totalTopicsCount}</div>
+                        </div>
+                    </div>
+
+                    <!-- Total Feedback -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                        <div class="slds-box slds-theme_default stat-tile">
+                            <div class="stat-label">{labels.totalFeedback}</div>
+                            <div class="stat-value">{statistics.totalFeedbackCount}</div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Rate -->
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                        <div class="slds-box slds-theme_default stat-tile">
+                            <div class="stat-label">{labels.feedbackRate}</div>
+                            <div class="stat-value stat-value-success">{formattedFeedbackRate}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Breakdown -->
+                <div class="slds-box slds-theme_shade">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">Feedback Breakdown</h3>
+
+                    <!-- Helpful Count -->
+                    <div class="slds-m-bottom_medium">
+                        <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                            <span class="slds-text-body_small">{labels.helpful}</span>
+                            <span class="slds-text-body_small slds-text-color_success">
+                                <strong>{statistics.helpfulCount}</strong>
+                            </span>
+                        </div>
+                        <div class="slds-progress-bar slds-progress-bar_large" aria-valuemin="0"
+                             aria-valuemax="100" aria-valuenow={helpfulPercentage} role="progressbar">
+                            <span class={helpfulProgressClass} style={helpfulProgressStyle}>
+                                <span class="slds-assistive-text">{helpfulPercentage}%</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Not Helpful Count -->
+                    <div>
+                        <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                            <span class="slds-text-body_small">{labels.notHelpful}</span>
+                            <span class="slds-text-body_small slds-text-color_error">
+                                <strong>{statistics.notHelpfulCount}</strong>
+                            </span>
+                        </div>
+                        <div class="slds-progress-bar slds-progress-bar_large" aria-valuemin="0"
+                             aria-valuemax="100" aria-valuenow={notHelpfulPercentage} role="progressbar">
+                            <span class="slds-progress-bar__value progress-error" style={notHelpfulProgressStyle}>
+                                <span class="slds-assistive-text">{notHelpfulPercentage}%</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- No Data State -->
+            <template if:false={hasData}>
+                <template if:false={error}>
+                    <div class="slds-align_absolute-center slds-p-around_large">
+                        <lightning-icon icon-name="utility:info" size="large" alternative-text="No Data"></lightning-icon>
+                        <p class="slds-m-top_small slds-text-body_regular">{labels.noData}</p>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </article>
+</template>
