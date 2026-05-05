@@ -117,7 +117,8 @@ public with sharing class AgentforceTopicsController {
             String nameField = getNameFieldForObject(objName);
 
             try {
-                String soql = 'SELECT Id, ' + nameField + ' FROM ' + objName
+                String safeNameField = String.escapeSingleQuotes(nameField);
+                String soql = 'SELECT Id, ' + safeNameField + ' FROM ' + objName
                     + ' WHERE Id IN :ids WITH SECURITY_ENFORCED LIMIT 200';
                 for (SObject obj : Database.query(soql)) {
                     String recId = (String) obj.get('Id');

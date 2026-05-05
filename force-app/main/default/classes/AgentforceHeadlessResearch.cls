@@ -77,8 +77,17 @@ public with sharing class AgentforceHeadlessResearch {
     }
 
     private static String buildUserMessage(String accountName, String relatedRecordId, String objectApiName, String researchType) {
-        String obj = String.isBlank(objectApiName) ? 'Account' : objectApiName;
-        String recordId = String.isBlank(relatedRecordId) ? '' : relatedRecordId;
-        return '【自動実行】' + accountName + ' / ' + researchType + ' / ' + recordId + ' / ' + obj;
+        String obj      = String.isBlank(objectApiName)  ? 'Account' : sanitizeInput(objectApiName,  50);
+        String recordId = String.isBlank(relatedRecordId) ? ''       : sanitizeInput(relatedRecordId, 18);
+        String name     = sanitizeInput(accountName,  200);
+        String rType    = sanitizeInput(researchType, 50);
+        return '【自動実行】' + name + ' / ' + rType + ' / ' + recordId + ' / ' + obj;
+    }
+
+    private static String sanitizeInput(String value, Integer maxLength) {
+        if (String.isBlank(value)) return '';
+        // 制御文字・改行を除去してプロンプトインジェクションを防止
+        String sanitized = value.replaceAll('[\\p{Cntrl}]', '').trim();
+        return sanitized.length() > maxLength ? sanitized.left(maxLength) : sanitized;
     }
 }

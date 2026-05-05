@@ -381,7 +381,7 @@
             <field>Name</field>
         </outputAssignments>
     </recordLookups>
-    <runInMode>SystemModeWithoutSharing</runInMode>
+    <runInMode>SystemModeWithSharing</runInMode>
     <screens>
         <name>Account_Select_Screen</name>
         <label>取引先を選択</label>
