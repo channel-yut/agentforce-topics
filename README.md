@@ -555,6 +555,6 @@ System.debug(context);
 
 ---
 
-**Package Version**: 1.4.0  
-**SubscriberPackageVersionId**: `04tId000000cEhLIAU`  
+**Package Version**: 1.5.0  
+**SubscriberPackageVersionId**: `04tId000000cEhQIAU`  
 **Last Updated**: 2026-05-05
