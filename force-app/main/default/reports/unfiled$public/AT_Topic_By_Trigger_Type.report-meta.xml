@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <format>Summary</format>
+    <groupingsDown>
+        <field>Agentforce_Topic__c$Trigger_Type__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>[AT] トリガータイプ別 Topic 数</name>
+    <reportType>Agentforce_Topics__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+</Report>
