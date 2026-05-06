@@ -316,7 +316,7 @@
         <locationY>240</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Assign_Account_Name_Case</targetReference>
+            <targetReference>Get_Account_From_Case</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -329,8 +329,32 @@
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Case</object>
         <outputAssignments>
+            <assignToReference>varCaseAccountId</assignToReference>
+            <field>AccountId</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Account_From_Case</name>
+        <label>Case経由で取引先名取得</label>
+        <locationX>704</locationX>
+        <locationY>300</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assign_Account_Name_Case</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>varCaseAccountId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Account</object>
+        <outputAssignments>
             <assignToReference>varAccountName</assignToReference>
-            <field>Account.Name</field>
+            <field>Name</field>
         </outputAssignments>
     </recordLookups>
     <recordLookups>
@@ -504,6 +528,13 @@
     </variables>
     <variables>
         <name>varSelectedAccountId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>varCaseAccountId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
