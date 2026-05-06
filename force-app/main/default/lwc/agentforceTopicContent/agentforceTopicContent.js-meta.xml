@@ -9,9 +9,6 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
-            <objects>
-                <object>Agentforce_Topic__c</object>
-            </objects>
             <property name="recordId" type="String" />
         </targetConfig>
     </targetConfigs>
