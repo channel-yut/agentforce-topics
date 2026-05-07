@@ -57,19 +57,19 @@ start_agent agent_router:
                 - スコープ外の依頼 → go_to_off_topic
                 - 意図が不明な場合 → go_to_ambiguous_question
         actions:
-            go_to_save: @utils.transition to @subagent.save_topic
+            go_to_save: @utils.transition to @topic.save_topic
                 description: "リサーチ結果をAgentforce Topicsとして保存・記録する依頼"
-            go_to_web_research: @utils.transition to @subagent.web_research
+            go_to_web_research: @utils.transition to @topic.web_research
                 description: "Webリサーチ・ニュース・動向調査の依頼"
-            go_to_competitive_analysis: @utils.transition to @subagent.competitive_analysis
+            go_to_competitive_analysis: @utils.transition to @topic.competitive_analysis
                 description: "競合分析・競合比較・市場シェア調査の依頼"
-            go_to_earnings_summary: @utils.transition to @subagent.earnings_summary
+            go_to_earnings_summary: @utils.transition to @topic.earnings_summary
                 description: "決算・財務・業績・四半期報告に関するサマリーの依頼"
-            go_to_headless: @utils.transition to @subagent.headless_research
+            go_to_headless: @utils.transition to @topic.headless_research
                 description: "「【自動実行】」で始まるメッセージ。確認なしで即リサーチ・保存を実行する"
-            go_to_off_topic: @utils.transition to @subagent.off_topic
+            go_to_off_topic: @utils.transition to @topic.off_topic
                 description: "顧客リサーチ・競合分析・決算以外のスコープ外の依頼"
-            go_to_ambiguous_question: @utils.transition to @subagent.ambiguous_question
+            go_to_ambiguous_question: @utils.transition to @topic.ambiguous_question
                 description: "意図が不明でどのサブエージェントに振るべきか判断できない場合"
 
 subagent web_research:
@@ -133,15 +133,15 @@ subagent web_research:
                 with research_result_content = ...
                 with trigger_type = ...
 
-            suggest_earnings: @utils.transition to @subagent.earnings_summary
+            suggest_earnings: @utils.transition to @topic.earnings_summary
                 description: "直近の決算発表がありAgentforce Topicsが未作成の場合、決算サマリーを作成する"
                 available when @variables.has_recent_earnings == True and @variables.has_existing_earnings_topic == False
 
-            go_to_save: @utils.transition to @subagent.save_topic
+            go_to_save: @utils.transition to @topic.save_topic
                 description: "リサーチ結果をAgentforce Topicsとして保存するかどうか確認する"
                 available when @variables.research_result_summary != ""
 
-            go_to_router: @utils.transition to @subagent.agent_router
+            go_to_router: @utils.transition to @topic.agent_router
                 description: "別のリサーチや操作を依頼する場合はここに戻る"
 
 
@@ -251,11 +251,11 @@ subagent competitive_analysis:
                 with research_result_content = ...
                 with trigger_type = ...
 
-            go_to_save: @utils.transition to @subagent.save_topic
+            go_to_save: @utils.transition to @topic.save_topic
                 description: "競合分析結果をAgentforce Topicsとして保存するかどうか確認する"
                 available when @variables.research_result_summary != ""
 
-            go_to_router: @utils.transition to @subagent.agent_router
+            go_to_router: @utils.transition to @topic.agent_router
                 description: "別のリサーチや操作を依頼する場合はここに戻る"
 
 
@@ -351,11 +351,11 @@ subagent earnings_summary:
                 with research_result_content = ...
                 with trigger_type = ...
 
-            go_to_save: @utils.transition to @subagent.save_topic
+            go_to_save: @utils.transition to @topic.save_topic
                 description: "決算サマリーをAgentforce Topicsとして保存するかどうか確認する"
                 available when @variables.research_result_summary != ""
 
-            go_to_router: @utils.transition to @subagent.agent_router
+            go_to_router: @utils.transition to @topic.agent_router
                 description: "別のリサーチや操作を依頼する場合はここに戻る"
 
 
@@ -428,11 +428,11 @@ subagent save_topic:
                 set @variables.topic_id = @outputs.topicId
                 available when @variables.save_confirmed == True and @variables.related_record_id != "" and @variables.topic_id == ""
 
-            go_to_router_after_save: @utils.transition to @subagent.agent_router
+            go_to_router_after_save: @utils.transition to @topic.agent_router
                 description: "保存完了後にルーターへ戻る"
                 available when @variables.topic_id != ""
 
-            skip_save: @utils.transition to @subagent.agent_router
+            skip_save: @utils.transition to @topic.agent_router
                 description: "保存不要な場合にルーターへ戻る"
 
 
@@ -611,7 +611,7 @@ subagent off_topic:
               - 上記リサーチ結果のAgentforce Topicsへの保存
               上記のいずれかについてお手伝いできることがあればお気軽にどうぞ。
         actions:
-            go_to_router: @utils.transition to @subagent.agent_router
+            go_to_router: @utils.transition to @topic.agent_router
                 description: "対応可能な依頼がある場合にルーターへ戻る"
 
 subagent ambiguous_question:
@@ -625,5 +625,5 @@ subagent ambiguous_question:
               - 「○○社の直近の決算をまとめてください」
               対象となる取引先名と、何を調べたいかを教えてください。
         actions:
-            go_to_router: @utils.transition to @subagent.agent_router
+            go_to_router: @utils.transition to @topic.agent_router
                 description: "ユーザーが意図を明確にした場合にルーターへ戻る"
