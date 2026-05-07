@@ -1,8 +1,8 @@
 {
   "packageDirectories": [
     {
-      "versionName": "Spring 2026 v1.6",
-      "versionNumber": "1.6.0.NEXT",
+      "versionName": "Spring 2026 v1.8",
+      "versionNumber": "1.8.0.NEXT",
       "path": "force-app",
       "default": true,
       "package": "Agentforce Topics",
@@ -23,6 +23,9 @@
     "Agentforce Topics@1.4.0-1": "04tId000000cEhLIAU",
     "Agentforce Topics@1.5.0-1": "04tId000000cEhQIAU",
     "Agentforce Topics@1.5.0-2": "04tId000000cEliIAE",
-    "Agentforce Topics@1.6.0-1": "04tId000000cElnIAE"
+    "Agentforce Topics@1.6.0-1": "04tId000000cElnIAE",
+    "Agentforce Topics@1.7.0-1": "04tId000000cElsIAE",
+    "Agentforce Topics@1.8.0-1": "04tId000000cElxIAE",
+    "Agentforce Topics@1.8.0-2": "04tId000000cEm2IAE"
   }
 }

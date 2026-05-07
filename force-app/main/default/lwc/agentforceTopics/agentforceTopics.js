@@ -182,15 +182,14 @@ export default class AgentforceTopics extends LightningElement {
             : 'slds-m-left_xx-small';
     }
 
-    // Filter out current topic from history list
+    // Filter out latest topic from history list
     get filteredHistoryTopics() {
         if (!this.historyTopics || this.historyTopics.length === 0) return [];
 
-        // Get current topic ID (from latest or selected history)
-        const currentId = this.currentTopic?.Id;
+        // Always exclude the latest topic (not the currently-viewed one)
+        const latestId = this.wiredLatestResult?.data?.Id;
 
-        // Filter out the current topic
-        return this.historyTopics.filter(topic => topic.Id !== currentId);
+        return this.historyTopics.filter(topic => topic.Id !== latestId);
     }
 
     get hasHistory() {
