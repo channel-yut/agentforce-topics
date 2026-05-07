@@ -326,10 +326,6 @@ agent_router
 >
 > 1. **Agentforce / Einstein Copilot を有効化**
 >    - Setup → **Einstein** → **Agentforce Agents** → 有効化
->    - これにより Einstein Agent User が自動作成され、Agent に紐付けられます
->
-> 2. **ユーザーに Copilot 権限セットを割り当て**
->    - Setup → **Permission Sets** → `CopilotSalesforceAdmin`（管理者）または `CopilotSalesforceUser`（一般ユーザー）を割り当て
 
 ```bash
 # 1. Screen Flow と Quick Action をデプロイ
@@ -355,7 +351,41 @@ sf agent publish authoring-bundle \
 sf agent activate \
   --api-name Customer_Research_Agent \
   --json
+
+# 5. SetupEntityAccess を挿入（サイドパネル表示に必要）
+# ※ Agent Script / メタデータAPI経由でデプロイした場合、Salesforce は自動で
+#   SetupEntityAccess レコードを作成しない。これがないとサイドパネルにエージェントが表示されない。
+
+# エージェント専用権限セットのIDを取得
+sf data query --json \
+  -q "SELECT Id FROM PermissionSet WHERE Label LIKE '%Customer_Research_Agent%の権限'"
+
+# BotDefinition のIDを取得
+sf data query --json \
+  -q "SELECT Id FROM BotDefinition WHERE DeveloperName = 'Customer_Research_Agent'"
+
+# 上記2つのIDを使って SetupEntityAccess を挿入
+sf data create record --json --sobject SetupEntityAccess \
+  --values "ParentId='<PermissionSet ID>' SetupEntityId='<BotDefinition ID>'"
+
+# 6. エージェント専用権限セットを対象ユーザーに割り当て
+# ※ SetupEntityAccess を挿入しても、権限セット自体がユーザーに割り当てられていないと
+#   サイドパネルにエージェントが表示されない。
+
+# 対象ユーザーのIDを取得（例: admin ユーザー）
+sf data query --json \
+  -q "SELECT Id FROM User WHERE Username = '<your-username>'"
+
+# 権限セットを割り当て
+sf data create record --json --sobject PermissionSetAssignment \
+  --values "AssigneeId='<User ID>' PermissionSetId='<PermissionSet ID>'"
 ```
+
+> **補足:** 手順 6（権限セットの割り当て）は UI からも実施可能です。
+> 1. Setup → **Permission Sets** → `Agentforce エージェント Customer_Research_Agent の権限` を開く
+> 2. **Manage Assignments** → **Add Assignments** → 対象ユーザーを選択して **Assign**
+>
+> ⚠️ ただし UI から割り当てた場合でも、**SetupEntityAccess は自動作成されません**。手順 5 の CLI での挿入は必ず実施してください。
 
 ### Quick Action の配置
 
@@ -375,7 +405,7 @@ sf agent activate \
 
 ### 有効化手順（UI）
 
-**前提:** パッケージ本体が先にインストール済みであること。Agentforce Agents が有効化済みで、対象ユーザーに `CopilotSalesforceAdmin/User` 権限セットが割り当て済みであること。
+**前提:** パッケージ本体が先にインストール済みであること。Agentforce Agents が有効化済みであること。
 
 1. **メタデータをデプロイ**
    - このリポジトリをクローンし、`force-app/main/default/aiAuthoringBundles/Customer_Research_Agent/` 配下の2ファイルを Workbench または VS Code の Salesforce 拡張機能でデプロイ
@@ -387,7 +417,30 @@ sf agent activate \
 3. **Activate**
    - Publish 完了後、**Activate** ボタンをクリック
 
-4. **動作確認**
+4. **SetupEntityAccess を挿入（CLI 必須）**
+   - Agent Script デプロイでは Salesforce が SetupEntityAccess を自動作成しないため、CLI で手動挿入が必要です
+   ```bash
+   # エージェント専用権限セットのIDを取得
+   sf data query --json \
+     -q "SELECT Id FROM PermissionSet WHERE Label LIKE '%Customer_Research_Agent%の権限'" \
+     --target-org <org-alias>
+
+   # BotDefinition のIDを取得
+   sf data query --json \
+     -q "SELECT Id FROM BotDefinition WHERE DeveloperName = 'Customer_Research_Agent'" \
+     --target-org <org-alias>
+
+   # SetupEntityAccess を挿入
+   sf data create record --json --sobject SetupEntityAccess \
+     --values "ParentId='<PermissionSet ID>' SetupEntityId='<BotDefinition ID>'" \
+     --target-org <org-alias>
+   ```
+
+5. **エージェント専用権限セットをユーザーに割り当て**
+   - Setup → **Permission Sets** → `Agentforce エージェント Customer_Research_Agent の権限` を開く
+   - **Manage Assignments** → **Add Assignments** → 対象ユーザーを選択して **Assign**
+
+6. **動作確認**
    - Einstein Copilot サイドパネルを開き、「〇〇社の最新ニュースをリサーチして」などと入力して動作を確認
    - または Account レコードページの **「顧客リサーチ」** ボタンをクリックして動作を確認
 
