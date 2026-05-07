@@ -15,7 +15,8 @@ package.xml
 **/translations/**
 
 # AiAuthoringBundle (Agent Script) - not supported in unlocked packages
-**/aiAuthoringBundles/**
+# ⚠️ パッケージバージョン作成時のみ、下の行のコメントアウトを外すこと
+# **/aiAuthoringBundles/**
 
 # Auto-generated artifacts from agent publish/activate (org-specific)
 **/bots/**
