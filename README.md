@@ -318,7 +318,18 @@ agent_router
 
 ### 有効化手順（CLI）
 
-**前提:** このリポジトリをクローンし、デプロイ先組織にログイン済みであること。パッケージ本体（v1.3.0）が先にインストール済みであること。
+**前提:** このリポジトリをクローンし、デプロイ先組織にログイン済みであること。パッケージ本体が先にインストール済みであること。
+
+> ⚠️ **デプロイ前に必ず実施すること**
+>
+> 以下を先に有効化しておかないと、Einstein Copilot アイコンが表示されず動作しません。
+>
+> 1. **Agentforce / Einstein Copilot を有効化**
+>    - Setup → **Einstein** → **Agentforce Agents** → 有効化
+>    - これにより Einstein Agent User が自動作成され、Agent に紐付けられます
+>
+> 2. **ユーザーに Copilot 権限セットを割り当て**
+>    - Setup → **Permission Sets** → `CopilotSalesforceAdmin`（管理者）または `CopilotSalesforceUser`（一般ユーザー）を割り当て
 
 ```bash
 # 1. Screen Flow と Quick Action をデプロイ
@@ -364,7 +375,7 @@ sf agent activate \
 
 ### 有効化手順（UI）
 
-**前提:** パッケージ本体（v1.3.0）が先にインストール済みであること。
+**前提:** パッケージ本体が先にインストール済みであること。Agentforce Agents が有効化済みで、対象ユーザーに `CopilotSalesforceAdmin/User` 権限セットが割り当て済みであること。
 
 1. **メタデータをデプロイ**
    - このリポジトリをクローンし、`force-app/main/default/aiAuthoringBundles/Customer_Research_Agent/` 配下の2ファイルを Workbench または VS Code の Salesforce 拡張機能でデプロイ
