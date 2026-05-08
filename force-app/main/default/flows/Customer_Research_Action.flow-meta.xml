@@ -45,9 +45,6 @@
         <locationY>0</locationY>
         <actionName>AgentforceHeadlessResearch</actionName>
         <actionType>apex</actionType>
-        <connector>
-            <targetReference>Complete_Screen</targetReference>
-        </connector>
         <faultConnector>
             <targetReference>Error_Screen</targetReference>
         </faultConnector>
@@ -140,7 +137,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Check_Recent_Earnings</targetReference>
+            <targetReference>Start_Screen</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -156,7 +153,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Check_Recent_Earnings</targetReference>
+            <targetReference>Start_Screen</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -172,7 +169,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Check_Recent_Earnings</targetReference>
+            <targetReference>Start_Screen</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -195,7 +192,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Check_Recent_Earnings</targetReference>
+            <targetReference>Start_Screen</targetReference>
         </connector>
     </assignments>
     <decisions>
@@ -203,9 +200,6 @@
         <label>決算サマリーも実行？</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>Complete_Screen</targetReference>
-        </defaultConnector>
         <defaultConnectorLabel>不要</defaultConnectorLabel>
         <rules>
             <name>Run_Earnings_Summary</name>
@@ -503,16 +497,19 @@
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Complete_Screen</name>
+        <name>Start_Screen</name>
         <label>リサーチ開始</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Check_Recent_Earnings</targetReference>
+        </connector>
         <fields>
-            <name>Complete_Message</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;✅ リサーチを開始しました&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!varAccountName} のリサーチをバックグラウンドで実行中です。完了後、Agentforce Topics に自動保存されます。&lt;/p&gt;</fieldText>
+            <name>Start_Message</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;🔍 リサーチを開始します&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;{!varAccountName}&lt;/strong&gt; のリサーチをバックグラウンドで実行します。&lt;/p&gt;&lt;p&gt;「次へ」を押してください。完了後、しばらくしてからページをリロードすると Agentforce Topics に結果が表示されます。&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
                 <verticalAlignment>

@@ -23,20 +23,26 @@ variables:
         description: "保存先レコードのSalesforce ID（取引先またはオポチュニティ）"
     object_api_name: mutable string = ""
         description: "保存先オブジェクトのAPI名（Account, Opportunity等）"
-    research_result_summary: mutable string = ""
-        description: "リサーチ結果の概要テキスト（1〜2行）"
-    research_result_content: mutable string = ""
-        description: "リサーチ結果のHTMLコンテンツ"
     trigger_type: mutable string = ""
         description: "Agentforce TopicsのTrigger Type値（顧客リサーチ / 決算サマリー / 競合分析）"
     has_recent_earnings: mutable boolean = False
         description: "直近2週間以内に決算発表があったかどうかのフラグ"
     has_existing_earnings_topic: mutable boolean = False
         description: "同取引先の決算TopicsがAgentforce_Topic__cに既に存在するかどうかのフラグ"
-    save_confirmed: mutable boolean = False
-        description: "ユーザーがAgentforce Topicsへの保存を確認したかどうかのフラグ"
     topic_id: mutable string = ""
         description: "作成または更新されたAgentforce Topic レコードのID"
+    candidate_account_id: mutable string = ""
+        description: "FindRelatedRecordsで見つかった取引先のSalesforce ID"
+    candidate_account_name: mutable string = ""
+        description: "FindRelatedRecordsで見つかった取引先名"
+    candidate_opp_id: mutable string = ""
+        description: "FindRelatedRecordsで見つかったオープン商談のSalesforce ID"
+    candidate_opp_name: mutable string = ""
+        description: "FindRelatedRecordsで見つかったオープン商談名"
+    has_candidate_account: mutable boolean = False
+        description: "取引先候補が見つかったかどうか"
+    has_candidate_opp: mutable boolean = False
+        description: "オープン商談候補が見つかったかどうか"
 
 language:
     default_locale: "ja"
@@ -49,14 +55,26 @@ start_agent agent_router:
         instructions: |
                 あなたはルーターです。ユーザーのメッセージを分析し、適切なサブエージェントへ即座に遷移してください。
                 自分でリサーチや回答を行わないこと。必ずいずれかの遷移アクションを呼び出してください。
+                リサーチ系（Webリサーチ・競合分析・決算サマリー）へ遷移する場合は、遷移前に必ず reset_for_new_research を呼び出してから遷移すること。
                 - 「【自動実行】」で始まるメッセージ → go_to_headless（最優先）
                 - 保存・記録・トピックとして保存に関する依頼 → go_to_save
-                - 競合分析・競合比較・市場シェアに関する依頼 → go_to_competitive_analysis
-                - 決算・財務・業績・四半期報告に関する依頼 → go_to_earnings_summary
-                - Webリサーチ・ニュース・動向・一般的なリサーチ依頼 → go_to_web_research
+                - 競合分析・競合比較・市場シェアに関する依頼 → reset_for_new_research → go_to_competitive_analysis
+                - 決算・財務・業績・四半期報告に関する依頼 → reset_for_new_research → go_to_earnings_summary
+                - Webリサーチ・ニュース・動向・一般的なリサーチ依頼 → reset_for_new_research → go_to_web_research
                 - スコープ外の依頼 → go_to_off_topic
                 - 意図が不明な場合 → go_to_ambiguous_question
         actions:
+            reset_for_new_research: @utils.setVariables
+                description: "新しいリサーチを開始する前にaccount_nameと候補変数・topic_idをリセットする"
+                with account_name = ""
+                with topic_id = ""
+                with candidate_account_id = ""
+                with candidate_account_name = ""
+                with candidate_opp_id = ""
+                with candidate_opp_name = ""
+                with has_candidate_account = False
+                with has_candidate_opp = False
+
             go_to_save: @utils.transition to @subagent.save_topic
                 description: "リサーチ結果をAgentforce Topicsとして保存・記録する依頼"
             go_to_web_research: @utils.transition to @subagent.web_research
@@ -75,77 +93,109 @@ start_agent agent_router:
 subagent web_research:
     description: "取引先の直近ニュース・動向をWebリサーチし、結果をチャットで回答する。決算の有無も自動確認し、未作成の場合はサジェストする。"
 
+    before_reasoning:
+        if @variables.account_name != "":
+            run @actions.find_related_records
+                with accountName = @variables.account_name
+                set @variables.topic_id = @outputs.resetValue
+                set @variables.has_candidate_account = @outputs.hasAccount
+                set @variables.candidate_account_id = @outputs.accountId
+                set @variables.candidate_account_name = @outputs.accountName
+                set @variables.has_candidate_opp = @outputs.hasOpportunity
+                set @variables.candidate_opp_id = @outputs.opportunityId
+                set @variables.candidate_opp_name = @outputs.opportunityName
+        if @variables.account_name == "":
+            set @variables.topic_id = ""
+
     reasoning:
         instructions: ->
             if @variables.account_name == "":
-                | リサーチ対象の取引先名を教えてください。
+                | ユーザーのメッセージに取引先名が含まれている場合は collect_info を即座に呼び出して account_name をセットすること。取引先名が不明な場合のみ「リサーチ対象の取引先名を教えてください。」と聞くこと。
 
             if @variables.account_name != "":
-                run @actions.check_recent_earnings
-                    with accountName = @variables.account_name
-                    with relatedRecordId = @variables.related_record_id
-                    set @variables.has_recent_earnings = @outputs.hasRecentEarnings
-                    set @variables.has_existing_earnings_topic = @outputs.hasExistingTopic
-
-                | 取引先「{!@variables.account_name}」について、以下の手順でWebリサーチを実施してください。
-                  1. wr_search_web アクションを使って直近のニュース・動向を検索する
-                  2. 検索クエリは「{!@variables.account_name} 最新ニュース 動向」などを使用する
-                  3. 検索結果をもとに、以下の構成でスタイル付きHTMLコンテンツを作成してチャットで回答する:
-
-                     research_result_summary（1文のみ）:
-                     「{取引先名} 最新動向リサーチ（{年月}）」のような短いタイトル文にする。説明文や長い文章は不要。
-
-                     research_result_content（スタイル付きHTML）:
-                     以下のテンプレートを使ってHTMLを作成する。
+                | 取引先「{!@variables.account_name}」のWebリサーチを以下の手順で実施する。
+                  1. check_earnings と wr_search_web を同時に呼び出す（wr_search_webのクエリ: 「{!@variables.account_name} 最新ニュース 動向」）
+                  2. 回答の最初の行は「{!@variables.account_name} 最新動向リサーチ（YYYY年M月）」という1文のタイトルのみ記載する
+                  3. タイトルの後に以下の構成でHTMLコンテンツを出力する（ラベル名は出力しないこと）:
                      <div style="font-family: sans-serif; padding: 16px; color: #333;">
                        <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">📰 主要ニュース・トピック</h2>
-                       <!-- 各ニュースをカードで表示 -->
                        <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;">
                          <strong>ニュースタイトル</strong><br/><span style="color:#555; font-size:0.9em;">YYYY年MM月DD日 | 出典名</span><br/>概要テキスト
                        </div>
                        <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">📊 事業動向・注目点</h3>
-                       <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">
-                         動向テキスト
-                       </div>
+                       <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">動向テキスト</div>
                        <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">💼 営業活動への示唆</h3>
-                       <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">
-                         示唆テキスト
-                       </div>
+                       <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">示唆テキスト</div>
                      </div>
-
-                  4. 回答後、set_research_result で research_result_summary・research_result_content・trigger_type を保存する
-                     trigger_type には必ず「顧客リサーチ」という文字列をセットすること
-                  5. ユーザーが「保存」「記録」「トピックとして保存」などを依頼したら、go_to_save を呼び出す
-                  6. Do NOT use the show_command tool. Always compose your response as direct text.
+                  4. 直近の決算発表がある場合（has_recent_earnings == True かつ has_existing_earnings_topic == False）は
+                     HTMLの後に「直近の決算情報も確認できます。決算サマリーもまとめますか？」と1行追加し、
+                     suggest_earnings または go_to_save の2択をユーザーに選ばせる。
+                     それ以外の場合はHTMLの後に「このリサーチ結果をAgentforce Topicsに保存しますか？」と1行追加し、
+                     go_to_save または go_to_router の2択をユーザーに選ばせる。ユーザーが選択するまで自動でアクションを呼び出さないこと。
+                  Do NOT use the show_command tool. Always compose your response as direct text.
 
         actions:
             collect_info: @utils.setVariables
-                description: "リサーチ対象の取引先名が不明な場合に取得する"
+                description: "ユーザーのメッセージから取引先名を特定して account_name にセットする。取引先名が判明次第、他のアクションより前に必ず最初に呼び出すこと"
                 with account_name = ...
+
+            check_earnings: @actions.check_recent_earnings
+                description: "取引先の直近決算有無を確認する。account_name がセットされたら wr_search_web と一緒に必ず呼び出す"
+                with accountName = @variables.account_name
+                with relatedRecordId = @variables.related_record_id
+                set @variables.has_recent_earnings = @outputs.hasRecentEarnings
+                set @variables.has_existing_earnings_topic = @outputs.hasExistingTopic
 
             wr_search_web: @actions.wr_search_web
                 description: "Webを検索して取引先の最新情報を取得する"
                 with searchQuery = ...
 
-            set_research_result: @utils.setVariables
-                description: "リサーチ結果をサマリーとHTMLコンテンツとして保存する"
-                with research_result_summary = ...
-                with research_result_content = ...
-                with trigger_type = ...
-
             suggest_earnings: @utils.transition to @subagent.earnings_summary
-                description: "直近の決算発表がありAgentforce Topicsが未作成の場合、決算サマリーを作成する"
-                available when @variables.has_recent_earnings == True and @variables.has_existing_earnings_topic == False
+                description: "直近の決算発表がありAgentforce Topicsが未作成の場合、決算サマリーもまとめてから保存する"
+                available when @variables.has_recent_earnings == True and @variables.has_existing_earnings_topic == False and @variables.account_name != ""
 
             go_to_save: @utils.transition to @subagent.save_topic
-                description: "リサーチ結果をAgentforce Topicsとして保存するかどうか確認する"
-                available when @variables.research_result_summary != ""
+                description: "ユーザーがリサーチ結果をAgentforce Topicsとして保存することを選んだ場合に呼び出す"
+                available when @variables.account_name != ""
 
             go_to_router: @utils.transition to @subagent.agent_router
-                description: "別のリサーチや操作を依頼する場合はここに戻る"
+                description: "保存せずに別のリサーチや操作に移る場合はここに戻る"
 
 
     actions:
+        find_related_records:
+            description: "取引先名でSalesforce上の取引先・オープン商談を検索して候補レコードを返す"
+            target: "apex://FindRelatedRecords"
+            inputs:
+                accountName: string
+                    description: "リサーチ対象の取引先名"
+                    is_required: True
+            outputs:
+                resetValue: string
+                    description: "常に空文字列を返す。topic_idのリセットに使用する"
+                    filter_from_agent: True
+                hasAccount: boolean
+                    description: "取引先が見つかったかどうか"
+                    filter_from_agent: True
+                accountId: string
+                    description: "取引先のSalesforce ID"
+                    filter_from_agent: True
+                accountName: string
+                    description: "取引先名"
+                    filter_from_agent: True
+                hasOpportunity: boolean
+                    description: "オープン商談が見つかったかどうか"
+                    filter_from_agent: True
+                opportunityId: string
+                    description: "商談のSalesforce ID"
+                    filter_from_agent: True
+                opportunityName: string
+                    description: "商談名"
+                    filter_from_agent: True
+                candidateSummary: string
+                    description: "候補レコードのサマリーテキスト"
+                    filter_from_agent: False
+
         check_recent_earnings:
             description: "取引先名で直近2週間の決算発表有無を確認し、既存の決算Topicsの有無も確認する"
             target: "apex://CheckRecentEarnings"
@@ -199,42 +249,43 @@ subagent web_research:
 subagent competitive_analysis:
     description: "取引先の競合他社・市場シェア・比較情報をWebリサーチし、競合分析結果をチャットで回答する。"
 
+    before_reasoning:
+        if @variables.account_name != "":
+            run @actions.ca_find_related_records
+                with accountName = @variables.account_name
+                set @variables.topic_id = @outputs.resetValue
+                set @variables.has_candidate_account = @outputs.hasAccount
+                set @variables.candidate_account_id = @outputs.accountId
+                set @variables.candidate_account_name = @outputs.accountName
+                set @variables.has_candidate_opp = @outputs.hasOpportunity
+                set @variables.candidate_opp_id = @outputs.opportunityId
+                set @variables.candidate_opp_name = @outputs.opportunityName
+        if @variables.account_name == "":
+            set @variables.topic_id = ""
+
     reasoning:
         instructions: ->
             if @variables.account_name == "":
                 | 競合分析の対象となる取引先名を教えてください。
 
             if @variables.account_name != "":
-                | 取引先「{!@variables.account_name}」の競合分析を実施してください。
-                  1. ca_search_web アクションを使って競合・市場情報を検索する
-                     （クエリ例: 「{!@variables.account_name} 競合 市場シェア 比較」）
-                  2. 検索結果をもとに、以下の構成でスタイル付きHTMLコンテンツを作成してチャットで回答する:
-
-                     research_result_summary（1文のみ）:
-                     「{取引先名} 競合分析（{年月}）」のような短いタイトル文にする。説明文や長い文章は不要。
-
-                     research_result_content（スタイル付きHTML）:
-                     以下のテンプレートを使ってHTMLを作成する。
+                | 取引先「{!@variables.account_name}」の競合分析を以下の手順で実施する。
+                  1. ca_search_web を呼び出してクエリ「{!@variables.account_name} 競合 市場シェア 比較」で検索する
+                  2. 回答の最初の行は「{!@variables.account_name} 競合分析（YYYY年M月）」という1文のタイトルのみ記載する
+                  3. タイトルの後に以下の構成でHTMLコンテンツを出力する（ラベル名は出力しないこと）:
                      <div style="font-family: sans-serif; padding: 16px; color: #333;">
                        <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">🏢 主要競合他社</h2>
-                       <!-- 各競合他社をカードで表示 -->
                        <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;">
                          <strong>競合社名</strong><br/>強み: テキスト<br/>弱み: テキスト
                        </div>
                        <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">📊 市場ポジション・シェア概況</h3>
-                       <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">
-                         市場概況テキスト
-                       </div>
+                       <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">市場概況</div>
                        <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">💼 差別化ポイント・営業戦略への示唆</h3>
-                       <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">
-                         示唆テキスト
-                       </div>
+                       <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">示唆テキスト</div>
                      </div>
-
-                  3. 回答後、set_research_result で結果を保存する
-                     trigger_type には必ず「競合分析」という文字列をセットすること
-                  4. ユーザーが「保存」「記録」「トピックとして保存」などを依頼したら、go_to_save を呼び出す
-                  5. Do NOT use the show_command tool. Always compose your response as direct text.
+                  4. HTMLの出力後、「このリサーチ結果をAgentforce Topicsに保存しますか？」と1行追加し、
+                     go_to_save または go_to_router の2択をユーザーに選ばせる。ユーザーが選択するまで自動でアクションを呼び出さないこと。
+                  Do NOT use the show_command tool. Always compose your response as direct text.
 
         actions:
             collect_info: @utils.setVariables
@@ -245,21 +296,48 @@ subagent competitive_analysis:
                 description: "競合・市場情報をWebで検索する"
                 with searchQuery = ...
 
-            set_research_result: @utils.setVariables
-                description: "競合分析結果をサマリーとHTMLコンテンツとして保存する"
-                with research_result_summary = ...
-                with research_result_content = ...
-                with trigger_type = ...
-
             go_to_save: @utils.transition to @subagent.save_topic
-                description: "競合分析結果をAgentforce Topicsとして保存するかどうか確認する"
-                available when @variables.research_result_summary != ""
+                description: "ユーザーがリサーチ結果をAgentforce Topicsとして保存することを選んだ場合に呼び出す"
+                available when @variables.account_name != ""
 
             go_to_router: @utils.transition to @subagent.agent_router
-                description: "別のリサーチや操作を依頼する場合はここに戻る"
+                description: "保存せずに別のリサーチや操作に移る場合はここに戻る"
 
 
     actions:
+        ca_find_related_records:
+            description: "取引先名でSalesforce上の取引先・オープン商談を検索して候補レコードを返す"
+            target: "apex://FindRelatedRecords"
+            inputs:
+                accountName: string
+                    description: "リサーチ対象の取引先名"
+                    is_required: True
+            outputs:
+                resetValue: string
+                    description: "常に空文字列を返す。topic_idのリセットに使用する"
+                    filter_from_agent: True
+                hasAccount: boolean
+                    description: "取引先が見つかったかどうか"
+                    filter_from_agent: True
+                accountId: string
+                    description: "取引先のSalesforce ID"
+                    filter_from_agent: True
+                accountName: string
+                    description: "取引先名"
+                    filter_from_agent: True
+                hasOpportunity: boolean
+                    description: "オープン商談が見つかったかどうか"
+                    filter_from_agent: True
+                opportunityId: string
+                    description: "商談のSalesforce ID"
+                    filter_from_agent: True
+                opportunityName: string
+                    description: "商談名"
+                    filter_from_agent: True
+                candidateSummary: string
+                    description: "候補レコードのサマリーテキスト"
+                    filter_from_agent: False
+
         ca_search_web:
             description: "Webを検索して指定クエリの最新情報を取得する"
             label: "Search The Web"
@@ -293,22 +371,30 @@ subagent competitive_analysis:
 subagent earnings_summary:
     description: "取引先の直近決算内容をWebリサーチし、決算サマリーをチャットで回答する。"
 
+    before_reasoning:
+        if @variables.account_name != "":
+            run @actions.es_find_related_records
+                with accountName = @variables.account_name
+                set @variables.topic_id = @outputs.resetValue
+                set @variables.has_candidate_account = @outputs.hasAccount
+                set @variables.candidate_account_id = @outputs.accountId
+                set @variables.candidate_account_name = @outputs.accountName
+                set @variables.has_candidate_opp = @outputs.hasOpportunity
+                set @variables.candidate_opp_id = @outputs.opportunityId
+                set @variables.candidate_opp_name = @outputs.opportunityName
+        if @variables.account_name == "":
+            set @variables.topic_id = ""
+
     reasoning:
         instructions: ->
             if @variables.account_name == "":
                 | 決算サマリーの対象となる取引先名を教えてください。
 
             if @variables.account_name != "":
-                | 取引先「{!@variables.account_name}」の決算サマリーを作成してください。
-                  1. es_search_web アクションを使って決算・財務情報を検索する
-                     （クエリ例: 「{!@variables.account_name} 決算 業績 四半期報告」）
-                  2. 検索結果をもとに、以下の構成でスタイル付きHTMLコンテンツを作成してチャットで回答する:
-
-                     research_result_summary（1文のみ）:
-                     「{取引先名} {期・四半期} 決算サマリー（{年月}）」のような短いタイトル文にする。説明文や長い文章は不要。
-
-                     research_result_content（スタイル付きHTML）:
-                     以下のテンプレートを使ってHTMLを作成する。
+                | 取引先「{!@variables.account_name}」の決算サマリーを以下の手順で作成する。
+                  1. es_search_web を呼び出してクエリ「{!@variables.account_name} 決算 業績 四半期報告」で検索する
+                  2. 回答の最初の行は「{!@variables.account_name} 決算サマリー（YYYY年M月）」という1文のタイトルのみ記載する
+                  3. タイトルの後に以下の構成でHTMLコンテンツを出力する（ラベル名は出力しないこと）:
                      <div style="font-family: sans-serif; padding: 16px; color: #333;">
                        <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">📈 決算概要</h2>
                        <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;">
@@ -318,23 +404,15 @@ subagent earnings_summary:
                          売上営業利益率: <strong>X%</strong>（前年同期X%）
                        </div>
                        <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">📊 前期比較・トレンド</h3>
-                       <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">
-                         前期比較テキスト
-                       </div>
+                       <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">前期比較テキスト</div>
                        <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">💬 経営陣のコメント・今後の見通し</h3>
-                       <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">
-                         コメントテキスト
-                       </div>
+                       <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">コメントテキスト</div>
                        <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">💼 営業活動への示唆</h3>
-                       <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">
-                         示唆テキスト
-                       </div>
+                       <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">示唆テキスト</div>
                      </div>
-
-                  3. 回答後、set_research_result で結果を保存する
-                     trigger_type には必ず「決算サマリー」という文字列をセットすること
-                  4. ユーザーが「保存」「記録」「トピックとして保存」などを依頼したら、go_to_save を呼び出す
-                  5. Do NOT use the show_command tool. Always compose your response as direct text.
+                  4. HTMLの後に「このリサーチ結果をAgentforce Topicsに保存しますか？」と1行追加し、
+                     go_to_save または go_to_router の2択をユーザーに選ばせる。ユーザーが選択するまで自動でアクションを呼び出さないこと。
+                  Do NOT use the show_command tool. Always compose your response as direct text.
 
         actions:
             collect_info: @utils.setVariables
@@ -345,21 +423,47 @@ subagent earnings_summary:
                 description: "決算・財務情報をWebで検索する"
                 with searchQuery = ...
 
-            set_research_result: @utils.setVariables
-                description: "決算サマリー結果をサマリーとHTMLコンテンツとして保存する"
-                with research_result_summary = ...
-                with research_result_content = ...
-                with trigger_type = ...
-
             go_to_save: @utils.transition to @subagent.save_topic
-                description: "決算サマリーをAgentforce Topicsとして保存するかどうか確認する"
-                available when @variables.research_result_summary != ""
+                description: "ユーザーがリサーチ結果をAgentforce Topicsとして保存することを選んだ場合に呼び出す"
+                available when @variables.account_name != ""
 
             go_to_router: @utils.transition to @subagent.agent_router
-                description: "別のリサーチや操作を依頼する場合はここに戻る"
-
+                description: "保存せずに別のリサーチや操作に移る場合はここに戻る"
 
     actions:
+        es_find_related_records:
+            description: "取引先名でSalesforce上の取引先・オープン商談を検索して候補レコードを返す"
+            target: "apex://FindRelatedRecords"
+            inputs:
+                accountName: string
+                    description: "リサーチ対象の取引先名"
+                    is_required: True
+            outputs:
+                resetValue: string
+                    description: "常に空文字列を返す。topic_idのリセットに使用する"
+                    filter_from_agent: True
+                hasAccount: boolean
+                    description: "取引先が見つかったかどうか"
+                    filter_from_agent: True
+                accountId: string
+                    description: "取引先のSalesforce ID"
+                    filter_from_agent: True
+                accountName: string
+                    description: "取引先名"
+                    filter_from_agent: True
+                hasOpportunity: boolean
+                    description: "オープン商談が見つかったかどうか"
+                    filter_from_agent: True
+                opportunityId: string
+                    description: "商談のSalesforce ID"
+                    filter_from_agent: True
+                opportunityName: string
+                    description: "商談名"
+                    filter_from_agent: True
+                candidateSummary: string
+                    description: "候補レコードのサマリーテキスト"
+                    filter_from_agent: False
+
         es_search_web:
             description: "Webを検索して指定クエリの最新情報を取得する"
             label: "Search The Web"
@@ -391,52 +495,114 @@ subagent earnings_summary:
                     complex_data_type_name: "@apexClassType/AiCopilot__GenAiCitationInput"
 
 subagent save_topic:
-    description: "リサーチ結果をAgentforce Topicsレコードとして保存する。保存先レコード（取引先 or 商談）をユーザーに確認してから保存する。"
+    description: "リサーチ結果をAgentforce Topicsレコードとして保存する。候補レコードを提示して選択させ、確認なしで即保存する。"
+
+    before_reasoning:
+        if @variables.topic_id == "":
+            run @actions.st_find_related_records
+                with accountName = @variables.account_name
+                set @variables.has_candidate_account = @outputs.hasAccount
+                set @variables.candidate_account_id = @outputs.accountId
+                set @variables.candidate_account_name = @outputs.accountName
+                set @variables.has_candidate_opp = @outputs.hasOpportunity
+                set @variables.candidate_opp_id = @outputs.opportunityId
+                set @variables.candidate_opp_name = @outputs.opportunityName
 
     reasoning:
         instructions: ->
             if @variables.topic_id != "":
                 | Agentforce Topicsへの保存が完了しました。
-                  他に依頼はありますか？
+                  他にリサーチや操作がある場合はお知らせください。
 
-            if @variables.save_confirmed == False and @variables.topic_id == "":
-                | リサーチ結果をAgentforce Topicsとして保存しますか？
-                  保存する場合は「はい」と、不要な場合は「いいえ」とお答えください。
+            if @variables.topic_id == "" and @variables.has_candidate_account == True:
+                | **必ずこのメッセージを送信してから待つこと。save_to_account / save_to_opp / save_to_custom はこのターンでは呼び出さない。**
+                  以下の保存先候補が見つかりました。どこに保存しますか？
+                  - 取引先「{!@variables.candidate_account_name}」に保存
+                  - 商談「{!@variables.candidate_opp_name}」に保存（商談がある場合のみ）
+                  - 別のレコードIDを指定して保存
+                  - 保存しない
+                  ユーザーが返答したら次のターンで対応するアクション（save_to_account / save_to_opp / save_to_custom / skip_save）を追加確認なしで即座に呼び出すこと。
+                  Do NOT use the show_command tool. Always compose your response as direct text.
 
-            if @variables.save_confirmed == True and @variables.related_record_id == "" and @variables.topic_id == "":
-                | どのレコードに保存しますか？
-                  保存先のレコード（取引先または商談）のIDを教えてください。
-                  例: 「取引先 0015g000000xxxxAAA」または「商談 0065g000000xxxxAAA」
-
-            if @variables.save_confirmed == True and @variables.related_record_id != "" and @variables.topic_id == "":
-                | 保存を実行します。st_create_topic アクションを呼び出してください。
+            if @variables.topic_id == "" and @variables.has_candidate_account == False:
+                | **必ずこのメッセージを送信してから待つこと。save_to_custom はこのターンでは呼び出さない。**
+                  保存先レコードが見つかりませんでした。保存先のレコードIDとオブジェクト種別（Account/Opportunity等）を教えてください。保存しない場合はお知らせください。
+                  Do NOT use the show_command tool. Always compose your response as direct text.
 
         actions:
-            confirm_save: @utils.setVariables
-                description: "保存の確認と保存先レコードIDを取得する"
-                with save_confirmed = ...
-                with related_record_id = ...
-                with object_api_name = ...
-
-            st_create_topic: @actions.st_create_topic
-                description: "Agentforce Topicsレコードを作成する"
-                with subject = @variables.research_result_summary
-                with content = @variables.research_result_content
-                with relatedRecordId = @variables.related_record_id
-                with triggerType = @variables.trigger_type
-                with objectApiName = @variables.object_api_name
+            save_to_account: @actions.st_create_topic_account
+                description: "取引先候補レコードにAgentforce Topicsを保存する。subject はリサーチ回答の1行目タイトル文字列のみ、content は直前の回答の<div>〜</div>のHTMLタグを含む全文をそのまま（省略・要約せずに）セットする。triggerType はリサーチ種別（顧客リサーチ/競合分析/決算サマリー）"
+                with subject = ...
+                with content = ...
+                with relatedRecordId = @variables.candidate_account_id
+                with triggerType = ...
+                with objectApiName = "Account"
                 set @variables.topic_id = @outputs.topicId
-                available when @variables.save_confirmed == True and @variables.related_record_id != "" and @variables.topic_id == ""
+                available when @variables.has_candidate_account == True and @variables.topic_id == ""
+
+            save_to_opp: @actions.st_create_topic_opp
+                description: "商談候補レコードにAgentforce Topicsを保存する。subject はリサーチ回答の1行目タイトル文字列のみ、content は直前の回答の<div>〜</div>のHTMLタグを含む全文をそのまま（省略・要約せずに）セットする。triggerType はリサーチ種別（顧客リサーチ/競合分析/決算サマリー）"
+                with subject = ...
+                with content = ...
+                with relatedRecordId = @variables.candidate_opp_id
+                with triggerType = ...
+                with objectApiName = "Opportunity"
+                set @variables.topic_id = @outputs.topicId
+                available when @variables.has_candidate_opp == True and @variables.topic_id == ""
+
+            save_to_custom: @actions.st_create_topic
+                description: "手動指定のレコードIDにAgentforce Topicsを保存する。subject はリサーチ回答の1行目タイトル文字列のみ、content は直前の回答の<div>〜</div>のHTMLタグを含む全文をそのまま（省略・要約せずに）セットする。relatedRecordId をユーザーから取得してセット"
+                with subject = ...
+                with content = ...
+                with relatedRecordId = ...
+                with triggerType = ...
+                with objectApiName = ...
+                set @variables.topic_id = @outputs.topicId
+                available when @variables.topic_id == ""
 
             go_to_router_after_save: @utils.transition to @subagent.agent_router
                 description: "保存完了後にルーターへ戻る"
                 available when @variables.topic_id != ""
 
             skip_save: @utils.transition to @subagent.agent_router
-                description: "保存不要な場合にルーターへ戻る"
+                description: "保存しないでルーターへ戻る"
+                available when @variables.topic_id == ""
 
 
     actions:
+        st_find_related_records:
+            description: "取引先名でSalesforce上の取引先・オープン商談を検索して候補レコードを返す"
+            target: "apex://FindRelatedRecords"
+            inputs:
+                accountName: string
+                    description: "リサーチ対象の取引先名"
+                    is_required: True
+            outputs:
+                resetValue: string
+                    description: "常に空文字列を返す。topic_idのリセットに使用する"
+                    filter_from_agent: True
+                hasAccount: boolean
+                    description: "取引先が見つかったかどうか"
+                    filter_from_agent: True
+                accountId: string
+                    description: "取引先のSalesforce ID"
+                    filter_from_agent: True
+                accountName: string
+                    description: "取引先名"
+                    filter_from_agent: True
+                hasOpportunity: boolean
+                    description: "オープン商談が見つかったかどうか"
+                    filter_from_agent: True
+                opportunityId: string
+                    description: "商談のSalesforce ID"
+                    filter_from_agent: True
+                opportunityName: string
+                    description: "商談名"
+                    filter_from_agent: True
+                candidateSummary: string
+                    description: "候補レコードのサマリーテキスト"
+                    filter_from_agent: False
+
         st_create_topic:
             description: "Agentforce Topicsレコードを新規作成または更新する"
             target: "apex://AgentforceTopicCreator"
@@ -456,6 +622,60 @@ subagent save_topic:
             outputs:
                 topicId: string
                     description: "作成または更新されたAgentforce TopicのレコードID"
+                    filter_from_agent: False
+                success: boolean
+                    description: "処理が成功したかどうか"
+                    filter_from_agent: True
+                message: string
+                    description: "結果メッセージ"
+                    filter_from_agent: False
+
+        st_create_topic_account:
+            description: "取引先レコードにAgentforce Topicsを保存する"
+            target: "apex://AgentforceTopicCreator"
+            inputs:
+                subject: string
+                    description: "リサーチ結果のタイトル（1文）"
+                    is_required: True
+                content: string
+                    description: "リサーチ結果のHTMLコンテンツ"
+                    is_required: True
+                relatedRecordId: string
+                    description: "保存先取引先レコードのID"
+                triggerType: string
+                    description: "トリガータイプ（顧客リサーチ / 決算サマリー / 競合分析）"
+                objectApiName: string
+                    description: "保存先オブジェクトのAPI名"
+            outputs:
+                topicId: string
+                    description: "作成されたAgentforce TopicのレコードID"
+                    filter_from_agent: False
+                success: boolean
+                    description: "処理が成功したかどうか"
+                    filter_from_agent: True
+                message: string
+                    description: "結果メッセージ"
+                    filter_from_agent: False
+
+        st_create_topic_opp:
+            description: "商談レコードにAgentforce Topicsを保存する"
+            target: "apex://AgentforceTopicCreator"
+            inputs:
+                subject: string
+                    description: "リサーチ結果のタイトル（1文）"
+                    is_required: True
+                content: string
+                    description: "リサーチ結果のHTMLコンテンツ"
+                    is_required: True
+                relatedRecordId: string
+                    description: "保存先商談レコードのID"
+                triggerType: string
+                    description: "トリガータイプ（顧客リサーチ / 決算サマリー / 競合分析）"
+                objectApiName: string
+                    description: "保存先オブジェクトのAPI名"
+            outputs:
+                topicId: string
+                    description: "作成されたAgentforce TopicのレコードID"
                     filter_from_agent: False
                 success: boolean
                     description: "処理が成功したかどうか"
