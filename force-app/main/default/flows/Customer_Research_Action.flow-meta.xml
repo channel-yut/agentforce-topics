@@ -39,53 +39,12 @@
         </outputParameters>
     </actionCalls>
     <actionCalls>
-        <name>Run_Earnings_Summary_Action</name>
-        <label>決算サマリー実行</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <actionName>AgentforceHeadlessResearch</actionName>
-        <actionType>apex</actionType>
-        <faultConnector>
-            <targetReference>Error_Screen</targetReference>
-        </faultConnector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
-        <inputParameters>
-            <name>accountName</name>
-            <value>
-                <elementReference>varAccountName</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>relatedRecordId</name>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>objectApiName</name>
-            <value>
-                <elementReference>varObjectApiName</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>researchType</name>
-            <value>
-                <stringValue>決算サマリー</stringValue>
-            </value>
-        </inputParameters>
-        <nameSegment>AgentforceHeadlessResearch</nameSegment>
-        <offset>0</offset>
-    </actionCalls>
-    <actionCalls>
         <name>Run_Research</name>
         <label>顧客リサーチ実行</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <actionName>AgentforceHeadlessResearch</actionName>
         <actionType>apex</actionType>
-        <connector>
-            <targetReference>Check_Earnings_For_Summary</targetReference>
-        </connector>
         <faultConnector>
             <isGoTo>true</isGoTo>
             <targetReference>Error_Screen</targetReference>
@@ -115,12 +74,20 @@
                 <stringValue>顧客リサーチ</stringValue>
             </value>
         </inputParameters>
+        <inputParameters>
+            <name>hasRecentEarnings</name>
+            <value>
+                <elementReference>varHasRecentEarnings</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>hasExistingEarningsTopic</name>
+            <value>
+                <elementReference>varHasExistingEarningsTopic</elementReference>
+            </value>
+        </inputParameters>
         <nameSegment>AgentforceHeadlessResearch</nameSegment>
         <offset>0</offset>
-        <outputParameters>
-            <assignToReference>varResearchSuccess</assignToReference>
-            <name>success</name>
-        </outputParameters>
     </actionCalls>
     <apiVersion>64.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
@@ -195,35 +162,6 @@
             <targetReference>Start_Screen</targetReference>
         </connector>
     </assignments>
-    <decisions>
-        <name>Check_Earnings_For_Summary</name>
-        <label>決算サマリーも実行？</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnectorLabel>不要</defaultConnectorLabel>
-        <rules>
-            <name>Run_Earnings_Summary</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>varHasRecentEarnings</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>varHasExistingEarningsTopic</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Run_Earnings_Summary_Action</targetReference>
-            </connector>
-            <label>決算あり・未作成</label>
-        </rules>
-    </decisions>
     <decisions>
         <name>Check_RecordId</name>
         <label>recordId あり？</label>
