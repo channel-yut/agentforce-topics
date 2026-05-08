@@ -328,7 +328,14 @@ agent_router
 >    - Setup → **Einstein** → **Agentforce Agents** → 有効化
 
 ```bash
-# 1. Screen Flow と Quick Action をデプロイ
+# 1. 顧客リサーチエージェント専用 Apex クラスをデプロイ
+sf project deploy start \
+  --metadata ApexClass:AgentforceHeadlessResearch \
+  --metadata ApexClass:HeadlessResearchQueueable \
+  --metadata ApexClass:FindRelatedRecords \
+  --target-org <org-alias>
+
+# 2. Screen Flow と Quick Action をデプロイ
 sf project deploy start \
   --source-dir force-app/main/default/flows/Customer_Research_Action.flow-meta.xml \
   --target-org <org-alias>
@@ -337,22 +344,22 @@ sf project deploy start \
   --source-dir force-app/main/default/quickActions/Customer_Research.quickAction-meta.xml \
   --target-org <org-alias>
 
-# 2. エージェントのメタデータをデプロイ
+# 3. エージェントのメタデータをデプロイ
 sf project deploy start \
   --source-dir force-app/main/default/aiAuthoringBundles \
   --target-org <org-alias>
 
-# 3. Publish（バージョンを確定）
+# 4. Publish（バージョンを確定）
 sf agent publish authoring-bundle \
   --api-name Customer_Research_Agent \
   --json
 
-# 4. Activate（ユーザーへ公開）
+# 5. Activate（ユーザーへ公開）
 sf agent activate \
   --api-name Customer_Research_Agent \
   --json
 
-# 5. SetupEntityAccess を挿入（サイドパネル表示に必要）
+# 6. SetupEntityAccess を挿入（サイドパネル表示に必要）
 # ※ Agent Script / メタデータAPI経由でデプロイした場合、Salesforce は自動で
 #   SetupEntityAccess レコードを作成しない。これがないとサイドパネルにエージェントが表示されない。
 
@@ -368,7 +375,7 @@ sf data query --json \
 sf data create record --json --sobject SetupEntityAccess \
   --values "ParentId='<PermissionSet ID>' SetupEntityId='<BotDefinition ID>'"
 
-# 6. エージェント専用権限セットを対象ユーザーに割り当て
+# 7. エージェント専用権限セットを対象ユーザーに割り当て
 # ※ SetupEntityAccess を挿入しても、権限セット自体がユーザーに割り当てられていないと
 #   サイドパネルにエージェントが表示されない。
 
@@ -381,7 +388,7 @@ sf data create record --json --sobject PermissionSetAssignment \
   --values "AssigneeId='<User ID>' PermissionSetId='<PermissionSet ID>'"
 ```
 
-> **補足:** 手順 6（権限セットの割り当て）は UI からも実施可能です。
+> **補足:** 手順 7（権限セットの割り当て）は UI からも実施可能です。
 > 1. Setup → **Permission Sets** → `Agentforce エージェント Customer_Research_Agent の権限` を開く
 > 2. **Manage Assignments** → **Add Assignments** → 対象ユーザーを選択して **Assign**
 >
