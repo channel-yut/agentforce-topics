@@ -1,223 +1,162 @@
 # Agentforce Topics スタイルガイド
 
-このドキュメントは、Agentforce Topicsのコンテンツフィールドに使用するHTMLスタイルの標準を定義します。
+顧客リサーチエージェントが生成する `Content__c`（リッチテキスト）フィールドの HTML スタイル標準です。
 
-## デザイン原則
+---
 
-1. **視認性**: 見出しとコンテンツのコントラストを明確に
-2. **階層性**: 情報の重要度を視覚的に表現
-3. **アクション誘導**: リンクは明確で分かりやすく
-4. **一貫性**: 色やスペーシングのルールを統一
+## カラーパレット
+
+| 役割 | カラーコード | 用途 |
+|---|---|---|
+| Salesforce Blue | `#0070d2` | メインセクション（H2）・ボーダー |
+| Salesforce Green | `#2e844a` | トレンド・分析セクション（H3）・ボーダー |
+| Salesforce Red | `#c23934` | 示唆・アクションセクション（H3）・ボーダー |
+| 薄青背景 | `#e8f4fd` | Blue セクションのボックス背景 |
+| 薄緑背景 | `#e8f5e9` | Green セクションのボックス背景 |
+| 薄赤背景 | `#ffebee` | Red セクションのボックス背景 |
+| ベーステキスト | `#333` | ラッパー全体の文字色 |
+
+---
+
+## 基本構造テンプレート
+
+```html
+<div style="font-family: sans-serif; padding: 16px; color: #333;">
+
+  <!-- メインセクション（青） -->
+  <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">
+    📋 セクションタイトル
+  </h2>
+  <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;">
+    本文テキスト
+  </div>
+
+  <!-- サブセクション（緑）: トレンド・分析 -->
+  <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">
+    📊 トレンド・動向
+  </h3>
+  <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">
+    トレンドテキスト
+  </div>
+
+  <!-- サブセクション（赤）: 示唆・アクション -->
+  <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">
+    💼 営業活動への示唆
+  </h3>
+  <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">
+    示唆テキスト
+  </div>
+
+</div>
+```
+
+---
+
+## セクション別カラーの使い分け
+
+| 色 | H タグ | ボーダー幅 | 適用シーン |
+|---|---|---|---|
+| `#0070d2`（青） | `<h2>` | `3px` | 概要・主要情報・メインセクション |
+| `#2e844a`（緑） | `<h3>` | `2px` | トレンド・分析・前期比較・経営コメント |
+| `#c23934`（赤） | `<h3>` | `2px` | 営業示唆・差別化ポイント・アクション |
+
+---
+
+## スペーシングルール
+
+| 箇所 | 値 |
+|---|---|
+| ラッパーパディング | `padding: 16px` |
+| H2 マージン | `margin: 0 0 12px 0` |
+| H3 マージン | `margin: 24px 0 12px 0` |
+| ボックス内パディング | `padding: 12px` |
+| ボックス下マージン | `margin-bottom: 16px` |
 
 ---
 
 ## タイポグラフィ
 
-### 見出し
+- フォントファミリー: `font-family: sans-serif`（ラッパーで一括指定）
+- 見出しサイズ: `font-size: 1.2em`（H2・H3 共通）
+- 見出しウェイト: `font-weight: 600`
+- ベーステキスト色: `color: #333`
 
-```html
-<!-- メインセクション見出し (H3) -->
-<h3 style="color: #カラーコード; font-size: 20px; font-weight: bold; margin-bottom: 12px; margin-top: 8px;">
-    絵文字 見出しテキスト
-</h3>
-```
-
-**使用する色:**
-- 緊急/注意: `#d32f2f` (赤)
-- 情報/提案: `#1976d2` (青)
-- フィードバック/評価: `#f57c00` (オレンジ)
-- 成功/完了: `#388e3c` (緑)
-
-### 本文
-
-```html
-<!-- 通常の段落 -->
-<p style="font-size: 14px; line-height: 1.7; margin-bottom: 8px;">テキスト</p>
-
-<!-- 強調テキスト -->
-<p style="font-size: 14px; line-height: 1.7; margin-bottom: 8px;">
-    <strong>ラベル:</strong> 内容
-</p>
-
-<!-- サブ見出し（セクション内） -->
-<p style="font-size: 15px; font-weight: 600; margin-bottom: 12px;">サブ見出し:</p>
-```
-
-### リスト
-
-```html
-<!-- 番号付きリスト -->
-<ol style="font-size: 14px; line-height: 1.6; margin: 0; padding-left: 20px;">
-    <li style="margin-bottom: 8px;"><strong>項目名</strong> - 説明文</li>
-    <li style="margin-bottom: 8px;"><strong>項目名</strong> - 説明文</li>
-    <li><strong>項目名</strong> - 説明文</li>
-</ol>
-
-<!-- 箇条書きリスト -->
-<ul style="font-size: 14px; line-height: 1.6; margin: 0; padding-left: 20px;">
-    <li style="margin-bottom: 8px;">項目1</li>
-    <li style="margin-bottom: 8px;">項目2</li>
-    <li>項目3</li>
-</ul>
-```
+> ⚠️ フォントサイズは `px` ではなく `em` を使用する。Salesforce のリッチテキスト領域に合わせた相対指定。
 
 ---
 
-## カラーパレットとボックススタイル
+## 絵文字の使い分け
 
-### セクションボックス
+| 絵文字 | 用途 |
+|---|---|
+| 📋 | 概要・記録 |
+| 📰 | ニュース・トピック |
+| 🏢 | 企業・競合 |
+| 📊 | 分析・トレンド・前期比較 |
+| 📈 | 決算・業績 |
+| 💼 | 営業示唆・戦略 |
+| 💬 | 経営コメント・発言 |
 
-各セクションは背景色とボーダーで強調します。
+---
+
+## コンテンツタイプ別テンプレート例
+
+### 顧客リサーチ
 
 ```html
-<div style="background-color: #背景色; padding: 16px; margin-bottom: 20px; border-radius: 8px; border-left: 4px solid #ボーダー色;">
-    <!-- コンテンツ -->
+<div style="font-family: sans-serif; padding: 16px; color: #333;">
+  <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">📰 主要ニュース・トピック</h2>
+  <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;">ニューステキスト</div>
+  <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">📊 事業動向・注目点</h3>
+  <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">動向テキスト</div>
+  <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">💼 営業活動への示唆</h3>
+  <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">示唆テキスト</div>
 </div>
 ```
 
-**推奨カラーセット:**
-
-| 用途 | 背景色 | 左ボーダー | 見出し色 |
-|------|--------|------------|----------|
-| 緊急・警告 | `#fff9c4` | `#fbc02d` | `#d32f2f` |
-| 情報・提案 | `#e1f5fe` | `#0288d1` | `#1976d2` |
-| 評価・フィードバック | `#fff3e0` | `#f57c00` | `#f57c00` |
-| 成功・完了 | `#e8f5e9` | `#4caf50` | `#388e3c` |
-
----
-
-## リンクスタイル
-
-### 関連レコードリンク（重要）
+### 競合分析
 
 ```html
-<a href="URL" style="background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px; text-decoration: none; font-weight: 600; color: inherit;">
-    リンクテキスト
-</a>
+<div style="font-family: sans-serif; padding: 16px; color: #333;">
+  <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">🏢 主要競合他社</h2>
+  <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;"><strong>競合社名</strong><br/>強み: テキスト<br/>弱み: テキスト</div>
+  <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">📊 市場ポジション・シェア概況</h3>
+  <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">市場概況テキスト</div>
+  <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">💼 差別化ポイント・営業戦略への示唆</h3>
+  <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">示唆テキスト</div>
+</div>
 ```
 
-### アクションリンク（ToDo等）
+### 決算サマリー
 
 ```html
-<a href="URL" style="color: #d84315; text-decoration: none; font-weight: 600; border-bottom: 2px solid #d84315;">
-    → ToDo
-</a>
-```
-
-### ナレッジ・学習リンク
-
-```html
-<a href="URL" target="_blank" style="color: #1976d2; font-weight: 600; text-decoration: none;">
-    リンクテキスト
-</a>
+<div style="font-family: sans-serif; padding: 16px; color: #333;">
+  <h2 style="color: #0070d2; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 3px solid #0070d2; font-size: 1.2em; font-weight: 600;">📈 決算概要</h2>
+  <div style="background-color: #e8f4fd; border-left: 4px solid #0070d2; padding: 12px; margin-bottom: 16px;">決算数値テキスト</div>
+  <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">📊 前期比較・トレンド</h3>
+  <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">前期比較テキスト</div>
+  <h3 style="color: #2e844a; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #2e844a;">💬 経営陣のコメント・今後の見通し</h3>
+  <div style="background-color: #e8f5e9; border-left: 4px solid #2e844a; padding: 12px; margin-bottom: 16px;">コメントテキスト</div>
+  <h3 style="color: #c23934; margin: 24px 0 12px 0; font-size: 1.2em; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid #c23934;">💼 営業活動への示唆</h3>
+  <div style="background-color: #ffebee; border-left: 4px solid #c23934; padding: 12px; margin-bottom: 16px;">示唆テキスト</div>
+</div>
 ```
 
 ---
 
-## レイアウト要素
+## HTML の注意点
 
-### 区切り線
-
-```html
-<hr style="margin: 16px 0; border: 0; border-top: 2px solid #e0e0e0;">
-```
-
-### ヘッダー行（面談記録等）
-
-```html
-<p style="font-size: 16px; margin-bottom: 12px;">
-    <strong>📋 ラベル:</strong>
-    <a href="URL" style="background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px; text-decoration: none; font-weight: 600;">
-        概要テキスト
-    </a>
-</p>
-```
-
----
-
-## 絵文字の使用
-
-情報の種類を視覚的に表現するために絵文字を活用します。
-
-| 用途 | 絵文字 |
-|------|--------|
-| 記録・ドキュメント | 📋 📝 📄 |
-| 警告・注意 | ⚠️ 🚨 ⚡ |
-| アクション・タスク | 💼 🎯 ✅ |
-| 評価・分析 | 📊 📈 📉 |
-| 学習・参考資料 | 📚 📖 🎓 |
-| 成功・OK | ✅ ✓ |
-| 注意・要確認 | ⚠️ △ |
-| 問題・NG | ❌ ✗ |
-
----
-
-## スペーシング
-
-### 基本ルール
-
-- **セクション間**: `margin-bottom: 20px`
-- **段落間**: `margin-bottom: 8px`
-- **見出し下**: `margin-bottom: 12px`
-- **見出し上**: `margin-top: 8px`
-- **ボックス内パディング**: `padding: 16px`
-- **リスト項目間**: `margin-bottom: 8px` (最後の項目は不要)
-
----
-
-## プロンプトへの組み込み指示
-
-Agentforceでコンテンツを生成する際の推奨事項：
-
-### 必須要素
-
-1. **関連レコードへのリンク** - 面談記録、商談などへのリンクを冒頭に含める
-2. **セクション分け** - 情報を論理的なセクションに分割
-3. **アクションへのリンク** - ToDoレコードやフォローアップタスクへのリンク
-
-### HTMLの注意点
-
-- インラインスタイルのみ使用（外部CSS不可）
+- インラインスタイルのみ使用（外部 CSS 不可）
 - タグは必ず閉じる
-- 文字エンコーディングはUTF-8
-- Salesforce URLは有効なIDを使用
-
-### サマリーとトリガータイプ
-
-**Summary__c:**
-- 日付 + 顧客名/対象 + 主要なアクション
-- 例: `2026/03/22 山陽工機様ご訪問 - 設備投資3億円相談｜ガバナンス対応3件必要`
-
-**Trigger_Type__c:**
-- 面談記録、商談更新、フォローアップ、定期レビューなど
-
----
-
-## 使用例
-
-```html
-<p style="font-size: 16px; margin-bottom: 12px;"><strong>📋 面談記録:</strong> <a href="https://xxx.salesforce.com/00T..." style="background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px; text-decoration: none; font-weight: 600;">鈴木部長様 - 設備投資相談</a></p>
-<hr style="margin: 16px 0; border: 0; border-top: 2px solid #e0e0e0;">
-
-<h3 style="color: #d32f2f; font-size: 20px; font-weight: bold; margin-bottom: 12px; margin-top: 8px;">⚠️ 即対応が必要な項目</h3>
-<div style="background-color: #fff9c4; padding: 16px; margin-bottom: 20px; border-radius: 8px; border-left: 4px solid #fbc02d;">
-<ol style="font-size: 14px; line-height: 1.6; margin: 0; padding-left: 20px;">
-<li style="margin-bottom: 8px;"><strong>タスク1</strong> - 詳細説明 <a href="https://xxx.salesforce.com/00T..." style="color: #d84315; text-decoration: none; font-weight: 600; border-bottom: 2px solid #d84315;">→ ToDo</a></li>
-<li><strong>タスク2</strong> - 詳細説明 <a href="https://xxx.salesforce.com/00T..." style="color: #d84315; text-decoration: none; font-weight: 600; border-bottom: 2px solid #d84315;">→ ToDo</a></li>
-</ol>
-</div>
-
-<h3 style="color: #1976d2; font-size: 20px; font-weight: bold; margin-bottom: 12px; margin-top: 8px;">💼 提案内容</h3>
-<div style="background-color: #e1f5fe; padding: 16px; margin-bottom: 20px; border-radius: 8px; border-left: 4px solid #0288d1;">
-<p style="font-size: 14px; line-height: 1.7; margin: 0;">提案の詳細をここに記載</p>
-</div>
-```
+- フォントサイズは `em` 単位（`px` は使わない）
+- `<h2>` はメインセクション1つのみ、`<h3>` でサブセクションを展開する
 
 ---
 
 ## バージョン履歴
 
+- v2.0 (2026-05-08): 顧客リサーチエージェントの実装に合わせてカラーパレット・テンプレートを全面改訂
+  - カラーを Salesforce Design System 準拠（`#0070d2` / `#2e844a` / `#c23934`）に統一
+  - フォントサイズを `px` から `em` に変更
+  - コンテンツタイプ別テンプレート（顧客リサーチ / 競合分析 / 決算サマリー）を追加
 - v1.0 (2026-03-23): 初版作成
-  - デザイン原則の策定
-  - タイポグラフィとカラーパレットの定義
-  - 柔軟なスタイルガイドラインの確立
