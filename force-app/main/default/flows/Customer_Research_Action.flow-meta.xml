@@ -3,13 +3,17 @@
     <actionCalls>
         <name>Check_Recent_Earnings</name>
         <label>決算チェック</label>
-        <locationX>440</locationX>
-        <locationY>480</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>CheckRecentEarnings</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Run_Research</targetReference>
         </connector>
+        <faultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Error_Screen</targetReference>
+        </faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>accountName</name>
@@ -23,6 +27,8 @@
                 <elementReference>recordId</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>CheckRecentEarnings</nameSegment>
+        <offset>0</offset>
         <outputParameters>
             <assignToReference>varHasRecentEarnings</assignToReference>
             <name>hasRecentEarnings</name>
@@ -35,13 +41,14 @@
     <actionCalls>
         <name>Run_Research</name>
         <label>顧客リサーチ実行</label>
-        <locationX>440</locationX>
-        <locationY>600</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <actionName>AgentforceHeadlessResearch</actionName>
         <actionType>apex</actionType>
-        <connector>
-            <targetReference>Check_Earnings_For_Summary</targetReference>
-        </connector>
+        <faultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Error_Screen</targetReference>
+        </faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>accountName</name>
@@ -67,85 +74,28 @@
                 <stringValue>顧客リサーチ</stringValue>
             </value>
         </inputParameters>
-        <outputParameters>
-            <assignToReference>varResearchSuccess</assignToReference>
-            <name>success</name>
-        </outputParameters>
-    </actionCalls>
-    <actionCalls>
-        <name>Run_Earnings_Summary_Action</name>
-        <label>決算サマリー実行</label>
-        <locationX>704</locationX>
-        <locationY>720</locationY>
-        <actionName>AgentforceHeadlessResearch</actionName>
-        <actionType>apex</actionType>
-        <connector>
-            <targetReference>Complete_Screen</targetReference>
-        </connector>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
-            <name>accountName</name>
+            <name>hasRecentEarnings</name>
             <value>
-                <elementReference>varAccountName</elementReference>
+                <elementReference>varHasRecentEarnings</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
-            <name>relatedRecordId</name>
+            <name>hasExistingEarningsTopic</name>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>varHasExistingEarningsTopic</elementReference>
             </value>
         </inputParameters>
-        <inputParameters>
-            <name>objectApiName</name>
-            <value>
-                <elementReference>varObjectApiName</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>researchType</name>
-            <value>
-                <stringValue>決算サマリー</stringValue>
-            </value>
-        </inputParameters>
+        <nameSegment>AgentforceHeadlessResearch</nameSegment>
+        <offset>0</offset>
     </actionCalls>
     <apiVersion>64.0</apiVersion>
-    <assignments>
-        <name>Assign_Account_Name_Direct</name>
-        <label>取引先名・オブジェクト種別セット（Account）</label>
-        <locationX>176</locationX>
-        <locationY>360</locationY>
-        <assignmentItems>
-            <assignToReference>varObjectApiName</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>Account</stringValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Check_Recent_Earnings</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_Account_Name_Opp</name>
-        <label>取引先名・オブジェクト種別セット（Opportunity）</label>
-        <locationX>440</locationX>
-        <locationY>360</locationY>
-        <assignmentItems>
-            <assignToReference>varObjectApiName</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>Opportunity</stringValue>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Check_Recent_Earnings</targetReference>
-        </connector>
-    </assignments>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Assign_Account_Name_Case</name>
         <label>取引先名・オブジェクト種別セット（Case）</label>
-        <locationX>704</locationX>
-        <locationY>360</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>varObjectApiName</assignToReference>
             <operator>Assign</operator>
@@ -154,14 +104,46 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Check_Recent_Earnings</targetReference>
+            <targetReference>Start_Screen</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Account_Name_Direct</name>
+        <label>取引先名・オブジェクト種別セット（Account）</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>varObjectApiName</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Account</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Start_Screen</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Account_Name_Opp</name>
+        <label>取引先名・オブジェクト種別セット（Opportunity）</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>varObjectApiName</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Opportunity</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Start_Screen</targetReference>
         </connector>
     </assignments>
     <assignments>
         <name>Assign_From_Selection</name>
         <label>取引先ID・名前・オブジェクト種別セット</label>
-        <locationX>968</locationX>
-        <locationY>360</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
             <assignToReference>recordId</assignToReference>
             <operator>Assign</operator>
@@ -177,14 +159,14 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Check_Recent_Earnings</targetReference>
+            <targetReference>Start_Screen</targetReference>
         </connector>
     </assignments>
     <decisions>
         <name>Check_RecordId</name>
         <label>recordId あり？</label>
-        <locationX>440</locationX>
-        <locationY>120</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>Account_Select_Screen</targetReference>
         </defaultConnector>
@@ -208,8 +190,8 @@
     <decisions>
         <name>Detect_ObjectType</name>
         <label>オブジェクト種別判定</label>
-        <locationX>440</locationX>
-        <locationY>240</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <defaultConnector>
             <targetReference>Get_Account_Direct</targetReference>
         </defaultConnector>
@@ -245,51 +227,28 @@
             <label>Case</label>
         </rules>
     </decisions>
-    <decisions>
-        <name>Check_Earnings_For_Summary</name>
-        <label>決算サマリーも実行？</label>
-        <locationX>440</locationX>
-        <locationY>720</locationY>
-        <defaultConnector>
-            <targetReference>Complete_Screen</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>不要</defaultConnectorLabel>
-        <rules>
-            <name>Run_Earnings_Summary</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>varHasRecentEarnings</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>varHasExistingEarningsTopic</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Run_Earnings_Summary_Action</targetReference>
-            </connector>
-            <label>決算あり・未作成</label>
-        </rules>
-    </decisions>
     <description>顧客リサーチエージェントをヘッドレスで起動するグローバルアクション用Screen Flow。レコードページから起動した場合はrecordIdから取引先名を自動解決し、グローバルアクションから起動した場合は取引先選択画面を表示する。</description>
+    <environments>Default</environments>
     <interviewLabel>Customer Research Action {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Customer Research Action</label>
     <processMetadataValues>
         <name>BuilderType</name>
-        <value>LightningFlowBuilder</value>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
         <name>Get_Account_Direct</name>
         <label>Account取得</label>
-        <locationX>176</locationX>
-        <locationY>360</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Assign_Account_Name_Direct</targetReference>
@@ -302,7 +261,6 @@
                 <elementReference>recordId</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Account</object>
         <outputAssignments>
             <assignToReference>varAccountName</assignToReference>
@@ -310,34 +268,10 @@
         </outputAssignments>
     </recordLookups>
     <recordLookups>
-        <name>Get_Case</name>
-        <label>Case取得</label>
-        <locationX>704</locationX>
-        <locationY>240</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_Account_From_Case</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Case</object>
-        <outputAssignments>
-            <assignToReference>varCaseAccountId</assignToReference>
-            <field>AccountId</field>
-        </outputAssignments>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Account_From_Case</name>
         <label>Case経由で取引先名取得</label>
-        <locationX>704</locationX>
-        <locationY>300</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Assign_Account_Name_Case</targetReference>
@@ -350,7 +284,6 @@
                 <elementReference>varCaseAccountId</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Account</object>
         <outputAssignments>
             <assignToReference>varAccountName</assignToReference>
@@ -358,34 +291,10 @@
         </outputAssignments>
     </recordLookups>
     <recordLookups>
-        <name>Get_Opportunity</name>
-        <label>Opportunity取得</label>
-        <locationX>440</locationX>
-        <locationY>240</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_Account_From_Opp</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Opportunity</object>
-        <outputAssignments>
-            <assignToReference>varOppAccountId</assignToReference>
-            <field>AccountId</field>
-        </outputAssignments>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Account_From_Opp</name>
         <label>Opportunity経由で取引先名取得</label>
-        <locationX>440</locationX>
-        <locationY>300</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Assign_Account_Name_Opp</targetReference>
@@ -398,7 +307,6 @@
                 <elementReference>varOppAccountId</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Account</object>
         <outputAssignments>
             <assignToReference>varAccountName</assignToReference>
@@ -408,8 +316,8 @@
     <recordLookups>
         <name>Get_Account_From_Selection</name>
         <label>選択した取引先を取得</label>
-        <locationX>968</locationX>
-        <locationY>240</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Assign_From_Selection</targetReference>
@@ -422,19 +330,64 @@
                 <elementReference>varSelectedAccountId</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Account</object>
         <outputAssignments>
             <assignToReference>varAccountName</assignToReference>
             <field>Name</field>
         </outputAssignments>
     </recordLookups>
+    <recordLookups>
+        <name>Get_Case</name>
+        <label>Case取得</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Account_From_Case</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>Case</object>
+        <outputAssignments>
+            <assignToReference>varCaseAccountId</assignToReference>
+            <field>AccountId</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Opportunity</name>
+        <label>Opportunity取得</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Account_From_Opp</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <object>Opportunity</object>
+        <outputAssignments>
+            <assignToReference>varOppAccountId</assignToReference>
+            <field>AccountId</field>
+        </outputAssignments>
+    </recordLookups>
     <runInMode>SystemModeWithSharing</runInMode>
     <screens>
         <name>Account_Select_Screen</name>
         <label>取引先を選択</label>
-        <locationX>968</locationX>
-        <locationY>120</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -460,36 +413,80 @@
             <inputParameters>
                 <name>objectApiName</name>
                 <value>
-                    <stringValue>Account</stringValue>
+                    <stringValue>Opportunity</stringValue>
                 </value>
             </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <outputParameters>
                 <assignToReference>varSelectedAccountId</assignToReference>
                 <name>recordId</name>
             </outputParameters>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>Complete_Screen</name>
+        <name>Start_Screen</name>
         <label>リサーチ開始</label>
-        <locationX>440</locationX>
-        <locationY>840</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Check_Recent_Earnings</targetReference>
+        </connector>
+        <fields>
+            <name>Start_Message</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;🔍 リサーチを開始します&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;{!varAccountName}&lt;/strong&gt; のリサーチをバックグラウンドで実行します。&lt;/p&gt;&lt;p&gt;「次へ」を押してください。完了後、しばらくしてからページをリロードすると Agentforce Topics に結果が表示されます。&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Error_Screen</name>
+        <label>エラー</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>Complete_Message</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;✅ リサーチを開始しました&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!varAccountName} のリサーチをバックグラウンドで実行中です。完了後、Agentforce Topics に自動保存されます。&lt;/p&gt;</fieldText>
+            <name>Error_Message</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;⚠️ エラーが発生しました&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <start>
-        <locationX>314</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Check_RecordId</targetReference>
@@ -505,6 +502,13 @@
     </variables>
     <variables>
         <name>varAccountName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>varCaseAccountId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
@@ -541,6 +545,13 @@
         </value>
     </variables>
     <variables>
+        <name>varOppAccountId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>varResearchSuccess</name>
         <dataType>Boolean</dataType>
         <isCollection>false</isCollection>
@@ -552,20 +563,6 @@
     </variables>
     <variables>
         <name>varSelectedAccountId</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>varCaseAccountId</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>varOppAccountId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
