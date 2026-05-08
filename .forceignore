@@ -23,14 +23,15 @@ package.xml
 **/genAiPlannerBundles/**
 
 # 顧客リサーチエージェント専用クラス（パッケージ非対象・個別デプロイ）
-**/classes/AgentforceHeadlessResearch.cls
-**/classes/AgentforceHeadlessResearch.cls-meta.xml
-**/classes/AgentforceHeadlessResearchTest.cls
-**/classes/AgentforceHeadlessResearchTest.cls-meta.xml
-**/classes/FindRelatedRecords.cls
-**/classes/FindRelatedRecords.cls-meta.xml
-**/classes/HeadlessResearchQueueable.cls
-**/classes/HeadlessResearchQueueable.cls-meta.xml
-**/flows/Customer_Research_Action.flow-meta.xml
-**/quickActions/Customer_Research.quickAction-meta.xml
+# ⚠️ 個別デプロイ時のみ、下記のコメントアウトを外すこと。デプロイ後は必ず元に戻すこと
+# **/classes/AgentforceHeadlessResearch.cls
+# **/classes/AgentforceHeadlessResearch.cls-meta.xml
+# **/classes/AgentforceHeadlessResearchTest.cls
+# **/classes/AgentforceHeadlessResearchTest.cls-meta.xml
+# **/classes/FindRelatedRecords.cls
+# **/classes/FindRelatedRecords.cls-meta.xml
+# **/classes/HeadlessResearchQueueable.cls
+# **/classes/HeadlessResearchQueueable.cls-meta.xml
+# **/flows/Customer_Research_Action.flow-meta.xml
+# **/quickActions/Customer_Research.quickAction-meta.xml
 
